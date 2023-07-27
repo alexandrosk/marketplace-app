@@ -5,10 +5,12 @@
     "build": "NODE_ENV=production remix build",
     "predev": "prisma generate && prisma migrate deploy",
     "dev": "shopify app dev",
+    "deploy": "shopify app deploy",
     "config:link": "shopify app config link",
     "config:push": "shopify app config push",
     "generate": "shopify app generate",
-    "deploy": "shopify app deploy",
+    "vite:dev": "vite",
+    "vite:build": "vite build",
     "config:use": "shopify app config use",
     "env": "shopify app env",
     "start": "remix-serve build",
@@ -18,6 +20,7 @@
     "setup": "prisma generate && prisma migrate deploy"
   },
   "dependencies": {
+    "@preact/signals": "^1.1.5",
     "@prisma/client": "^4.13.0",
     "@remix-run/node": "^1.19.1",
     "@remix-run/react": "^1.19.1",
@@ -30,17 +33,22 @@
     "@shopify/shopify-app-session-storage-prisma": "^1.0.0",
     "cross-env": "^7.0.3",
     "isbot": "latest",
+    "preact": "^10.16.0",
+    "preact-custom-element": "^4.2.1",
     "prisma": "^4.13.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@preact/preset-vite": "^2.5.0",
     "@remix-run/dev": "^1.19.1",
     "@remix-run/eslint-config": "^1.19.1",
     "@types/eslint": "^8.40.0",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^8.8.0",
-    "prettier": "^2.8.8"
+    "prettier": "^2.8.8",
+    "vite": "^4.4.7",
+    "vite-plugin-shopify": "^2.1.1"
   },
   "workspaces": {
     "packages": [
