@@ -1,0 +1,22 @@
+{
+  "name": "theme-extensions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "vite:dev": "vite",
+    "vite:build": "vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^4.4.7",
+    "vite-plugin-shopify": "^2.1.1"
+  },
+  "dependencies": {
+    "@preact/signals": "^1.1.5",
+    "preact-custom-element": "^4.2.1"
+  }
+}

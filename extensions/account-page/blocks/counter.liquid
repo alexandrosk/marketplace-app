@@ -6,19 +6,34 @@
 -%}
 
 {% schema %}
-{
-  "name": "t:blocks.counter.name",
-  "target": "section",
-  "settings": [
-    {
-      "id": "start",
-      "type": "number",
-      "label": "t:blocks.counter.settings.start.label",
-      "default": 0
+  {
+    "name": "Customer Page",
+    "target": "section",
+    "settings": [
+      {
+        "label": "Text Colors",
+        "id": "text-color",
+        "type": "color",
+        "default": "#000"
+      }, {
+        "label": "Links Colors",
+        "id": "link-color",
+        "type": "color",
+        "default": "#000"
+      }, {
+        "label": "Button colors",
+        "id": "button-color",
+        "type": "color",
+        "default": "#000"
+      }, {
+        "label": "Button Text color",
+        "id": "button-text-color",
+        "type": "color",
+        "default": "#fff"
+      }
+    ],
+    "enabled_on": {
+      "templates": ["customers/account"]
     }
-  ],
-  "enabled_on": {
-    "templates": ["index"]
   }
-}
 {% endschema %}

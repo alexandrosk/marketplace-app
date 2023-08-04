@@ -1,17 +1,19 @@
-import { Card, VerticalStack, Button, Text, Page } from '@shopify/polaris';
+import {Badge, Card, VerticalStack, Button, Text, Page, IndexTable} from '@shopify/polaris';
 import { json, redirect } from "@remix-run/node";
 import { useState, useEffect } from 'react';
 
 import {
   useSubmit,
-  useActionData
+  useActionData, useLoaderData
 } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
+import {useMetafields} from "~/context/AppMetafields";
 
 export async function action({ request }) {
   const { admin } = await authenticate.admin(request);
+  const formData = await request.formData();
+  const name = formData.get("name");
 
-  
   const response = await admin.graphql(
     `#graphql
       mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!) {
@@ -20,7 +22,7 @@ export async function action({ request }) {
         returnUrl: $returnUrl,
         lineItems: $lineItems,
         test: true,
-        trialDays: 7
+        trialDays: 14
          ) {
         userErrors {
           field
@@ -34,8 +36,8 @@ export async function action({ request }) {
     }`,
     {
       "variables": {
-        "name": "Pro Plan",
-        "returnUrl": process.env.SHOPIFY_APP_URL + "/app/billing",
+        "name": name,
+        "returnUrl": "https://newathens.myshopify.com/admin/apps/marketplace-p2p/app/billing",
         "test": true,
         "trialDays": 7,
         "lineItems": [
@@ -59,18 +61,25 @@ export async function action({ request }) {
   if (responseJson.errors) {
     return json({ errors: responseJson.errors }, { status: 400 });
   }
-  //create a href with redirect and click 
+  //create a href with redirect and click
  redirect(responseJson.data.appSubscriptionCreate.confirmationUrl);
  return json({ subscriptionUrl: responseJson.data.appSubscriptionCreate.confirmationUrl });
-  
-}
 
+}
 
 export default function BillingPage() {
   const submit = useSubmit();
-  const createSubscription = () => submit({}, { replace: true, method: "POST" })
+  const { state, dispatch } = useMetafields();
+
+  const createSubscription = (plan) => submit({
+    name: plan,
+  }, { replace: true, method: "POST" })
   const { subscriptionUrl } = useActionData() || {};
-  const [subscription, setSubscription] = useState(null);
+  const [activePlan, setActivePlan] = useState(null);
+
+  const selectPlan = (plan) => () => {
+    createSubscription(plan);
+  }
 
   useEffect(() => {
     if (subscriptionUrl) {
@@ -83,10 +92,41 @@ export default function BillingPage() {
     }
   }, [subscriptionUrl]);
 
+  if (state) {
+
+  }
+
+  useEffect(() => {
+    //depending on the active subscription go and add a style to the existing plan
+    //find the activePlan and add a class to it
+    if (state) {
+      setActivePlan(state.activePlan);
+    }
+
+  }, [state]);
+
+  const plans = [
+    {
+      name: "Free Plan",
+      price: "$0",
+      primary: false,
+    },
+    {
+      name: "Pro Plan",
+      price: "$20",
+      primary: true,
+    },
+    {
+      name: "Premium Plan",
+      price: "$50",
+      primary: true,
+    }
+  ];
 
 return (
   <Page
       divider
+      title="Billing"
       primaryAction={{ content: "View on your store", disabled: true }}
       secondaryActions={[
         {
@@ -97,23 +137,37 @@ return (
       ]}
     >
     <VerticalStack gap="4" >
-    <Card >
-    <Text variant="headingMd" as="h2">Free Plan</Text>
-    <p>0 per month</p>
-    <Button primary={true} onClick={createSubscription}>Choose Plan</Button>
-  </Card>
-      {/* <PricingOption plan="Free" price="$0" primary={false} onClick={createSubscription}/>
-      <PricingOption plan="Pro" price="$20" primary onClick={createSubscription} />
-      <PricingOption plan="Premium" price="$50" primary onClick={createSubscription} /> */}
+      <Text variant="heading2xl" as="h2">
+        Choose a plan
+      </Text>
+      <Text variant="bodySm" as="h2">
+        Start your 14-day free trial today.
+      </Text>
+      <VerticalStack gap="4">
+        {plans.map((plan) => {
+          return (
+            <PricingOption plan={plan.name} price={plan.price} primary={plan.primary} onClick={selectPlan(plan.name)} active={activePlan === plan.name}/>
+          )
+        })}
+      </VerticalStack>
+
     </VerticalStack>
   </Page>
 )
     };
 
-const PricingOption = ({ plan, price, primary, onClick }) => (
-  <Card >
-    <Text variant="headingMd" as="h2">{plan} Plan</Text>
-    <p>{price} per month</p>
-    <Button primary={primary} onClick={onClick(plan)}>Choose Plan</Button>
-  </Card>
+
+
+const PricingOption = ({ plan, price, primary, onClick, active }) => (
+  <div id={plan}>
+    <Card>
+      {primary && <Badge status="info">Recommended</Badge>}
+      {active && <Badge status="success">Active</Badge>}
+      <Text variant="headingMd" as="h2">{plan}</Text>
+      <p>{price} per month</p>
+      {!active && (
+        <Button primary={primary} onClick={onClick}>Choose Plan</Button>
+      )}
+    </Card>
+  </div>
 );

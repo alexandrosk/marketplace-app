@@ -15,6 +15,7 @@ export default function SettingsPage() {
         },
       ]}
     >
+      <ui-title-bar title="Settings" />
       <VerticalStack gap={{ xs: "8", sm: "4" }}>
         <HorizontalGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="4">
           <Box

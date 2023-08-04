@@ -2,7 +2,7 @@
 
 name = "marketplace-p2p"
 client_id = "bd57702fb1652ea2ed27317e68553308"
-application_url = "https://seem-reflections-icons-protect.trycloudflare.com"
+application_url = "https://robin-elliott-contractors-bob.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://seem-reflections-icons-protect.trycloudflare.com/auth/callback",
-  "https://seem-reflections-icons-protect.trycloudflare.com/auth/shopify/callback",
-  "https://seem-reflections-icons-protect.trycloudflare.com/api/auth/callback"
+  "https://robin-elliott-contractors-bob.trycloudflare.com/auth/callback",
+  "https://robin-elliott-contractors-bob.trycloudflare.com/auth/shopify/callback",
+  "https://robin-elliott-contractors-bob.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

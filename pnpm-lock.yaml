@@ -47,12 +47,6 @@ importers:
       isbot:
         specifier: latest
         version: 3.6.13
-      preact:
-        specifier: ^10.16.0
-        version: 10.16.0
-      preact-custom-element:
-        specifier: ^4.2.1
-        version: 4.2.1(preact@10.16.0)
       prisma:
         specifier: ^4.13.0
         version: 4.13.0
@@ -84,12 +78,6 @@ importers:
       prettier:
         specifier: ^2.8.8
         version: 2.8.8
-      vite:
-        specifier: ^4.4.7
-        version: 4.4.7(@types/node@20.4.5)
-      vite-plugin-shopify:
-        specifier: ^2.1.1
-        version: 2.1.1(vite@4.4.7)
 
 packages:
 
@@ -8387,14 +8375,6 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
-  /preact-custom-element@4.2.1(preact@10.16.0):
-    resolution: {integrity: sha512-/fiEEAyC+MXRlCBRmv/owoN5BLpO2nF/MF3YBHLtp4C2lNqlhV+a4he74A5DhfDoRmxDHm0sYVgQzWFEyzTDsw==}
-    peerDependencies:
-      preact: 10.x
-    dependencies:
-      preact: 10.16.0
-    dev: false
-
   /preact@10.16.0:
     resolution: {integrity: sha512-XTSj3dJ4roKIC93pald6rWuB2qQJO9gO2iLLyTe87MrjQN+HklueLsmskbywEWqCHlclgz3/M4YLL2iBr9UmMA==}
 
@@ -9996,18 +9976,6 @@ packages:
       - sugarss
       - supports-color
       - terser
-    dev: true
-
-  /vite-plugin-shopify@2.1.1(vite@4.4.7):
-    resolution: {integrity: sha512-B/PciyVCZZ/VpNj2REG+UC/NijfcbN2cUxBWZ7HEPcgL0QfM+n4lvDv0h2XrovsCxV6LV0EVdnhWOpNpYe3paA==}
-    peerDependencies:
-      vite: ^4.0.4
-    dependencies:
-      debug: 4.3.4(supports-color@8.1.1)
-      fast-glob: 3.3.1
-      vite: 4.4.7(@types/node@20.4.5)
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /vite@4.4.7(@types/node@20.4.5):

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import 'vite/modulepreload-polyfill'
 import register from 'preact-custom-element'
 import { useSignal } from '@preact/signals'
@@ -11,6 +12,10 @@ const Counter = ({ start = 0 }) => {
       <p className="x-counter__count">{count}</p>
       <Button onClick={() => count.value--}>-1</Button>
       <Button onClick={() => count.value++}>+1</Button>
+      <p>
+        Alex
+      </p>
+      This is the customer page
     </div>
   )
 }
