@@ -38,6 +38,19 @@ export async function loader({ request }) {
 
   const responseJson = await response.json();
   console.log(JSON.stringify(responseJson.data.currentAppInstallation.metafields));
+  //parse metafields to be easily access to state in the app
+  const metafieldsArray = responseJson.data.currentAppInstallation.metafields.edges.map(({ node }) => {
+    const parsedValue = JSON.parse(node.value);
+    return {
+      ...node,
+      value: parsedValue,
+      [node.key]: parsedValue,
+    };
+  });
+  const metafieldsObject = metafieldsArray.reduce((acc, metafield) => {
+    acc[metafield.key] = metafield.value;
+    return acc;
+  }, {});
 
   return json({
     polarisTranslations: require("@shopify/polaris/locales/en.json"),
@@ -45,7 +58,7 @@ export async function loader({ request }) {
     initialAppInstallationId: responseJson.data.currentAppInstallation.id,
     currentSubscription: responseJson.data.currentAppInstallation.activeSubscriptions[0],
     session: session,
-    metafields: responseJson.data.currentAppInstallation.metafields.edges.map(({node}) => node),
+    metafields: metafieldsObject,
   });
 }
 

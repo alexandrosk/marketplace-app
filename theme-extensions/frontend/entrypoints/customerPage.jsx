@@ -4,7 +4,7 @@ import register from 'preact-custom-element'
 import { useSignal } from '@preact/signals'
 import Button from '../components/Button.jsx'
 
-const Counter = ({ start = 0 }) => {
+const CustomerPage = ({ start = 0 }) => {
   const count = useSignal(start)
 
   return (
@@ -15,9 +15,9 @@ const Counter = ({ start = 0 }) => {
       <p>
         Alex
       </p>
-      This is the customer page
+      TEST
     </div>
   )
 }
 
-register(Counter, 'x-counter', ['start'], { shadow: false })
+register(CustomerPage, 'x-counter', ['start'], { shadow: false })

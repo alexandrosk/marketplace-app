@@ -30,6 +30,7 @@ export async function action({ request }) {
           id
           namespace
           key
+          value
         }
         userErrors {
           field
@@ -43,7 +44,7 @@ export async function action({ request }) {
           {
             namespace: "settings",
             key: "settings",
-            value: JSON.stringify({"onboarding":true, "onboardingStep":1}),
+            value: JSON.stringify({"onboarding":false, "onboardingStep":3}),
             type: "json",
             ownerId: state?.appId,
           },
@@ -51,11 +52,34 @@ export async function action({ request }) {
       }
     }
   );
-  return json({'success': true});
+  const responseJson = await response.json();
+  return json(responseJson.data);
 }
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
+
+  const response = await admin.graphql(
+    `#graphql
+    query getMetaobjectDefinitionByType($type: String!) {
+       metaobjectDefinitionByType(type: $type) {
+        id
+        type
+        displayNameKey
+        fieldDefinitions {
+          name
+          key
+        }
+      }
+    }`,
+    {
+      variables: {
+        type: "vendors",
+      }
+    }
+  );
+  const responseJson = await response.json();
+  console.log(JSON.stringify(responseJson.data));
 
   return json({ shop: session.shop.replace(".myshopify.com", "") });
 }
@@ -77,27 +101,34 @@ export default function AppOnboarding() {
   const {state, dispatch} = useMetafields();
   const isLoading =
     ["loading", "submitting"].includes(nav.state) && nav.formMethod === "POST";
-
   const actionData = useActionData();
   const submit = useSubmit();
   const generateMetafields = () => submit({
     state: JSON.stringify(state),
   }, { replace: true, method: "POST" });
 
+
   useEffect(() => {
-    dispatch({
-      type: 'UPDATE_METAFIELD_VALUE',
-      key: 'settings',
-      property: 'onboarding',
-      value: false //fix this with the return of the actionData
-    });
+    console.log(actionData);
+    if (!actionData) return;
+
+    for (const metafield of actionData?.metafieldsSet?.metafields) {
+      const parsedValue = JSON.parse(metafield.value);
+
+      // Update the metafield using its key
+      dispatch({
+        type: 'UPDATE_METAFIELD_VALUE',
+        key: metafield.key,
+        value: parsedValue,
+      });
+    }
   }, [actionData]);
 
   return (
     <Page>
       <ui-title-bar title="Generate metafields 🎉" >
         <button variant="primary" onClick={generateMetafields}>
-          Tutorial
+          Finish Onboarding
         </button>
       </ui-title-bar>
 
@@ -124,7 +155,7 @@ export default function AppOnboarding() {
           </Text>
           <Thumbnail source="https://cdn.shopify.com/s/files/1/0757/9955/files/empty-state.svg" alt="Empty state" />
         <Button loading={isLoading} primary onClick={generateMetafields}>
-          Generate Metafields
+          Finish Onboarding
         </Button>
         </Card>
       </VerticalStack>

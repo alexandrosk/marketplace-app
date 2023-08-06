@@ -2,18 +2,18 @@
 
 name = "marketplace-p2p"
 client_id = "bd57702fb1652ea2ed27317e68553308"
-application_url = "https://robin-elliott-contractors-bob.trycloudflare.com"
+application_url = "https://teaching-atlanta-section-equipment.trycloudflare.com"
 embedded = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products"
+scopes = "write_products,read_metaobjects,write_metaobjects,read_metaobject_definitions,write_metaobject_definitions"
 
 [auth]
 redirect_urls = [
-  "https://robin-elliott-contractors-bob.trycloudflare.com/auth/callback",
-  "https://robin-elliott-contractors-bob.trycloudflare.com/auth/shopify/callback",
-  "https://robin-elliott-contractors-bob.trycloudflare.com/api/auth/callback"
+  "https://teaching-atlanta-section-equipment.trycloudflare.com/auth/callback",
+  "https://teaching-atlanta-section-equipment.trycloudflare.com/auth/shopify/callback",
+  "https://teaching-atlanta-section-equipment.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

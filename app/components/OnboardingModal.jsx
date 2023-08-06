@@ -9,10 +9,11 @@ const OnboardingModal = () => {
 
   useEffect(
     () => {
-      if (!state.onboarding) {
+      console.log(state.metafields?.settings);
+      if (!state.metafields?.settings?.onboarding) {
         setActive(true);
       }
-    }, [state.onboarding])
+    }, [state.metafields])
 
   const handleChange = () => setActive(!active);
 

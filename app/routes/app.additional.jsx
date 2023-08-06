@@ -9,24 +9,37 @@ import {
   VerticalStack,
 } from "@shopify/polaris";
 import {ChevronDownMinor, ChevronUpMinor, CircleDotsMajor} from "@shopify/polaris-icons";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useMetafields} from "~/context/AppMetafields";
 import {authenticate} from "~/shopify.server";
+import {json} from "@remix-run/node";
+import {useActionData, useNavigation, useSubmit} from "@remix-run/react";
 
-export async function action({request}){
-  const {admin} = await authenticate.admin(request);
+export async function action({ request }) {
+  const { admin, session,  sessionToken } = await authenticate.admin(request);
+
   const formData = await request.formData();
-  const metafieldsInput = JSON.parse(formData.get("metafields"));
+  const state = JSON.parse(formData.get("state"));
 
-  const mutation = `
-    mutation MetafieldsSet($metafields: [MetafieldsSetInput!]!) {
-      metafieldsSet(metafields: $metafields) {
-        metafields {
-          key
-          namespace
-          value
-          createdAt
-          updatedAt
+  const response = await admin.graphql(
+    `#graphql
+    mutation CreateMetaobjectDefinition($definition: MetaobjectDefinitionCreateInput!) {
+      metaobjectDefinitionCreate(definition: $definition) {
+        metaobjectDefinition {
+          access {
+            storefront
+          }
+          capabilities {
+            publishable {
+              enabled
+            }
+          }
+          name
+          type
+          fieldDefinitions {
+            name
+            key
+          }
         }
         userErrors {
           field
@@ -34,20 +47,72 @@ export async function action({request}){
           code
         }
       }
+    }`,
+    {
+      variables: {
+        "definition": {
+          "access": {
+            /*"admin": "MERCHANT_READ_WRITE",*/
+            "storefront": "PUBLIC_READ"
+          },
+          "capabilities": {
+            "publishable": {
+              "enabled": true
+            }
+          },
+          "name": "Shop",
+          "type": "shop",
+          "fieldDefinitions": [
+            {
+              "name": "Title",
+              "key": "title",
+              "type": "single_line_text_field",
+              "validations": [
+                {
+                  "name": "regex",
+                  "value": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+                }
+              ]
+            },
+            {
+              "name": "Description",
+              "key": "description",
+              "type": "multi_line_text_field"
+            },
+            {"name": "slug", "key": "slug", type: "single_line_text_field"},
+            {"name": "enabled", "key": "enabled", type: "boolean"},
+            {"name": "product", "key": "product", type: "product_reference"},
+            {"name": "rating", "key": "rating", type: "rating", validations: [
+                {
+                  "name": "scale_min",
+                  "value": "0"
+                },
+                {
+                  "name": "scale_max",
+                  "value": "5"
+                },
+              ]
+            },
+            {"name": "rating_total", "key": "rating_total", type: "number_integer"},
+            {"name": "social", "key": "social", type: "json"},
+            {"name": "image", "key": "image", type: "file_reference"},
+            {"name": "color", "key": "background", type: "color"},
+            /*{"name": "sold_items", "key": "sold_items"},
+            {"name": "shipping_methods", "key": "shipping_methods", type: "collection_reference"},*/
+            {"name": "country", "key": "country", type: "single_line_text_field"},
+            {"name": "paypal_email", "key": "paypal_email","type": "single_line_text_field"},
+            {"name": "product_list", "key": "product_list", type: "collection_reference"},
+          ]
+        }
+      }
     }
-  `;
+  );
+  const responseJson = await response.json();
 
-  try {
-    const response = await admin.graphql(mutation, {});
-    // Do something with the response, like redirecting the user or sending back some data
-  } catch (error) {
-    console.error('Failed to update metafields:', error);
-    // Handle the error appropriately
-  }
+  return json(responseJson.data);
 }
 export default function AdditionalPage() {
   const { state, dispatch } = useMetafields();
-
 
   const [collapsibleStates, setCollapsibleStates] = useState({
     1: true,
@@ -61,6 +126,22 @@ export default function AdditionalPage() {
       [id]: !prevStates[id],
     }));
   };
+  const nav = useNavigation();
+  const isLoading =
+    ["loading", "submitting"].includes(nav.state) && nav.formMethod === "POST";
+  const actionData = useActionData();
+  const submit = useSubmit();
+  const generateMetaobject = () => submit({
+    state: JSON.stringify(state),
+  }, { replace: true, method: "POST" });
+
+  useEffect(() => {
+    console.log(actionData);
+    if (actionData && actionData.success) {
+      alert("Metaobject created");
+    }
+  }, [actionData]);
+
   return (
     <Page>
       <ui-title-bar title="Additional page" />
@@ -71,12 +152,7 @@ export default function AdditionalPage() {
               {JSON.stringify(state)}
               {state?.metafields?.length ? (
                 <List>
-                  {state.metafields.map((metafield) => (
-                    <List.Item key={metafield.id}>
-                          <Text as={"h3"}>{metafield.key}</Text>
-                          <Text as={"h3"}>{metafield.value}</Text>
-                    </List.Item>
-                  ))}
+
                 </List>
               ) : (
                 <Text as={"h3"}>No metafields found</Text>
@@ -85,8 +161,8 @@ export default function AdditionalPage() {
               <EmptyState
                 heading="Create your first seller"
                 action={{
-                  content: "Create seller",
-                  onAction: () => alert("qrcodes/new"),
+                  content: "Create seller metaobject",
+                  onAction: () => generateMetaobject(),
                 }}
                 image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
               >

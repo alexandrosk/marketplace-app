@@ -35,24 +35,15 @@ export const MetafieldProvider = ({ children, initialAppInstallationId, currentS
           ...state,
           [action.resourceId]: action.metafields,
         };
-      case 'UPDATE_METAFIELD_VALUE': {
-        const newState = { ...state };
-
-        // Find the metafield with the specified key
-        const metafield = newState.metafields.find((m) => m.key === action.key);
-        if (metafield) {
-          // Parse the existing value as JSON
-          const valueObj = JSON.parse(metafield.value);
-
-          // Update the specified property with the new value
-          valueObj[action.property] = action.value;
-
-          // Convert the value back to a JSON string and update the metafield
-          metafield.value = JSON.stringify(valueObj);
-        }
-
-        return newState;
-      }
+      case 'UPDATE_METAFIELD_VALUE':
+        const { key, value } = action;
+        return {
+          ...state,
+          metafields: {
+            ...state.metafields,
+            [key]: value,
+          },
+        };
       case 'UPDATE_METAFIELD':
         return {
           ...state,
@@ -75,8 +66,8 @@ export const MetafieldProvider = ({ children, initialAppInstallationId, currentS
   const initialState = {
     'appId': initialAppInstallationId,
     'activePlan': currentSubscription.name,
-    'onboarding': false,
-    'metafields': metafields,
+    /*'onboarding': false,*/
+    'metafields': metafields || []
   };
 
 

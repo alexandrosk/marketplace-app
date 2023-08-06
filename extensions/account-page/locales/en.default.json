@@ -1,10 +1,10 @@
 {
   "blocks": {
-    "counter": {
-      "name": "Counter",
+    "customer-page": {
+      "name": "Customer Page",
       "settings": {
-        "start": {
-          "label": "Start"
+        "text-color": {
+          "label": "Text Color"
         }
       }
     }
