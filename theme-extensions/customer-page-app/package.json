@@ -1,0 +1,41 @@
+{
+  "name": "customer-page-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "vite:dev": "vite",
+    "vite:build": "vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.4.10",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.27",
+    "tailwindcss": "^3.3.3",
+    "vite": "^4.4.7",
+    "vite-plugin-shopify": "^2.1.1"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.2.0",
+    "@preact/signals": "^1.1.5",
+    "@radix-ui/react-label": "^2.0.2",
+    "@radix-ui/react-select": "^1.2.2",
+    "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-toast": "^1.1.4",
+    "@thedutchcoder/postcss-rem-to-px": "^0.0.2",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "history": "^5.3.0",
+    "lucide-react": "^0.265.0",
+    "preact-custom-element": "^4.2.1",
+    "preact-router": "^4.1.2",
+    "react-hook-form": "^7.45.4",
+    "tailwind-merge": "^1.14.0",
+    "tailwindcss-animate": "^1.0.6",
+    "zod": "^3.21.4"
+  }
+}

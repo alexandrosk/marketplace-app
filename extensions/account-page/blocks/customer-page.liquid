@@ -1,9 +1,11 @@
 {% liquid
   render 'customer-page'
+  render 'css-variables'
 
-  render 'vite-tag' with 'counter.css'
+  render 'vite-tag' with 'customerPage.css'
   render 'vite-tag' with 'customerPage.jsx'
 -%}
+
 
 {% schema %}
   {
