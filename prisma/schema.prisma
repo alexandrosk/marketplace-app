@@ -50,6 +50,7 @@ model Product {
   name        String
   description String
   price       Float
+  category    String
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   vendor      Vendor      @relation(fields: [vendorId], references: [id])
