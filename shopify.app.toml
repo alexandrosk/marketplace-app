@@ -2,7 +2,7 @@
 
 name = "marketplace-p2p"
 client_id = "bd57702fb1652ea2ed27317e68553308"
-application_url = "https://function-at-serbia-message.trycloudflare.com"
+application_url = "https://serving-ac-treasury-lips.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,9 +11,9 @@ scopes = "write_products,read_metaobjects,write_metaobjects,read_metaobject_defi
 
 [auth]
 redirect_urls = [
-  "https://function-at-serbia-message.trycloudflare.com/auth/callback",
-  "https://function-at-serbia-message.trycloudflare.com/auth/shopify/callback",
-  "https://function-at-serbia-message.trycloudflare.com/api/auth/callback"
+  "https://serving-ac-treasury-lips.trycloudflare.com/auth/callback",
+  "https://serving-ac-treasury-lips.trycloudflare.com/auth/shopify/callback",
+  "https://serving-ac-treasury-lips.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
