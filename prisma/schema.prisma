@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("process.env.DATABASE_URL")
+  url      = "mysql://shopify-user:shopify-pass@app1-mysql:3306/shopify?connection_limit=5&socket_timeout"
 }
 
 model Session {
