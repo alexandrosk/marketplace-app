@@ -25,3 +25,59 @@ model Settings {
   id   String @id
   shop String @unique
 }
+
+model Vendor {
+  id        String    @id
+  shop      String
+  name      String
+  email     String
+  phone     String
+  address   String
+  city      String
+  state     String
+  zip       String
+  country   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  products  Product[]
+  orders    Order[]
+}
+
+model Product {
+  id          String      @id
+  shop        String
+  vendorId    String
+  name        String
+  description String
+  price       Float
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  vendor      Vendor      @relation(fields: [vendorId], references: [id])
+  orderId     String?
+  OrderItem   OrderItem[]
+}
+
+model Order {
+  id        String      @id
+  shop      String
+  vendorId  String
+  quantity  Int
+  price     Float
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  vendor    Vendor      @relation(fields: [vendorId], references: [id])
+  OrderItem OrderItem[]
+}
+
+model OrderItem {
+  id        String   @id
+  shop      String
+  orderId   String
+  productId String
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  order     Order    @relation(fields: [orderId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+}
