@@ -13,13 +13,13 @@ export async function loader({ request }) {
                     id: 1,
                     title: "Product 4",
                     description: "This is product 1",
-                    price: 100,
+                    price: '$ 100',
                 },
                 {
                     id: 2,
                     title: "Product 5",
                     description: "This is product 2",
-                    price: 200,
+                    price: '$ 200',
 
                 }
             ]

@@ -2,7 +2,7 @@ import crypto from "crypto";
 import {parse} from "url";
 
 
-const SHARED_SECRET = '9d7ecd119f3d9d68ebc97e9b1b962ea3';
+const SHARED_SECRET = '173475c3e712bc220cb191c8075626ab';
 
 function verifySignature(url) {
     const parsedUrl = parse(url, true);

@@ -65,7 +65,7 @@ export const MetafieldProvider = ({ children, initialAppInstallationId, currentS
 
   const initialState = {
     'appId': initialAppInstallationId,
-    'activePlan': currentSubscription.name,
+    'activePlan': currentSubscription?.name?.toLowerCase() || 'free',
     /*'onboarding': false,*/
     'metafields': metafields || []
   };
