@@ -40,7 +40,10 @@ importers:
         version: 1.0.3
       '@shopify/shopify-app-session-storage-prisma':
         specifier: ^1.0.0
-        version: 1.0.0(@prisma/client@4.13.0)(@shopify/shopify-api@7.5.0)(@shopify/shopify-app-session-storage@1.1.6)(prisma@4.13.0)
+        version: 1.0.0(@prisma/client@4.13.0)(@shopify/shopify-api@7.6.0)(@shopify/shopify-app-session-storage@1.1.8)(prisma@4.13.0)
+      '@shopify/shopify-app-session-storage-redis':
+        specifier: ^1.1.8
+        version: 1.1.8(@shopify/shopify-api@7.6.0)(@shopify/shopify-app-session-storage@1.1.8)
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -2453,6 +2456,55 @@ packages:
     requiresBuild: true
     dev: false
 
+  /@redis/bloom@1.2.0(@redis/client@1.5.9):
+    resolution: {integrity: sha512-HG2DFjYKbpNmVXsa0keLHp/3leGJz1mjh09f2RLGGLQZzSHpkmZWuwJbAvo3QcRY8p80m5+ZdXZdYOSBLlp7Cg==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
+    dependencies:
+      '@redis/client': 1.5.9
+    dev: false
+
+  /@redis/client@1.5.9:
+    resolution: {integrity: sha512-SffgN+P1zdWJWSXBvJeynvEnmnZrYmtKSRW00xl8pOPFOMJjxRR9u0frSxJpPR6Y4V+k54blJjGW7FgxbTI7bQ==}
+    engines: {node: '>=14'}
+    dependencies:
+      cluster-key-slot: 1.1.2
+      generic-pool: 3.9.0
+      yallist: 4.0.0
+    dev: false
+
+  /@redis/graph@1.1.0(@redis/client@1.5.9):
+    resolution: {integrity: sha512-16yZWngxyXPd+MJxeSr0dqh2AIOi8j9yXKcKCwVaKDbH3HTuETpDVPcLujhFYVPtYrngSco31BUcSa9TH31Gqg==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
+    dependencies:
+      '@redis/client': 1.5.9
+    dev: false
+
+  /@redis/json@1.0.4(@redis/client@1.5.9):
+    resolution: {integrity: sha512-LUZE2Gdrhg0Rx7AN+cZkb1e6HjoSKaeeW8rYnt89Tly13GBI5eP4CwDVr+MY8BAYfCg4/N15OUrtLoona9uSgw==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
+    dependencies:
+      '@redis/client': 1.5.9
+    dev: false
+
+  /@redis/search@1.1.3(@redis/client@1.5.9):
+    resolution: {integrity: sha512-4Dg1JjvCevdiCBTZqjhKkGoC5/BcB7k9j99kdMnaXFXg8x4eyOIVg9487CMv7/BUVkFLZCaIh8ead9mU15DNng==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
+    dependencies:
+      '@redis/client': 1.5.9
+    dev: false
+
+  /@redis/time-series@1.0.5(@redis/client@1.5.9):
+    resolution: {integrity: sha512-IFjIgTusQym2B5IZJG3XKr5llka7ey84fw/NOYqESP5WUfQs9zz1ww/9+qoz4ka/S6KcGBodzlCeZ5UImKbscg==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
+    dependencies:
+      '@redis/client': 1.5.9
+    dev: false
+
   /@remix-run/dev@1.19.1(@remix-run/serve@1.19.1)(@types/node@20.4.10):
     resolution: {integrity: sha512-Piv/neRW1yMscvDpg8RZnyFzEYHT0etr3DYvBbSSe3wOWlXRItUFaXdn8I4ecp4gBkaNJmCni8ueYsk8FeqoBw==}
     engines: {node: '>=14.0.0'}
@@ -2921,6 +2973,20 @@ packages:
       - encoding
     dev: false
 
+  /@shopify/shopify-api@7.6.0:
+    resolution: {integrity: sha512-XUyBkSrUHvqCknPdY3ylaGDyC3hA2aKmXTsbo7vpGzncMqC1hZ2pwRJbBMnffdbEWj14Um9zkEMS7MKf1k6PBw==}
+    dependencies:
+      '@shopify/network': 3.2.1
+      compare-versions: 5.0.3
+      isbot: 3.6.13
+      jose: 4.14.4
+      node-fetch: 2.6.12
+      tslib: 2.6.1
+      uuid: 9.0.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@shopify/shopify-app-remix@1.0.3:
     resolution: {integrity: sha512-I7OZgY0A1Oo9gNkm46FRE48BqxRXes4HpFMMOiggLgteQy3WzQmAWNpzCkk3DS2/9Ft14hllektD+LnRG1tEyQ==}
     dependencies:
@@ -2934,7 +3000,7 @@ packages:
       - encoding
     dev: false
 
-  /@shopify/shopify-app-session-storage-prisma@1.0.0(@prisma/client@4.13.0)(@shopify/shopify-api@7.5.0)(@shopify/shopify-app-session-storage@1.1.6)(prisma@4.13.0):
+  /@shopify/shopify-app-session-storage-prisma@1.0.0(@prisma/client@4.13.0)(@shopify/shopify-api@7.6.0)(@shopify/shopify-app-session-storage@1.1.8)(prisma@4.13.0):
     resolution: {integrity: sha512-X/In5Jy0UzpAR66R3/F4FWfVs6T0EVbWPgD6D1IKqIMdyuBSPzGNr8BA6hFMT2h14EotDWQLL+7yVI0GK5EyGw==}
     peerDependencies:
       '@prisma/client': ^4.13.0
@@ -2943,9 +3009,21 @@ packages:
       prisma: ^4.13.0
     dependencies:
       '@prisma/client': 4.13.0(prisma@4.13.0)
-      '@shopify/shopify-api': 7.5.0
-      '@shopify/shopify-app-session-storage': 1.1.6(@shopify/shopify-api@7.5.0)
+      '@shopify/shopify-api': 7.6.0
+      '@shopify/shopify-app-session-storage': 1.1.8(@shopify/shopify-api@7.6.0)
       prisma: 4.13.0
+      tslib: 2.6.1
+    dev: false
+
+  /@shopify/shopify-app-session-storage-redis@1.1.8(@shopify/shopify-api@7.6.0)(@shopify/shopify-app-session-storage@1.1.8):
+    resolution: {integrity: sha512-ZRUYAEvC4qZXDW9aO2/dIlMrQyPPoPSBO+Mw2xo1WygLcCCUlgf0uYL3pl8APK6icIlbbETWJ683sCy44LiBxA==}
+    peerDependencies:
+      '@shopify/shopify-api': ^7.5.2
+      '@shopify/shopify-app-session-storage': ^1.1.8
+    dependencies:
+      '@shopify/shopify-api': 7.6.0
+      '@shopify/shopify-app-session-storage': 1.1.8(@shopify/shopify-api@7.6.0)
+      redis: 4.6.8
       tslib: 2.6.1
     dev: false
 
@@ -2955,6 +3033,15 @@ packages:
       '@shopify/shopify-api': ^7.5.0
     dependencies:
       '@shopify/shopify-api': 7.5.0
+      tslib: 2.6.1
+    dev: false
+
+  /@shopify/shopify-app-session-storage@1.1.8(@shopify/shopify-api@7.6.0):
+    resolution: {integrity: sha512-qX/EqEjPCV71ZYgb+Y+PVdnFhDajrqJIsaVrPzKTexCPHhbAqFYPelbV4Vo1zWGr7HlYXvyTXobbK0A4WzEb2Q==}
+    peerDependencies:
+      '@shopify/shopify-api': ^7.5.2
+    dependencies:
+      '@shopify/shopify-api': 7.6.0
       tslib: 2.6.1
     dev: false
 
@@ -4154,6 +4241,11 @@ packages:
     resolution: {integrity: sha512-JQHZ2QMW6l3aH/j6xCqQThY/9OH4D/9ls34cgkUBiEeocRTU04tHfKPBsUK1PqZCUQM7GiA0IIXJSuXHI64Kbg==}
     engines: {node: '>=0.8'}
     dev: true
+
+  /cluster-key-slot@1.1.2:
+    resolution: {integrity: sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA==}
+    engines: {node: '>=0.10.0'}
+    dev: false
 
   /code-excerpt@4.0.0:
     resolution: {integrity: sha512-xxodCmBen3iy2i0WtAK8FlFNrRzjUqjRsMfho58xT/wvZU1YTM3fCnRjcy1gJPMepaRlgm/0e6w8SpWHpn3/cA==}
@@ -5851,6 +5943,11 @@ packages:
     dependencies:
       loader-utils: 3.2.1
     dev: true
+
+  /generic-pool@3.9.0:
+    resolution: {integrity: sha512-hymDOu5B53XvN4QT9dBmZxPX4CWhBPPLguTZ9MMFeFa/Kg0xWVfylOVNlJji/E7yTZWFd/q9GO5TxDLq156D7g==}
+    engines: {node: '>= 4'}
+    dev: false
 
   /gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
@@ -8700,6 +8797,17 @@ packages:
     resolution: {integrity: sha512-FNpGGo1DycYAdnrKFxCMmKYgo/mILAqtRYbkdQD8Ep/Hk2PQ5+aEAEx+IU713RTDmuBaH0c8P5ZozurNu5ObRQ==}
     dependencies:
       esprima: 4.0.1
+    dev: false
+
+  /redis@4.6.8:
+    resolution: {integrity: sha512-S7qNkPUYrsofQ0ztWlTHSaK0Qqfl1y+WMIxrzeAGNG+9iUZB4HGeBgkHxE6uJJ6iXrkvLd1RVJ2nvu6H1sAzfQ==}
+    dependencies:
+      '@redis/bloom': 1.2.0(@redis/client@1.5.9)
+      '@redis/client': 1.5.9
+      '@redis/graph': 1.1.0(@redis/client@1.5.9)
+      '@redis/json': 1.0.4(@redis/client@1.5.9)
+      '@redis/search': 1.1.3(@redis/client@1.5.9)
+      '@redis/time-series': 1.0.5(@redis/client@1.5.9)
     dev: false
 
   /regenerate-unicode-properties@10.1.0:

@@ -29,6 +29,7 @@
     "@shopify/polaris": "12.0.0-beta.0",
     "@shopify/shopify-app-remix": "^1.0.3",
     "@shopify/shopify-app-session-storage-prisma": "^1.0.0",
+    "@shopify/shopify-app-session-storage-redis": "^1.1.8",
     "cross-env": "^7.0.3",
     "isbot": "latest",
     "prisma": "^4.13.0",
