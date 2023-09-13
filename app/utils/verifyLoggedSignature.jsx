@@ -2,7 +2,7 @@ import crypto from "crypto";
 import {parse} from "url";
 
 
-const SHARED_SECRET = '173475c3e712bc220cb191c8075626ab';
+const SHARED_SECRET = process.env.SHOPIFY_API_SECRET;
 
 function verifySignature(url) {
     const parsedUrl = parse(url, true);
@@ -15,6 +15,7 @@ function verifySignature(url) {
         .join('');
 
     const calculatedSignature = crypto
+        // @ts-ignore
         .createHmac('sha256', SHARED_SECRET)
         .update(sortedParams)
         .digest('hex');

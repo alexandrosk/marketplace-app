@@ -15,45 +15,15 @@ import OnboardingModal from "../components/OnboardingModal";
 import {useActionData, useLoaderData, useNavigation, useSubmit} from "@remix-run/react";
 import {authenticate, login} from "~/shopify.server";
 import {json} from "@remix-run/node";
-import {useMetafields} from "~/context/AppMetafields";
+import {useSettings} from "~/context/AppSettings";
 export async function action({ request }) {
   const { admin, session,  sessionToken } = await authenticate.admin(request);
 
   const formData = await request.formData();
   const state = JSON.parse(formData.get("state"));
 
-  const response = await admin.graphql(
-    `#graphql
-    mutation CreateAppDataMetafield($metafieldsSetInput: [MetafieldsSetInput!]!) {
-      metafieldsSet(metafields: $metafieldsSetInput) {
-        metafields {
-          id
-          namespace
-          key
-          value
-        }
-        userErrors {
-          field
-          message
-        }
-      }
-    }`,
-    {
-      variables: {
-        metafieldsSetInput: [
-          {
-            namespace: "settings",
-            key: "settings",
-            value: JSON.stringify({"onboarding":false, "onboardingStep":3}),
-            type: "json",
-            ownerId: state?.appId,
-          },
-        ]
-      }
-    }
-  );
-  const responseJson = await response.json();
-  return json(responseJson.data);
+  /*const responseJson = await response.json();
+  return json(responseJson.data);*/
 }
 
 export const loader = async ({ request }) => {
@@ -98,7 +68,7 @@ export default function AppOnboarding() {
     }));
   };*/
   const nav = useNavigation();
-  const {state, dispatch} = useMetafields();
+  const {state, dispatch} = useSettings();
   const isLoading =
     ["loading", "submitting"].includes(nav.state) && nav.formMethod === "POST";
   const actionData = useActionData();
@@ -112,17 +82,7 @@ export default function AppOnboarding() {
     console.log(actionData);
     if (!actionData) return;
 
-    for (const metafield of actionData?.metafieldsSet?.metafields) {
-      const parsedValue = JSON.parse(metafield.value);
-
-      // Update the metafield using its key
-      dispatch({
-        type: 'UPDATE_METAFIELD_VALUE',
-        key: metafield.key,
-        value: parsedValue,
-      });
-    }
-  }, [actionData]);
+  }, [actionData, state]);
 
   return (
     <Page>

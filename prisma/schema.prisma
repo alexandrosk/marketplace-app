@@ -6,8 +6,10 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.sqlite"
+  // provider = "sqlite"
+  // url      = "file:./dev.sqlite"
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model Session {
@@ -19,4 +21,20 @@ model Session {
   expires     DateTime?
   accessToken String
   userId      BigInt?
+}
+
+// multivendor app settings for merchant
+model Settings {
+  id                      Int      @id @default(autoincrement())
+  shop                    String   @unique
+  default_commision       Float?
+  auto_approve            Boolean?
+  // seperate_seller registration and dashboard page
+  seller_shipping_methods Boolean?
+  auto_publish_products   Boolean?
+  allowed_categories      Json?
+  allowed_countries       Json?
+  minimum_order_amount    Float?
+  quantity_limit          Int?
+  onboarding_step         Int?
 }

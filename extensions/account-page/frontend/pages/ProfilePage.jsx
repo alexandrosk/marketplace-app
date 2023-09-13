@@ -6,9 +6,10 @@ import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, Form
 import {useFieldArray, useForm} from "react-hook-form"
 import {zodResolver} from "@hookform/resolvers/zod"
 import * as z from "zod"
+import {saveProfile} from "../utils/api";
 
 const profileFormSchema = z.object({
-    title: z
+    username: z
         .string()
         .min(2, {
             message: "Username must be at least 2 characters.",
@@ -25,8 +26,8 @@ const defaultValues = {
         {value: "http://twitter.com/shadcn"},
     ],
 }
-const CreateListing = () => {
-
+const ProfilePage = ({isVendor}) => {
+    console.log(isVendor);
     const form = useForm({
         resolver: zodResolver(profileFormSchema),
         defaultValues,
@@ -39,6 +40,7 @@ const CreateListing = () => {
     })
 
     function onSubmit(data) {
+        saveProfile(data);
         toast({
             title: "You submitted the following values:",
             description: (
@@ -54,22 +56,47 @@ const CreateListing = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <FormField
                     control={form.control}
-                    name="title"
+                    name="username"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Title</FormLabel>
+                            <FormLabel>Username</FormLabel>
                             <FormControl>
                                 <Input placeholder="shadcn" {...field} />
                             </FormControl>
+                            <FormDescription>
+                                This is your public display name. It can be your real name or a
+                                pseudonym. You can only change this once every 30 days.
+                            </FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-
-                <Button type="submit">Create Listing</Button>
+                <FormField
+                    control={form.control}
+                    name="bio"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Bio</FormLabel>
+                            <FormControl>
+                                <Textarea
+                                    placeholder="Tell us a little bit about yourself"
+                                    className="resize-none"
+                                    {...field}
+                                />
+                            </FormControl>
+                            <FormDescription>
+                                You can <span>@mention</span> other users and organizations to
+                                link to them.
+                                hey
+                            </FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <Button type="submit">Update profile</Button>
             </form>
         </Form>
     );
 };
 
-export default CreateListing;
+export default ProfilePage;

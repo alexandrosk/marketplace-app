@@ -6,6 +6,8 @@ import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, Form
 import {useFieldArray, useForm} from "react-hook-form"
 import {zodResolver} from "@hookform/resolvers/zod"
 import * as z from "zod"
+import {saveProfile} from "../utils/api";
+
 
 const profileFormSchema = z.object({
     username: z
@@ -25,8 +27,9 @@ const defaultValues = {
         {value: "http://twitter.com/shadcn"},
     ],
 }
-const ProfilePage = () => {
+const CreateProfilePage = ({isVendor}) => {
 
+    console.log(isVendor);
     const form = useForm({
         resolver: zodResolver(profileFormSchema),
         defaultValues,
@@ -39,6 +42,7 @@ const ProfilePage = () => {
     })
 
     function onSubmit(data) {
+        saveProfile(data);
         toast({
             title: "You submitted the following values:",
             description: (
@@ -50,6 +54,16 @@ const ProfilePage = () => {
     }
 
     return (
+        <div className="overflow-hidden rounded-[0.5rem] border bg-background shadow mt-4">
+            <div className=" space-y-6 p-10 pb-16 md:block">
+                <div className="space-y-0.5">
+                    <h2 className="text-2xl font-bold tracking-tight">Create Seller Profile</h2>
+                    <p className="text-muted-foreground">
+
+                        Setup your info and start selling, your account will require approval from admin.
+                    </p>
+                </div>
+
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <FormField
@@ -85,6 +99,7 @@ const ProfilePage = () => {
                             <FormDescription>
                                 You can <span>@mention</span> other users and organizations to
                                 link to them.
+                                hey
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
@@ -93,7 +108,9 @@ const ProfilePage = () => {
                 <Button type="submit">Update profile</Button>
             </form>
         </Form>
+            </div>
+        </div>
     );
 };
 
-export default ProfilePage;
+export default CreateProfilePage;

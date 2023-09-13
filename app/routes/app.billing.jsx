@@ -7,7 +7,7 @@ import {
   useActionData, useLoaderData
 } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
-import {useMetafields} from "~/context/AppMetafields";
+import {useSettings} from "~/context/AppSettings";
 
 export async function action({ request }) {
   const { admin } = await authenticate.admin(request);
@@ -69,7 +69,7 @@ export async function action({ request }) {
 
 export default function BillingPage() {
   const submit = useSubmit();
-  const { state, dispatch } = useMetafields();
+  const { state, dispatch } = useSettings();
 
   const createSubscription = (plan) => submit({
     name: plan,

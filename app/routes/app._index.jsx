@@ -96,14 +96,83 @@ export default function Index() {
   const generateProduct = () => submit({}, { replace: true, method: "POST" });
 
   return (
-    <Page>
-      <ui-title-bar title="Remix app template">
-        <button variant="primary" onClick={generateProduct}>
-          Generate a product
-        </button>
-      </ui-title-bar>
+    <Page
+        divider
+        title={"Marketplace App"}
+        primaryAction={{ content: "Setup", disabled: true }}
+        secondaryActions={[
+          {
+            content: "Duplicate",
+            accessibilityLabel: "Secondary action label",
+            onAction: () => alert("Duplicate action"),
+          },
+        ]}>
       <VerticalStack gap="5">
         <Layout>
+          <Layout.Section>
+            <Card>
+              <VerticalStack gap="5">
+                <VerticalStack gap="2">
+                  <Text as="h1" variant="headingLg">
+                    Welcome to Marketplace App 🎉
+                  </Text>
+                  <Text variant="bodyMd" as="p">
+                    This embedded app template uses{" "}
+                    <Link
+                      url="https://shopify.dev/docs/apps/tools/app-bridge"
+                      target="_blank"
+                    >
+                      App Bridge
+                    </Link>{" "}
+                    interface examples like an{" "}
+                    <Link url="/app/additional">
+                      additional page in the app nav
+                    </Link>
+                    , as well as an{" "}
+                    <Link
+                      url="https://shopify.dev/docs/api/admin-graphql"
+                      target="_blank"
+                    >
+                      Admin GraphQL
+                    </Link>{" "}
+                    mutation demo, to provide a starting point for app
+                    development.
+                  </Text>
+                </VerticalStack>
+                <VerticalStack gap="2">
+                  <Text as="h3" variant="headingMd">
+                    Get started with products
+                  </Text>
+                  <Text as="p" variant="bodyMd">
+                    Generate a product with GraphQL and get the JSON output for
+                    that product. Learn more about the{" "}
+                    <Link
+                      url="https://shopify.dev/docs/api/admin-graphql/latest/mutations/productCreate"
+                      target="_blank"
+                    >
+                      productCreate
+                    </Link>{" "}
+                    mutation in our API references.
+                  </Text>
+                </VerticalStack>
+
+                {actionData?.product && (
+                  <Box
+                    padding="4"
+                    background="bg-subdued"
+                    borderColor="border"
+                    borderWidth="1"
+                    borderRadius="2"
+                    overflowX="scroll"
+                  >
+                    <pre style={{ margin: 0 }}>
+                      <code>{JSON.stringify(actionData.product, null, 2)}</code>
+                    </pre>
+                  </Box>
+                )}
+              </VerticalStack>
+            </Card>
+          </Layout.Section>
           <Layout.Section>
             <Card>
               <VerticalStack gap="5">

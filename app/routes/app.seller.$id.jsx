@@ -36,7 +36,7 @@ export default function SellerPage() {
   return (
     <Page
       backAction={{ content: "Products", url: "/products" }}
-      title="Product"
+      title="Seller Page"
       secondaryActions={[
         {
           content: "Duplicate",

@@ -6,9 +6,7 @@ import path from "path"
 
 export default defineConfig({
   plugins: [
-    shopify({
-      themeRoot: '../../extensions/account-page'
-    }),
+    shopify(),
     preact(),
   ],
   resolve: {

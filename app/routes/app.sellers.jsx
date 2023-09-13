@@ -10,7 +10,7 @@ import {
 } from "@shopify/polaris";
 import {ChevronDownMinor, ChevronUpMinor, CircleDotsMajor} from "@shopify/polaris-icons";
 import React, {useEffect, useState} from "react";
-import {useMetafields} from "~/context/AppMetafields";
+import {useSettings} from "~/context/AppSettings";
 import {authenticate} from "~/shopify.server";
 import {json} from "@remix-run/node";
 import {useActionData, useNavigation, useSubmit} from "@remix-run/react";
@@ -111,8 +111,8 @@ export async function action({ request }) {
 
   return json(responseJson.data);
 }
-export default function AdditionalPage() {
-  const { state, dispatch } = useMetafields();
+export default function SellersPage() {
+  const { state, dispatch } = useSettings();
 
   const [collapsibleStates, setCollapsibleStates] = useState({
     1: true,
@@ -143,19 +143,29 @@ export default function AdditionalPage() {
   }, [actionData]);
 
   return (
-    <Page>
-      <ui-title-bar title="Additional page" />
+    <Page
+        divider
+        title={"Sellers"}
+        primaryAction={{ content: "View on your store", disabled: true }}
+        secondaryActions={[
+          {
+            content: "Duplicate",
+            accessibilityLabel: "Secondary action label",
+            onAction: () => alert("Duplicate action"),
+          },
+        ]}
+    >
       <Layout>
         <Layout.Section>
           <Card>
             <VerticalStack gap="3">
               {JSON.stringify(state)}
-              {state?.metafields?.length ? (
+              {state?.settings?.length ? (
                 <List>
 
                 </List>
               ) : (
-                <Text as={"h3"}>No metafields found</Text>
+                <Text as={"h3"}>No settings found</Text>
               )}
 
               <EmptyState

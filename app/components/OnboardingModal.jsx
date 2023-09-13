@@ -1,19 +1,23 @@
 import { Modal, Card, Button, VerticalStack } from '@shopify/polaris';
 import {useEffect, useState} from 'react';
-import {useMetafields} from "~/context/AppMetafields";
+import db from "../db.server";
+import {updateSetting} from "~/models/settings.server";
+import {useSettings} from "~/context/AppSettings";
+import { settingsHook } from '../hooks/useSettings';
 
 const OnboardingModal = () => {
   const [active, setActive] = useState(false);
   const [step, setStep] = useState(1);
-  const { state, dispatch } = useMetafields();
+  const { state, dispatch } = useSettings();
+  const { updateSetting } = settingsHook();
 
-  useEffect(
+
+    useEffect(
     () => {
-      console.log(state.metafields?.settings);
-      if (!state.metafields?.settings?.onboarding) {
+      if (!state.settings?.onboarding_step) {
         setActive(true);
       }
-    }, [state.metafields])
+    }, [state.setting?.onboarding_step])
 
   const handleChange = () => setActive(!active);
 
@@ -21,10 +25,13 @@ const OnboardingModal = () => {
 
   const handlePreviousStep = () => setStep(step - 1);
 
-  const handleFinish = () => {
-    setStep(1);
-    handleChange();
-    dispatch({type: 'SET_METAFIELDS', resourceId: 'onboarding', metafields: true});
+  const handleFinish = async () => {
+      setStep(1);
+      handleChange();
+
+      updateSetting('onboarding_step', 3);
+      dispatch({type: 'SET_SETTING', resourceId: 'onboarding_step', value: 3});
+
   }
 
   return (

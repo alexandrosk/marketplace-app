@@ -3,62 +3,32 @@ import { json } from "@remix-run/node";
 import { Link, Outlet, useLoaderData, useRouteError } from "@remix-run/react";
 import { AppProvider as PolarisAppProvider } from "@shopify/polaris";
 import polarisStyles from "@shopify/polaris/build/esm/styles.css";
-import { boundary } from "@shopify/shopify-app-remix";
-import {MetafieldProvider} from "~/context/AppMetafields";
+import { boundary } from "@shopify/shopify-app-remix/server";
+import {SettingProvider} from "~/context/AppSettings";
 import { authenticate } from "../shopify.server";
+import db from "~/db.server";
 
 export const links = () => [{ rel: "stylesheet", href: polarisStyles }];
 
 export async function loader({ request }) {
   const {admin, session} = await authenticate.admin(request);
-  const response = await admin.graphql(
-    `#graphql
-      query {
-        currentAppInstallation {
-          id
-          activeSubscriptions {
-            id
-            name
-            status
-            test
-          }
-          metafields(first: 10) {
-            edges {
-              node {
-                id
-                namespace
-                key
-                value
-              }
-            }
-          }
-        }
-      }
-   `);
+  const settings = await db.settings.findFirst({ where: { shop: session.shop } });
 
-  const responseJson = await response.json();
-  console.log(JSON.stringify(responseJson.data.currentAppInstallation.metafields));
-  //parse metafields to be easily access to state in the app
-  const metafieldsArray = responseJson.data.currentAppInstallation.metafields.edges.map(({ node }) => {
-    const parsedValue = JSON.parse(node.value);
-    return {
-      ...node,
-      value: parsedValue,
-      [node.key]: parsedValue,
-    };
-  });
-  const metafieldsObject = metafieldsArray.reduce((acc, metafield) => {
-    acc[metafield.key] = metafield.value;
-    return acc;
-  }, {});
+  if (!settings) {
+      await db.settings.create({
+        data: {
+            shop: session.shop,
+            onboarding_step: 0,
+        }
+      });
+  }
 
   return json({
     polarisTranslations: require("@shopify/polaris/locales/en.json"),
     apiKey: process.env.SHOPIFY_API_KEY,
-    initialAppInstallationId: responseJson.data.currentAppInstallation.id,
-    currentSubscription: responseJson.data.currentAppInstallation.activeSubscriptions[0],
+    currentSubscription: 'free',
     session: session,
-    metafields: metafieldsObject,
+    settings: settings??{},
   });
 }
 
@@ -75,7 +45,7 @@ export default function App() {
         <Link to="/app" rel="home">
           Home
         </Link>
-        <Link to="/app/additional">Additional page</Link>
+        <Link to="/app/sellers">Sellers</Link>
         <Link to="/app/billing">Billing</Link>
         <Link to="/app/settings">Settings</Link>
         <Link to="/app/onboarding">Onboarding</Link>
@@ -86,9 +56,9 @@ export default function App() {
         i18n={polarisTranslations}
         linkComponent={RemixPolarisLink}
       >
-        <MetafieldProvider {...data}>
+        <SettingProvider {...data}>
           <Outlet />
-        </MetafieldProvider>
+        </SettingProvider>
       </PolarisAppProvider>
     </>
   );
