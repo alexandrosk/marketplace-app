@@ -6,7 +6,7 @@ import {useSettings} from "~/context/AppSettings";
 import { settingsHook } from '../hooks/useSettings';
 
 const OnboardingModal = () => {
-  const [active, setActive] = useState(false);
+  const [active, setActive] = useState(true);
   const [step, setStep] = useState(1);
   const { state, dispatch } = useSettings();
   const { updateSetting } = settingsHook();

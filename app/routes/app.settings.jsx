@@ -1,8 +1,22 @@
-import { Page, Card, TextField, Text, Divider, Box, HorizontalGrid, VerticalStack, useBreakpoints } from "@shopify/polaris";
+import {
+  Page,
+  Card,
+  TextField,
+  Text,
+  Divider,
+  Box,
+  HorizontalGrid,
+  VerticalStack,
+  useBreakpoints,
+  Layout,
+  Button, List, Select
+} from "@shopify/polaris";
 
 import { updateSetting } from '../models/settings.server';
 import {json} from "@remix-run/node";
 import {authenticate} from "~/shopify.server";
+import React from "react";
+import {useSettings} from "~/context/AppSettings";
 
 export let action = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -26,7 +40,7 @@ export let action = async ({ request }) => {
   }
 };
 export default function SettingsPage() {
-
+  const { state, dispatch } = useSettings();
   const { smUp } = useBreakpoints();
   return (
     <Page
@@ -41,20 +55,50 @@ export default function SettingsPage() {
         },
       ]}
     >
+
       <VerticalStack gap={{ xs: "8", sm: "4" }}>
+        {JSON.stringify(state.settings)}
         <HorizontalGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="4">
           <Box
             as="section"
           >
             <VerticalStack gap="4">
               <Text as="h3" variant="headingMd">
-                InterJambs
+                Product Assignment
               </Text>
               <Text as="p" variant="bodyMd">
-                Interjambs are the rounded protruding bits of your puzzlie piece
+                Categorisation, auto categorisation and auto tagging
               </Text>
             </VerticalStack>
           </Box>
+
+          <Card roundedAbove="sm">
+            <VerticalStack gap="4">
+            <Select label={"Onboarding Step"} value={state.settings.onboarding_step} onChange={(value) => dispatch({type: 'update', payload: {resourceId: 'onboarding_step', value: value}})}
+            options={[
+              {label: 'Step 0', value: 0},
+              {label: 'Step 1', value: 1},
+            ]}
+            >
+            </Select>
+            </VerticalStack>
+          </Card>
+        </HorizontalGrid>
+
+        <HorizontalGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="4">
+          <Box
+            as="section"
+          >
+            <VerticalStack gap="4">
+              <Text as="h3" variant="headingMd">
+                Payments / Commissions
+              </Text>
+              <Text as="p" variant="bodyMd">
+                How to pay your vendors
+              </Text>
+            </VerticalStack>
+          </Box>
+
           <Card roundedAbove="sm">
             <VerticalStack gap="4">
               <TextField autoComplete="" label="Interjamb style" />
@@ -69,17 +113,17 @@ export default function SettingsPage() {
           >
             <VerticalStack gap="4">
               <Text as="h3" variant="headingMd">
-                Dimensions
+                Product Settings
               </Text>
               <Text as="p" variant="bodyMd">
-                Interjambs are the rounded protruding bits of your puzzlie piece
+                Setup your product settings, available categories, delivery methods etc
               </Text>
             </VerticalStack>
           </Box>
           <Card roundedAbove="sm">
             <VerticalStack gap="4">
-              <TextField autoComplete="" label="Horizontal" />
-              <TextField autoComplete="" label="Interjamb ratio" />
+              <TextField autoComplete="" label="Allowed Categories" />
+              <TextField autoComplete="" label="Allowed Tags" />
             </VerticalStack>
           </Card>
         </HorizontalGrid>

@@ -19,7 +19,7 @@ export const fetchProductsFromProxy = async () => {
 export const getProfile = async (customerId) => {
     try {
         console.log(customerId);
-        const response = await fetch('/apps/frontend/user/profile',
+        const response = await fetch('/apps/frontend/user/profile?customerId='+customerId,
             {
                 method: 'GET',
                 headers: {
@@ -29,8 +29,8 @@ export const getProfile = async (customerId) => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
+        return await response.json();
         //const savedProfile = await response.json();
-        return true;
     } catch (error) {
         console.error('Error fetching profile:', error);
         return null; // Return null in case of error

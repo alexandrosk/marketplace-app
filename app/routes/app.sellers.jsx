@@ -1,11 +1,10 @@
 import {
   Box, Button,
-  Card, Collapsible, EmptyState, HorizontalGrid, HorizontalStack, Icon,
+  Card, Collapsible, EmptyState, HorizontalGrid, HorizontalStack, Icon, IndexTable,
   Layout,
-  Link,
   List,
   Page, ProgressBar,
-  Text,
+  Text, Thumbnail,
   VerticalStack,
 } from "@shopify/polaris";
 import {ChevronDownMinor, ChevronUpMinor, CircleDotsMajor} from "@shopify/polaris-icons";
@@ -13,212 +12,196 @@ import React, {useEffect, useState} from "react";
 import {useSettings} from "~/context/AppSettings";
 import {authenticate} from "~/shopify.server";
 import {json} from "@remix-run/node";
-import {useActionData, useNavigation, useSubmit} from "@remix-run/react";
-
+import {Link, useActionData, useLoaderData, useNavigate, useNavigation, useSubmit} from "@remix-run/react";
+import { DiamondAlertMajor, ImageMajor } from "@shopify/polaris-icons";
 export async function action({ request }) {
   const { admin, session,  sessionToken } = await authenticate.admin(request);
 
   const formData = await request.formData();
   const state = JSON.parse(formData.get("state"));
+  //const responseJson = await response.json();
 
-  const response = await admin.graphql(
-    `#graphql
-    mutation CreateMetaobjectDefinition($definition: MetaobjectDefinitionCreateInput!) {
-      metaobjectDefinitionCreate(definition: $definition) {
-        metaobjectDefinition {
-          access {
-            storefront
-          }
+  //return json(responseJson.data);
+}
+
+
+export async function loader({ request }) {
+  const { admin, session } = await authenticate.admin(request);
+
+    const QUERY = `
+    {
+      metaobjects(type: "vendors", first: 1) {
+        nodes {
+          handle
+          type
+          id
+          updatedAt
           capabilities {
             publishable {
-              enabled
+              status
             }
           }
-          name
-          type
-          fieldDefinitions {
-            name
-            key
+          description: field(key: "description") {
+            value
           }
-        }
-        userErrors {
-          field
-          message
-          code
-        }
-      }
-    }`,
-    {
-      variables: {
-        "definition": {
-          "access": {
-            /*"admin": "MERCHANT_READ_WRITE",*/
-            "storefront": "PUBLIC_READ"
-          },
-          "capabilities": {
-            "publishable": {
-              "enabled": true
-            }
-          },
-          "name": "Shop",
-          "type": "shop",
-          "fieldDefinitions": [
-            {
-              "name": "Title",
-              "key": "title",
-              "type": "single_line_text_field",
-              "validations": [
-                {
-                  "name": "regex",
-                  "value": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
-                }
-              ]
-            },
-            {
-              "name": "Description",
-              "key": "description",
-              "type": "multi_line_text_field"
-            },
-            {"name": "slug", "key": "slug", type: "single_line_text_field"},
-            {"name": "enabled", "key": "enabled", type: "boolean"},
-            {"name": "product", "key": "product", type: "product_reference"},
-            {"name": "rating", "key": "rating", type: "rating", validations: [
-                {
-                  "name": "scale_min",
-                  "value": "0"
-                },
-                {
-                  "name": "scale_max",
-                  "value": "5"
-                },
-              ]
-            },
-            {"name": "rating_total", "key": "rating_total", type: "number_integer"},
-            {"name": "social", "key": "social", type: "json"},
-            {"name": "image", "key": "image", type: "file_reference"},
-            {"name": "color", "key": "background", type: "color"},
-            /*{"name": "sold_items", "key": "sold_items"},
-            {"name": "shipping_methods", "key": "shipping_methods", type: "collection_reference"},*/
-            {"name": "country", "key": "country", type: "single_line_text_field"},
-            {"name": "paypal_email", "key": "paypal_email","type": "single_line_text_field"},
-            {"name": "product_list", "key": "product_list", type: "collection_reference"},
-          ]
+          created_at: field(key: "created_at") {
+            value
+          }
+          line_items: field(key: "line_items") {
+            value
+          }
+          status: field(key: "status") {
+            value
+          }
+          show_name: field(key: "show_name") {
+            value
+          }
         }
       }
     }
-  );
+  `;
+
+  const variables = {
+    first: 1,  // You can customize this or make it dynamic
+    after: "" // This can be made dynamic based on pagination or cursor
+  };
+
+  const response = await admin.graphql(QUERY);
   const responseJson = await response.json();
 
-  return json(responseJson.data);
-}
-export default function SellersPage() {
-  const { state, dispatch } = useSettings();
+  //create new object with only the fields we need
+    const vendors = responseJson.data?.metaobjects?.nodes.map((vendor) => {
+        return {
+            id: vendor.id,
+            handle: vendor.handle,
+            description: vendor.description?.value,
+            updatedAt: vendor.updatedAt,
+            line_items: vendor.line_items?.value,
+            status: vendor.capabilities?.publishable?.status,
+            show_name: vendor.show_name?.value,
+        };
+    })
 
-  const [collapsibleStates, setCollapsibleStates] = useState({
-    1: true,
-    2: false,
-    3: false,
-  });
-
-  const handleCollapsibleToggle = (id) => {
-    setCollapsibleStates((prevStates) => ({
-      ...prevStates,
-      [id]: !prevStates[id],
-    }));
+  return {
+    sellers: vendors || [],
   };
-  const nav = useNavigation();
-  const isLoading =
-    ["loading", "submitting"].includes(nav.state) && nav.formMethod === "POST";
-  const actionData = useActionData();
-  const submit = useSubmit();
-  const generateMetaobject = () => submit({
-    state: JSON.stringify(state),
-  }, { replace: true, method: "POST" });
+}
 
-  useEffect(() => {
-    console.log(actionData);
-    if (actionData && actionData.success) {
-      alert("Metaobject created");
+
+const EmptysellerState = ({ onAction }) => (
+  <EmptyState
+    heading="Create unique QR codes for your product"
+    action={{
+      content: "Create QR code",
+      onAction,
+    }}
+    image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
+  >
+    <p>Allow customers to scan codes and buy products using their phones.</p>
+  </EmptyState>
+);
+
+function truncate(str, { length = 25 } = {}) {
+  if (!str) return "";
+  if (str.length <= length) return str;
+  return str.slice(0, length) + "…";
+}
+
+const SellerTable = ({ sellers }) => (
+  <IndexTable
+    resourceName={{
+      singular: "Seller",
+      plural: "Sellers",
+    }}
+    itemCount={sellers.length}
+    headings={[
+      { title: "Thumbnail", hidden: true },
+      { title: "Title" },
+      { title: "Product" },
+      { title: "Last update" },
+      { title: "Status" },
+    ]}
+    selectable={false}
+  >
+    {sellers.map((seller) => (
+      <SellerTableRow key={seller.id} seller={seller} />
+    ))}
+  </IndexTable>
+);
+
+const SellerTableRow = ({ seller }) => {
+    const regex = /(\d+)$/;
+    let sellerIdOnly = seller?.id?.match(regex);
+
+    if (sellerIdOnly) {
+        sellerIdOnly = sellerIdOnly[1];
     }
-  }, [actionData]);
+    return (
+        <IndexTable.Row id={sellerIdOnly} position={sellerIdOnly}>
+            <IndexTable.Cell>
+                {/*<Thumbnail*/}
+                {/*  source={seller.productImage || ImageMajor}*/}
+                {/*  alt={seller.productTitle}*/}
+                {/*  size="small"*/}
+                {/*/>*/}
+            </IndexTable.Cell>
+            <IndexTable.Cell>
+                <Link to={`/app/seller/${sellerIdOnly}`}>{truncate(seller.handle)}</Link>
+            </IndexTable.Cell>
+            <IndexTable.Cell>
+                {seller.productDeleted ? (
+                    <HorizontalStack align="start" gap="2">
+          <span style={{ width: "20px" }}>
+            <Icon source={DiamondAlertMajor} color="critical" />
+          </span>
+                        <Text color="critical" as="span">
+                            product has been deleted
+                        </Text>
+                    </HorizontalStack>
+                ) : (
+                    truncate(seller.productTitle)
+                )}
+            </IndexTable.Cell>
+            <IndexTable.Cell>
+                {new Date(seller.updatedAt).toDateString()}
+            </IndexTable.Cell>
+            <IndexTable.Cell>{seller.status}</IndexTable.Cell>
+        </IndexTable.Row>
+    )
+}
+
+export default function Index() {
+  const { sellers } = useLoaderData();
+
+  const navigate = useNavigate();
 
   return (
-    <Page
-        divider
-        title={"Sellers"}
-        primaryAction={{ content: "View on your store", disabled: true }}
-        secondaryActions={[
-          {
-            content: "Duplicate",
-            accessibilityLabel: "Secondary action label",
-            onAction: () => alert("Duplicate action"),
-          },
-        ]}
-    >
+      <Page
+          divider
+          title="Sellers"
+          primaryAction={{ content: "Create new seller" }}
+          secondaryActions={[
+              {
+                  content: "Approve Seller",
+                  disabled: true,
+                  accessibilityLabel: "Secondary action label",
+                  onAction: () => alert("Duplicate action"),
+              },
+          ]}
+      >
       <Layout>
         <Layout.Section>
-          <Card>
-            <VerticalStack gap="3">
-              {JSON.stringify(state)}
-              {state?.settings?.length ? (
-                <List>
+          <Card padding="0">
+              {JSON.stringify(sellers)}
+            {sellers.length === 0 ? (
+              <EmptysellerState onAction={() => navigate("sellers/new")} />
+            ) : (
 
-                </List>
-              ) : (
-                <Text as={"h3"}>No settings found</Text>
-              )}
-
-              <EmptyState
-                heading="Create your first seller"
-                action={{
-                  content: "Create seller metaobject",
-                  onAction: () => generateMetaobject(),
-                }}
-                image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
-              >
-                <p>Allow customers to scan codes and buy products using their phones.</p>
-              </EmptyState>
-            </VerticalStack>
+               <SellerTable sellers={sellers} />
+            )}
           </Card>
         </Layout.Section>
-        <Layout.Section secondary>
-          <Card>
-            <VerticalStack gap="2">
-              <Text as="h2" variant="headingMd">
-                Resources
-              </Text>
-              <List spacing="extraTight">
-                <List.Item>
-                  <Link
-                    url="https://shopify.dev/docs/apps/design-guidelines/navigation#app-nav"
-                    target="_blank"
-                  >
-                    App nav best practices
-                  </Link>
-                </List.Item>
-              </List>
-            </VerticalStack>
-          </Card>
-        </Layout.Section>
-
       </Layout>
     </Page>
-  );
-}
-
-function Code({ children }) {
-  return (
-    <Box
-      as="span"
-      padding="025"
-      paddingInlineStart="1"
-      paddingInlineEnd="1"
-      background="bg-subdued"
-      borderWidth="1"
-      borderColor="border"
-      borderRadius="1"
-    >
-      <code>{children}</code>
-    </Box>
   );
 }

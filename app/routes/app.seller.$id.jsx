@@ -14,14 +14,36 @@ import {ArchiveMinor, DeleteMinor, DuplicateMinor} from "@shopify/polaris-icons"
 import { useRouteLoaderData } from "@remix-run/react";
 import {json} from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
+import {authenticate} from "~/shopify.server";
 
-export let loader = ({ params }) => {
+export async function loader({ params, request })  {
   const sellerId = params.id;
-  return json({ sellerId });
+  const { admin, session } = await authenticate.admin(request);
+
+  const QUERY = `
+    {
+       metaobject(id: "gid://shopify/Metaobject/${sellerId}") {
+        id
+        handle
+      }
+    }
+  `;
+
+  const variables = {
+    first: 1,  // You can customize this or make it dynamic
+    after: "" // This can be made dynamic based on pagination or cursor
+  };
+
+  const response = await admin.graphql(QUERY);
+  const responseJson = await response.json();
+  return {
+    seller: responseJson.data?.metaobject || {},
+  };
+
 };
 export default function SellerPage() {
-  const data = useLoaderData();
-  console.log(data);
+  const {seller} = useLoaderData();
+  console.log(seller);
   const SkeletonLabel = (props) => {
     return (
       <Box
@@ -35,8 +57,8 @@ export default function SellerPage() {
   };
   return (
     <Page
-      backAction={{ content: "Products", url: "/products" }}
-      title="Seller Page"
+      backAction={{ content: "Sellers", url: "/app/sellers" }}
+      title={seller.handle}
       secondaryActions={[
         {
           content: "Duplicate",

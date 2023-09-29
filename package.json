@@ -27,6 +27,7 @@
     "@shopify/app-bridge-types": "^0.0.3",
     "@shopify/cli": "^3.48",
     "@shopify/polaris": "^12.0.0-beta.0",
+    "@shopify/polaris-viz": "^9.11.0",
     "@shopify/shopify-app-remix": "^1.1.0",
     "@shopify/shopify-app-session-storage-prisma": "^1.0.0",
     "@shopify/shopify-app-session-storage-redis": "^1.1.8",
@@ -34,7 +35,8 @@
     "isbot": "latest",
     "prisma": "^4.13.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "remix-utils": "^6.6.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.5.0",

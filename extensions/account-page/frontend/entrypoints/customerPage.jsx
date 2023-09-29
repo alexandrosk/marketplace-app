@@ -34,16 +34,22 @@ const CustomerPage = ({ customerid = ''}) => {
   const customerId = customerid;
   const [products, setProducts] = useState([]);
   const [isVendor, setIsVendor] = useState(false);
+  const [underReview, setUnderReview] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
-        if (customerId) {
-            setIsVendor(true);
-            getProfile(customerId).then(response => console.log(response));
-            fetchProductsFromProxy()
-                .then(response => setProducts(response.products))
-                .catch(error => console.error('Error fetching products:', error));
-        } else {
-        }
+        getProfile(customerId).then( function (response) {
+            console.log(response);
+            if (response && response.metaobject?.capabilities?.publishable?.status === 'ACTIVE') {
+                setIsVendor(true);
+                fetchProductsFromProxy()
+                    .then(response => setProducts(response.products))
+                    .catch(error => console.error('Error fetching products:', error));
+            } else if (response && response.metaobject?.capabilities?.publishable?.status === 'DRAFT') {
+                setUnderReview(true);
+            }
+            setIsLoaded(true);
+        });
     }, [customerId]);
 
   const menuItems = [
@@ -56,41 +62,45 @@ const CustomerPage = ({ customerid = ''}) => {
 
   return (
       <div>
-          {!isVendor && (
-              <div>
+          {underReview && isLoaded && (
+              <div className="under-review">
+                  <h2 className={"h2"}>Your account is under review</h2>
+                  <p>Once your account is approved you will be able to start selling.</p>
+              </div>
+          ) || !isVendor && isLoaded && (
+              <div className="request-vendor">
                   <Link href="/seller-form" class="">Want to start selling? Click here!</Link>
                   <Router history={createHashHistory()}>
                       <CreateProfilePage path="/seller-form" count={count} customerId={customerId} />
                   </Router>
               </div>
-          )}
-          {isVendor && (
-              <div className="overflow-hidden rounded-[0.5rem] border bg-background shadow">
-                  <div className=" space-y-6 p-10 pb-16 md:block">
-                      <div className="space-y-0.5">
-                          <h2 className="text-2xl font-bold tracking-tight">Profile</h2>
-                          <p className="text-muted-foreground">
-                              Manage your seller account and listings
-                          </p>
-                      </div>
+          ) || isVendor && (
+                  <div className="vendor-page overflow-hidden rounded-[0.5rem] border bg-background shadow">
+                      <div className=" space-y-6 p-10 pb-16 md:block">
+                          <div className="space-y-0.5">
+                              <h2 className="text-2xl font-bold tracking-tight">Profile</h2>
+                              <p className="text-muted-foreground">
+                                  Manage your seller account and listings
+                              </p>
+                          </div>
 
-                      <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-                          <aside className="-mx-4 lg:w-1/5">
-                              <Menu items={menuItems} />
-                          </aside>
-                          <div className="flex-1 lg:max-w-2xl">
-                              <Router history={createHashHistory()}>
-                                  <CounterPage path="/" count={count} />
-                                  <ProfilePage path="/profile" isVendor={isVendor}/>
-                                  <ListingsPage path="/listings" products={products} />
-                                  <CreateListingPage path="/create-listing" />
-                                  <TestPage path="/test" />
-                              </Router>
+                          <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
+                              <aside className="-mx-4 lg:w-1/5">
+                                  <Menu items={menuItems} />
+                              </aside>
+                              <div className="flex-1 lg:max-w-2xl">
+                                  <Router history={createHashHistory()}>
+                                      <CounterPage path="/" count={count} />
+                                      <ProfilePage path="/profile" isVendor={isVendor}/>
+                                      <ListingsPage path="/listings" products={products} />
+                                      <CreateListingPage path="/create-listing" />
+                                      <TestPage path="/test" />
+                                  </Router>
+                              </div>
                           </div>
                       </div>
                   </div>
-              </div>
-          )}
+              )}
           <Toaster />
       </div>
   );

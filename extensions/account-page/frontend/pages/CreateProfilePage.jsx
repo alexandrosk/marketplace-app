@@ -18,10 +18,12 @@ const profileFormSchema = z.object({
         .max(30, {
             message: "Username must not be longer than 30 characters.",
         }),
+    title: z
+        .string()
 })
 
 const defaultValues = {
-    bio: "I own a computer.",
+    bio: "",
     urls: [
         {value: "https://shadcn.com"},
         {value: "http://twitter.com/shadcn"},
@@ -46,9 +48,12 @@ const CreateProfilePage = ({isVendor}) => {
         toast({
             title: "You submitted the following values:",
             description: (
+              <div>
+                <p>Your account will go through review and you will notified soon.</p>
                 <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
         </pre>
+              </div>
             ),
         })
     }
@@ -59,7 +64,6 @@ const CreateProfilePage = ({isVendor}) => {
                 <div className="space-y-0.5">
                     <h2 className="text-2xl font-bold tracking-tight">Create Seller Profile</h2>
                     <p className="text-muted-foreground">
-
                         Setup your info and start selling, your account will require approval from admin.
                     </p>
                 </div>
@@ -67,17 +71,32 @@ const CreateProfilePage = ({isVendor}) => {
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Store Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Nike Seller" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        The public display name of your store.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
                     control={form.control}
                     name="username"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Username</FormLabel>
                             <FormControl>
-                                <Input placeholder="shadcn" {...field} />
+                                <Input placeholder="nike_seller" {...field} />
                             </FormControl>
                             <FormDescription>
-                                This is your public display name. It can be your real name or a
-                                pseudonym. You can only change this once every 30 days.
+                                This is your public slug. Also used with @. You can only change this once every 30 days.
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
@@ -97,9 +116,7 @@ const CreateProfilePage = ({isVendor}) => {
                                 />
                             </FormControl>
                             <FormDescription>
-                                You can <span>@mention</span> other users and organizations to
-                                link to them.
-                                hey
+                                Use this to explain what you do, what you sell, or who you are.
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
