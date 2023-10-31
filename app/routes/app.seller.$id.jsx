@@ -1,22 +1,31 @@
-import {useState} from 'react';
+import { useState } from "react";
 import {
   Page,
   Button,
   Card,
-  VerticalStack,
   Text,
   Box,
-  HorizontalGrid,
+  InlineGrid,
+  Link,
   SkeletonDisplayText,
-  Bleed, Divider, SkeletonBodyText
-} from '@shopify/polaris';
-import {ArchiveMinor, DeleteMinor, DuplicateMinor} from "@shopify/polaris-icons";
+  Bleed,
+  Divider,
+  SkeletonBodyText,
+  Thumbnail,
+  Banner,
+  TextField,
+} from "@shopify/polaris";
+import {
+  ArchiveMinor,
+  DeleteMinor,
+  DuplicateMinor,
+} from "@shopify/polaris-icons";
 import { useRouteLoaderData } from "@remix-run/react";
-import {json} from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
-import {authenticate} from "~/shopify.server";
+import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+import { authenticate } from "~/shopify.server";
 
-export async function loader({ params, request })  {
+export async function loader({ params, request }) {
   const sellerId = params.id;
   const { admin, session } = await authenticate.admin(request);
 
@@ -25,25 +34,78 @@ export async function loader({ params, request })  {
        metaobject(id: "gid://shopify/Metaobject/${sellerId}") {
         id
         handle
+          type
+          id
+          updatedAt
+          capabilities {
+            publishable {
+              status
+            }
+          }
+          image: field(key: "image") {
+            reference {
+                ... on MediaImage {
+                    image {
+                        originalSrc
+                    }
+                }
+            }
+           }
+          description: field(key: "description") {
+            value
+          }
+          title: field(key: "title") {
+            value
+          }
+          created_at: field(key: "created_at") {
+            value
+          }
+          line_items: field(key: "line_items") {
+            value
+          }
+          status: field(key: "status") {
+            value
+          }
+          show_name: field(key: "show_name") {
+            value
+          }
+          commission: field(key: "commission") {
+            value
+          }
       }
     }
   `;
 
   const variables = {
-    first: 1,  // You can customize this or make it dynamic
-    after: "" // This can be made dynamic based on pagination or cursor
+    first: 1, // You can customize this or make it dynamic
+    after: "", // This can be made dynamic based on pagination or cursor
   };
 
   const response = await admin.graphql(QUERY);
   const responseJson = await response.json();
-  return {
-    seller: responseJson.data?.metaobject || {},
-  };
+  const vendor = responseJson.data?.metaobject || {};
 
-};
+  return {
+    vendor: {
+      id: vendor.id,
+      paramsId: sellerId,
+      handle: vendor.handle,
+      description: vendor.description?.value,
+      updatedAt: vendor.updatedAt,
+      line_items: vendor.line_items?.value,
+      status: vendor.capabilities?.publishable?.status,
+      show_name: vendor.show_name?.value,
+      title: vendor.title?.value,
+      image: vendor.image?.reference?.image?.originalSrc,
+      commission: vendor.commission?.value ?? "0",
+    },
+    shop: session.shop,
+  };
+}
 export default function SellerPage() {
-  const {seller} = useLoaderData();
-  console.log(seller);
+  const { vendor, shop } = useLoaderData();
+  const storeName = shop?.split(".")[0];
+  console.log(vendor);
   const SkeletonLabel = (props) => {
     return (
       <Box
@@ -58,80 +120,94 @@ export default function SellerPage() {
   return (
     <Page
       backAction={{ content: "Sellers", url: "/app/sellers" }}
-      title={seller.handle}
-      secondaryActions={[
-        {
-          content: "Duplicate",
-          icon: DuplicateMinor,
-          accessibilityLabel: "Secondary action label",
-          onAction: () => alert("Duplicate action"),
+      title={vendor.handle}
+      primaryAction={{
+        content: "Edit Vendor",
+        onAction: () => {
+          window.open(
+            "https://admin.shopify.com/store/" +
+              storeName +
+              "/content/entries/vendors/" +
+              vendor.paramsId,
+            "_blank",
+          );
         },
+      }}
+      /*secondaryActions={[
         {
-          content: "Archive",
+          content: "Draft",
           icon: ArchiveMinor,
           accessibilityLabel: "Secondary action label",
           onAction: () => alert("Archive action"),
         },
         {
-          content: "Delete",
+          content: "Decline",
           icon: DeleteMinor,
           destructive: true,
           accessibilityLabel: "Secondary action label",
           onAction: () => alert("Delete action"),
         },
-      ]}
-      pagination={{
-        hasPrevious: true,
-        hasNext: true,
-      }}
+      ]}*/
     >
-      <HorizontalGrid columns={{ xs: 1, md: "2fr 1fr" }} gap="4">
-        <VerticalStack gap="4">
+      <Card>
+        <Banner onDismiss={() => {}}>
+          Use this page to view and approve your vendor, you can edit all
+          information on{" "}
+          <Link
+            target={"_blank"}
+            url={
+              "https://admin.shopify.com/store/" +
+              storeName +
+              "/content/entries/vendors/" +
+              vendor.paramsId
+            }
+          >
+            Metaobject
+          </Link>{" "}
+          page.
+        </Banner>
+      </Card>
+      <Box minHeight="1rem" />
+      <InlineGrid columns={{ xs: 1, md: "2fr 1fr" }} gap="4">
+        <InlineGrid gap="4">
           <Card roundedAbove="sm">
-            <VerticalStack gap="4">
-              <SkeletonLabel />
-              <Box  minHeight="2rem" />
-              <SkeletonLabel maxWidth="8rem" />
-              <Box  minHeight="20rem" />
-            </VerticalStack>
+            <InlineGrid gap="4">
+              {vendor.image && (
+                <Thumbnail
+                  source={vendor.image}
+                  alt={vendor.title}
+                  size={"large"}
+                />
+              )}
+              <Text variant="headingMd" fontWeight="bold" as="span">
+                {vendor.title}
+              </Text>
+              <Text as="span">{vendor.description}</Text>
+            </InlineGrid>
           </Card>
+        </InlineGrid>
+        <InlineGrid gap={{ xs: "4", md: "2" }}>
           <Card roundedAbove="sm">
-            <VerticalStack gap="4">
-              <SkeletonDisplayText size="small" />
-              <HorizontalGrid columns={{ xs: 1, md: 2 }}>
-                <Box minHeight="10rem" />
-                <Box  minHeight="10rem" />
-              </HorizontalGrid>
-            </VerticalStack>
+            <Text variant="headingMd" as={"h2"}>
+              Settings
+            </Text>
+            <InlineGrid gap="4">
+              <TextField
+                label="Store commission"
+                value={vendor.commission}
+                autoComplete="off"
+                disabled
+              />
+              <TextField
+                label="Status"
+                value={vendor.status}
+                autoComplete="off"
+                disabled
+              />
+            </InlineGrid>
           </Card>
-        </VerticalStack>
-        <VerticalStack gap={{ xs: "4", md: "2" }}>
-          <Card roundedAbove="sm">
-            <VerticalStack gap="4">
-              <SkeletonDisplayText size="small" />
-              <Box  minHeight="2rem" />
-              <Box>
-                <Bleed >
-                  <Divider />
-                </Bleed>
-              </Box>
-              <SkeletonLabel />
-              <Divider />
-              <SkeletonBodyText />
-            </VerticalStack>
-          </Card>
-          <Card roundedAbove="sm">
-            <VerticalStack gap="4">
-              <SkeletonLabel />
-              <Box  minHeight="2rem" />
-              <SkeletonLabel maxWidth="4rem" />
-              <Box  minHeight="2rem" />
-              <SkeletonLabel />
-              <SkeletonBodyText />
-            </VerticalStack>
-          </Card>
-        </VerticalStack>
-      </HorizontalGrid>
+        </InlineGrid>
+      </InlineGrid>
     </Page>
-  )
+  );
 }

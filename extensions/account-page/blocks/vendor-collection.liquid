@@ -1,0 +1,106 @@
+{% if collection.metafields.custom.vendors.value %}
+    <div class="vendor-profile">
+        <div class="vendor-image">
+            <img width="120" height="120" src={{ collection.metafields.custom.vendors.value.image.value.preview_image.src | json }} />
+        </div>
+        <h1 class="vendor-title">
+            {{ collection.metafields.custom.vendors.value.title }}
+        </h1>
+        <p class="vendor-description">
+            {{ collection.metafields.custom.vendors.value.description }}
+        </p>
+        {% if block.settings.socials == true %}
+            Social:
+            <div class="vendor-socials">
+                {% for url in collection.metafields.custom.vendors.value.social.value %}
+                    <a href="{{ url }}" target="_blank" class="social-link">
+                        {{ url }}
+                    </a>
+                    <br>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    <style>
+        .vendor-profile {
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            background-color: #fff;
+        }
+
+        .vendor-image img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 50%;
+        }
+
+        .vendor-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .vendor-description {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.5;
+            text-align: justify;
+        }
+    </style>
+{% endif %}
+
+{% schema %}
+{
+  "name": "t:blocks.vendor-collection.heading",
+  "target": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "socials",
+      "label": "Show socials?",
+      "options": [
+        {
+          "value": "true",
+          "label": "Yes"
+        },
+        {
+          "value": "false",
+          "label": "No"
+        }
+      ],
+      "default": "true"
+    },
+    {
+      "label": "Text Colors",
+      "id": "text_color",
+      "type": "color",
+      "default": "#000"
+    }, {
+      "label": "Links Color",
+      "id": "link_color",
+      "type": "color",
+      "default": "#000"
+    }, {
+      "label": "Button color",
+      "id": "button_color",
+      "type": "color",
+      "default": "#000"
+    }, {
+      "label": "Button Text color",
+      "id": "button_text_color",
+      "type": "color",
+      "default": "#fff"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["collection"]
+  }
+}
+{% endschema %}
+

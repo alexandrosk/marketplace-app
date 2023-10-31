@@ -1,6 +1,6 @@
-import {json} from "@remix-run/node";
+import { json } from "@remix-run/node";
 import verifySignature from "~/utils/verifyLoggedSignature";
-import {unauthenticated} from "~/shopify.server";
+import { unauthenticated } from "~/shopify.server";
 
 export let action = async ({ request }) => {
   try {
@@ -12,10 +12,10 @@ export let action = async ({ request }) => {
     const awaitRequest = await request.text();
     let formData = JSON.parse(awaitRequest);
 
-    const {admin} = await unauthenticated.admin(shop??'');
+    const { admin } = await unauthenticated.admin(shop ?? "");
 
     let handle = formData.username;
-    handle = handle.replace(/\s+/g, '-').toLowerCase();
+    handle = handle.replace(/\s+/g, "-").toLowerCase();
     const response = await admin.graphql(
       `#graphql
             mutation CreateMetaobject($metaobject: MetaobjectCreateInput!) {
@@ -36,18 +36,18 @@ export let action = async ({ request }) => {
             }`,
       {
         variables: {
-          "metaobject": {
-            "type": "vendors",
-            "handle": formData.username,
-            "fields": [
+          metaobject: {
+            type: "vendors",
+            handle: formData.username,
+            fields: [
               {
-                "key": "slug",
-                "value": formData.username
-              }
-            ]
-          }
-        }
-      }
+                key: "slug",
+                value: formData.username,
+              },
+            ],
+          },
+        },
+      },
     );
     //data from graphql
     const responseJson = await response.json();
@@ -78,18 +78,19 @@ export let action = async ({ request }) => {
               }`,
       {
         variables: {
-          "input": {
-            "metafields": [
+          input: {
+            metafields: [
               {
-                "namespace": "custom",
-                "key": "vendor_id",
-                "value": responseJson.data.metaobjectCreate.metaobject.id,
+                namespace: "custom",
+                key: "vendor_id",
+                value: responseJson.data.metaobjectCreate.metaobject.id,
               },
             ],
-            "id": "gid://shopify/Customer/"+customerId,
-          }
-        }
-      });
+            id: "gid://shopify/Customer/" + customerId,
+          },
+        },
+      },
+    );
 
     const responseJson2 = await response2.json();
     console.log(JSON.stringify(responseJson2.data));

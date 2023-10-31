@@ -1,1 +1,3 @@
-<customer-page customerid="{{customer.metafields.custom.vendor_id}}" id="p2p-customer"></customer-page>
+
+<customer-page customerid="{{ customer.metafields.custom.vendor_id }}" settings='{{ block.settings | json | replace: '&quot;', '\"' }}' id="p2p-customer"></customer-page>
+

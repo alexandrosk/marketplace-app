@@ -9,7 +9,7 @@ import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prism
 import { restResources } from "@shopify/shopify-api/rest/admin/2023-07";
 
 import prisma from "./db.server";
-import {json} from "@remix-run/node";
+import { json } from "@remix-run/node";
 
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
@@ -45,4 +45,3 @@ export const unauthenticated = shopify.unauthenticated;
 export const login = shopify.login;
 export const registerWebhooks = shopify.registerWebhooks;
 export const sessionStorage = shopify.sessionStorage;
-

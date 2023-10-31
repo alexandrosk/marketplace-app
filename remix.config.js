@@ -37,7 +37,7 @@ module.exports = {
     "d3-time",
     "d3-time-format",
     "internmap",
-    "use-debounce"
+    "use-debounce",
   ],
   future: {
     v2_errorBoundary: true,

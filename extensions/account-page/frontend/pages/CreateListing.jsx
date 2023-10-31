@@ -1,81 +1,197 @@
-import {Button} from "@/components/ui/button"
-import {Input} from "@/components/ui/input"
-import {toast} from "@/components/ui/use-toast"
-import {Textarea} from "@/components/ui/textarea"
-import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from '@/components/ui/form';
-import {useFieldArray, useForm} from "react-hook-form"
-import {zodResolver} from "@hookform/resolvers/zod"
-import * as z from "zod"
+import React, { useState } from "react";
+import { PlusSquare } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Undo, SaveAll, Eye, ZoomIn } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "@/components/ui/card";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Separator } from "@radix-ui/react-select";
 
-const profileFormSchema = z.object({
-    title: z
-        .string()
-        .min(2, {
-            message: "Username must be at least 2 characters.",
-        })
-        .max(30, {
-            message: "Username must not be longer than 30 characters.",
-        }),
-})
-
-const defaultValues = {
-    bio: "I own a computer.",
-    urls: [
-        {value: "https://shadcn.com"},
-        {value: "http://twitter.com/shadcn"},
-    ],
-}
 const CreateListing = () => {
+  const [variations, setVariations] = useState([{ label: "", quantity: "" }]);
+  const [variationInputVisibility, setVariationInputVisibility] =
+    useState(false);
 
-    const form = useForm({
-        resolver: zodResolver(profileFormSchema),
-        defaultValues,
-        mode: "onChange",
-    })
+  const handleQuantityChange = (index, quantity) => {
+    const newVariations = [...variations];
+    newVariations[index].quantity = quantity;
+    setVariations(newVariations);
+  };
 
-    const {fields, append} = useFieldArray({
-        name: "urls",
-        control: form.control,
-    })
+  const handleVariationChange = (index, label) => {
+    const newVariations = [...variations];
+    newVariations[index].label = label;
+    setVariations(newVariations);
+  };
 
-    function onSubmit(data) {
-        fetch('/api/create-listing', {
-            method: 'POST',
-            body: JSON.stringify(data),
+  const handleVariationInputToggle = () => {
+    setVariationInputVisibility(!variationInputVisibility);
+  };
 
-        })
+  return (
+    <>
+      <div>
+        <h3 className="text-lg font-medium">Create Listing</h3>
+        <p className="text-sm text-muted-foreground">
+          Add a new product to your store.
+        </p>
+      </div>
+      <Separator />
+      <main className="mt-10 grid grid-cols-3 gap-5">
+        <div className="col-span-2 space-y-5">
+          <div className="grid grid-cols-1 gap-5">
+            <div>
+              <h3 className="mb-2">Product Image</h3>
+              <Input type="file" className="p-2 w-72" />
+            </div>
+            <div>
+              <h3 className="mb-2">Product Name</h3>
+              <Input type="text" className="p-2 w-72" />
+            </div>
+            <div>
+              <h3 className="mb-2">Product Category</h3>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="p-2 w-72 border border-gray-200">
+                  Select Category
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>Electronics</DropdownMenuItem>
+                  <DropdownMenuItem>Fashion</DropdownMenuItem>
+                  <DropdownMenuItem>Home Appliances</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            <div>
+              <h3 className="mb-2">Product Tags</h3>
+              <Input
+                type="text"
+                className="p-2 w-72"
+                placeholder="Separate tags with comma"
+              />
+            </div>
+            <div>
+              <h3 className="mb-2">Product Variations</h3>
+              <div className="flex items-center">
+                <Button
+                  onClick={handleVariationInputToggle}
+                  variant="outline"
+                  className="w-max mr-3"
+                >
+                  <PlusSquare className="h-5 w-5 mr-1" />
+                  Add Variation
+                </Button>
+              </div>
+              {variationInputVisibility &&
+                variations.map((variation, index) => (
+                  <div key={index} className="flex space-x-2">
+                    <Input
+                      type="text"
+                      className="p-2 w-36"
+                      value={variation.label}
+                      placeholder="Label"
+                      onChange={(e) =>
+                        handleVariationChange(index, e.target.value)
+                      }
+                    />
+                    <Input
+                      type="number"
+                      className="p-2 w-36"
+                      placeholder="Quantity"
+                      value={variation.quantity}
+                      onChange={(e) =>
+                        handleQuantityChange(index, e.target.value)
+                      }
+                    />
+                    <Input
+                      type="number"
+                      className="p-2 w-36"
+                      placeholder="Price (If different)"
+                      value={variation.quantity}
+                      onChange={(e) =>
+                        handleQuantityChange(index, e.target.value)
+                      }
+                    />
+                  </div>
+                ))}
+            </div>
+            <div>
+              <h3 className="mb-2">Delivery Price</h3>
+              <Input type="number" className="p-2 w-72" />
+            </div>
+            <div>
+              <h3 className="mb-2">Quantity</h3>
+              <Input type="number" className="p-2 w-72" />
+            </div>
+            <div className="flex justify-end space-x-4 mt-10">
+              <Button className="outline">
+                <Undo className="h-4 w-4 mr-2" />
+                Cancel
+              </Button>
 
-        toast({
-            title: "You submitted the following values:",
-            description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-            ),
-        })
-    }
-
-    return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <FormField
-                    control={form.control}
-                    name="title"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Title</FormLabel>
-                            <FormControl>
-                                <Input placeholder="shadcn" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <Button type="submit">Create Listing</Button>
-            </form>
-        </Form>
-    );
+              <Button className="outline">
+                <SaveAll className="h-4 w-4 mr-2" />
+                Save
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="col-span-1 space-y-5">
+          <Popover className="shadow rounded-lg">
+            <PopoverTrigger asChild>
+              <Card className="border p-4 rounded-lg cursor-pointer">
+                <CardHeader className="flex justify-between items-center">
+                  <CardTitle className="text-lg font-semibold">
+                    Product Name
+                  </CardTitle>
+                  <Eye className="h-6 w-6" />
+                </CardHeader>
+                <CardContent className="flex flex-col gap-4 mt-2">
+                  <img
+                    src="https://via.placeholder.com/150"
+                    alt="Product Img"
+                    className="rounded-lg"
+                  />
+                  <div>
+                    <CardDescription className="text-gray-500">
+                      Category: Electronics
+                    </CardDescription>
+                    <CardDescription className="text-gray-500">
+                      Tags: tag1, tag2
+                    </CardDescription>
+                  </div>
+                  <div>
+                    <CardDescription className="text-gray-500">
+                      Delivery Price: &#36;5
+                    </CardDescription>
+                    <CardDescription className="text-gray-500">
+                      Quantity: 100
+                    </CardDescription>
+                  </div>
+                </CardContent>
+              </Card>
+            </PopoverTrigger>
+          </Popover>
+        </div>
+      </main>
+    </>
+  );
 };
 
 export default CreateListing;

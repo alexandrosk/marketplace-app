@@ -5,129 +5,269 @@ import {
   Text,
   Divider,
   Box,
-  HorizontalGrid,
-  VerticalStack,
+  InlineGrid,
+  OptionList,
+  InlineStack,
   useBreakpoints,
-  Layout,
-  Button, List, Select
+  BlockStack,
+  Button,
 } from "@shopify/polaris";
 
-import { updateSetting } from '../models/settings.server';
-import {json} from "@remix-run/node";
-import {authenticate} from "~/shopify.server";
-import React from "react";
-import {useSettings} from "~/context/AppSettings";
-
-export let action = async ({ request }) => {
+import { json } from "@remix-run/node";
+import React, { useCallback, useEffect, useState } from "react";
+import { updateSetting, getAllSettings } from "../models/settings.server";
+import { settingsHook } from "../hooks/useSettings";
+import { authenticate } from "~/shopify.server";
+import { useSettings } from "~/context/AppSettings";
+import { useLoaderData } from "@remix-run/react";
+export const action = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
 
-  let formData = new URLSearchParams(await request.text());
-  let resourceId = formData.get('resourceId');
-  let value = formData.get('value');
+  const formData = new URLSearchParams(await request.text());
+  const resourceId = formData.get("resourceId");
+  let value = formData.get("value");
 
-  if (resourceId === 'onboarding_step'){
+  if (resourceId === "onboarding_step" || resourceId === "default_commision") {
     // @ts-ignore
-    value = parseInt(formData.get('value'));
+    value = parseInt(formData.get("value"), 10);
   }
 
   try {
-    let settings = await updateSetting(session.shop, resourceId, value);
+    const settings = await updateSetting(session.shop, resourceId, value);
     if (settings) {
       return json({ success: true }, { status: 200 });
     }
   } catch (error) {
-    return json({ error: error }, { status: 500 });
+    return json({ error }, { status: 500 });
   }
+  return json({ success: false }, { status: 500 });
 };
+
+export const loader = async ({ request }) => {
+  const { admin, session } = await authenticate.admin(request);
+
+  const QUERY = `
+    {
+        collections(first: 100, query: "-vendor") {
+        edges {
+          node {
+            id
+            title
+            handle
+            updatedAt
+            productsCount
+            sortOrder
+          }
+        }
+      }
+    }
+  `;
+
+  const variables = {
+    first: 1, // You can customize this or make it dynamic
+    after: "", // This can be made dynamic based on pagination or cursor
+  };
+
+  const response = await admin.graphql(QUERY, { variables });
+  const responseJson = await response.json();
+
+  return {
+    shop: session.shop,
+    collections: responseJson.data.collections.edges,
+  };
+};
+
 export default function SettingsPage() {
   const { state, dispatch } = useSettings();
+  const { collections, shop } = useLoaderData();
   const { smUp } = useBreakpoints();
+  const [allOptions, setAllOptions] = useState([]);
+  const [commission, setCommission] = useState(0);
+  const { updateSetting } = settingsHook();
+
+  const handleChange = useCallback((value) => {
+    setCommission(value);
+    dispatch({
+      type: "SET_SETTING",
+      resourceId: "default_commision",
+      value: value,
+    });
+  }, []);
+
+  useEffect(() => {
+    const options = collections.map((collection) => ({
+      label: collection.node.title,
+      value: collection.node.id,
+    }));
+    setAllOptions(options);
+  }, [collections]);
+
+  useEffect(() => {
+    if (state.settings.allowed_categories) {
+      //explode comma seperated string the allowed categories
+      setRightItems(state.settings.allowed_categories.split(","));
+      setLeftItems(
+        collections
+          .map((collection) => collection.node.id)
+          .filter((item) => !state.settings.allowed_categories.includes(item)),
+      );
+    }
+    setCommission(state.settings.default_commision);
+  }, [state.settings]);
+
+  const [leftItems, setLeftItems] = useState(
+    collections.map((collection) => collection.node.id),
+  );
+  const [rightItems, setRightItems] = useState([]);
+  const [selectedLeft, setSelectedLeft] = useState([]);
+  const [selectedRight, setSelectedRight] = useState([]);
+
+  const moveItems = useCallback(
+    (direction) => {
+      if (direction === "right") {
+        setRightItems([...rightItems, ...selectedLeft]);
+        setLeftItems(leftItems.filter((item) => !selectedLeft.includes(item)));
+        setSelectedLeft([]);
+      } else {
+        setLeftItems([...leftItems, ...selectedRight]);
+        setRightItems(
+          rightItems.filter((item) => !selectedRight.includes(item)),
+        );
+        setSelectedRight([]);
+      }
+    },
+    [leftItems, rightItems, selectedLeft, selectedRight],
+  );
   return (
     <Page
-      divider
       title="Settings"
-      primaryAction={{ content: "View on your store", disabled: true }}
+      primaryAction={{
+        content: "Save",
+        disabled: rightItems.length === 0,
+        onAction: () => {
+          updateSetting("default_commision", commission);
+          updateSetting("allowed_categories", rightItems);
+        },
+      }}
       secondaryActions={[
         {
-          content: "Duplicate",
+          content: "Reset",
           accessibilityLabel: "Secondary action label",
-          onAction: () => alert("Duplicate action"),
+          onAction: () => window.location.reload(),
         },
       ]}
     >
-
-      <VerticalStack gap={{ xs: "8", sm: "4" }}>
+      <BlockStack gap={{ xs: "800", sm: "400" }}>
         {JSON.stringify(state.settings)}
-        <HorizontalGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="4">
-          <Box
-            as="section"
-          >
-            <VerticalStack gap="4">
+        <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
+          <Box as="section">
+            <InlineStack gap="4">
               <Text as="h3" variant="headingMd">
                 Product Assignment
               </Text>
               <Text as="p" variant="bodyMd">
-                Categorisation, auto categorisation and auto tagging
+                Categories that vendors can assign products to
               </Text>
-            </VerticalStack>
+            </InlineStack>
           </Box>
 
-          <Card roundedAbove="sm">
-            <VerticalStack gap="4">
-            <Select label={"Onboarding Step"} value={state.settings.onboarding_step} onChange={(value) => dispatch({type: 'update', payload: {resourceId: 'onboarding_step', value: value}})}
-            options={[
-              {label: 'Step 0', value: 0},
-              {label: 'Step 1', value: 1},
-            ]}
-            >
-            </Select>
-            </VerticalStack>
+          <Card>
+            <InlineGrid columns={{ md: "2fr 1fr 2fr" }} gap="400">
+              <Box>
+                <OptionList
+                  title="Available Categories"
+                  onChange={setSelectedLeft}
+                  options={allOptions.filter((option) =>
+                    leftItems.includes(option.value),
+                  )}
+                  selected={selectedLeft}
+                  allowMultiple
+                />
+              </Box>
+              <Box>
+                <BlockStack align="space-between" gap="200">
+                  <Text as="h3" variant="headingMd">
+                    &nbsp;
+                  </Text>
+                  <Button
+                    onClick={() => moveItems("left")}
+                    disabled={selectedRight.length === 0}
+                  >
+                    {" < "}
+                  </Button>
+                  <Button
+                    onClick={() => moveItems("right")}
+                    disabled={selectedLeft.length === 0}
+                  >
+                    {" > "}
+                  </Button>
+                </BlockStack>
+              </Box>
+              <Box>
+                <OptionList
+                  title="Selected Categories"
+                  verticalAlign="top"
+                  onChange={setSelectedRight}
+                  options={allOptions.filter((option) =>
+                    rightItems.includes(option.value),
+                  )}
+                  selected={selectedRight}
+                  allowMultiple
+                />
+              </Box>
+            </InlineGrid>
           </Card>
-        </HorizontalGrid>
+        </InlineGrid>
 
-        <HorizontalGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="4">
+        <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
           <Box
             as="section"
+            paddingInlineStart={{ xs: 400, sm: 0 }}
+            paddingInlineEnd={{ xs: 400, sm: 0 }}
           >
-            <VerticalStack gap="4">
+            <BlockStack gap="400">
               <Text as="h3" variant="headingMd">
-                Payments / Commissions
+                Payments
               </Text>
               <Text as="p" variant="bodyMd">
-                How to pay your vendors
+                Set commissions and payment settings
               </Text>
-            </VerticalStack>
+            </BlockStack>
           </Box>
-
           <Card roundedAbove="sm">
-            <VerticalStack gap="4">
-              <TextField autoComplete="" label="Interjamb style" />
-              <TextField autoComplete="" label="Interjamb ratio" />
-            </VerticalStack>
+            <BlockStack gap="400">
+              <TextField
+                label="Default Commission"
+                type="number"
+                value={commission}
+                onChange={handleChange}
+                helpText="This is the default commission that will be applied to all products. You can override this on a per vendor or product basis."
+                autoComplete="commission"
+              />
+            </BlockStack>
           </Card>
-        </HorizontalGrid>
+        </InlineGrid>
         {smUp ? <Divider /> : null}
-        <HorizontalGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="4">
-          <Box
-            as="section"
-          >
-            <VerticalStack gap="4">
+        {/*<InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
+          <Box as="section">
+            <InlineGrid>
               <Text as="h3" variant="headingMd">
                 Product Settings
               </Text>
               <Text as="p" variant="bodyMd">
-                Setup your product settings, available categories, delivery methods etc
+                Setup your product settings, available categories, delivery
+                methods etc
               </Text>
-            </VerticalStack>
+            </InlineGrid>
           </Box>
           <Card roundedAbove="sm">
-            <VerticalStack gap="4">
+            <InlineGrid>
               <TextField autoComplete="" label="Allowed Categories" />
               <TextField autoComplete="" label="Allowed Tags" />
-            </VerticalStack>
+            </InlineGrid>
           </Card>
-        </HorizontalGrid>
-      </VerticalStack>
+        </InlineGrid>*/}
+      </BlockStack>
     </Page>
-  )
+  );
 }

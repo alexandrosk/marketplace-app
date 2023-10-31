@@ -1,17 +1,17 @@
 /** @type {import('tailwindcss').Config} */
-import plugin from 'tailwindcss/plugin'
-import defaultTheme from 'tailwindcss/defaultTheme'
-import { replaceRemWithPx } from './frontend/@/lib/utils.js'
+import plugin from "tailwindcss/plugin";
+import defaultTheme from "tailwindcss/defaultTheme";
+import { replaceRemWithPx } from "./frontend/@/lib/utils.js";
 
 module.exports = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{js,jsx}',
-    './components/**/*.{js,jsx}',
-    './app/**/*.{js,jsx}',
-    './src/**/*.{js,jsx}',
-    './frontend/**/*.{js,jsx}',
-	],
+    "./pages/**/*.{js,jsx}",
+    "./components/**/*.{js,jsx}",
+    "./app/**/*.{js,jsx}",
+    "./src/**/*.{js,jsx}",
+    "./frontend/**/*.{js,jsx}",
+  ],
   theme: {
     container: {
       center: true,
@@ -77,7 +77,5 @@ module.exports = {
       },
     },
   },
-  plugins: [
-      require("tailwindcss-animate"),
-  ],
-}
+  plugins: [require("tailwindcss-animate")],
+};

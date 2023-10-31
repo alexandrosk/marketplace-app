@@ -13,7 +13,7 @@ export default async function handleRequest(
   responseStatusCode,
   responseHeaders,
   remixContext,
-  _loadContext
+  _loadContext,
 ) {
   addDocumentResponseHeaders(request, responseHeaders);
 
@@ -38,7 +38,7 @@ export default async function handleRequest(
             new Response(body, {
               headers: responseHeaders,
               status: responseStatusCode,
-            })
+            }),
           );
 
           pipe(body);
@@ -50,7 +50,7 @@ export default async function handleRequest(
           responseStatusCode = 500;
           console.error(error);
         },
-      }
+      },
     );
 
     setTimeout(abort, ABORT_DELAY);

@@ -1,21 +1,40 @@
 import {
-  Box, Button,
-  Card, Collapsible, EmptyState, HorizontalGrid, HorizontalStack, Icon, IndexTable,
+  Box,
+  Button,
+  ButtonGroup,
+  Card,
+  Collapsible,
+  EmptyState,
+  InlineGrid,
+  Icon,
+  IndexFilters,
+  IndexTable,
   Layout,
   List,
-  Page, ProgressBar,
-  Text, Thumbnail,
-  VerticalStack,
+  Page,
+  ProgressBar,
+  Text,
+  Thumbnail,
+  Link,
+  useSetIndexFiltersMode,
+  Badge,
+  Banner,
 } from "@shopify/polaris";
-import {ChevronDownMinor, ChevronUpMinor, CircleDotsMajor} from "@shopify/polaris-icons";
-import React, {useEffect, useState} from "react";
-import {useSettings} from "~/context/AppSettings";
-import {authenticate} from "~/shopify.server";
-import {json} from "@remix-run/node";
-import {Link, useActionData, useLoaderData, useNavigate, useNavigation, useSubmit} from "@remix-run/react";
+import { useEffect, useState } from "react";
+import { useSettings } from "~/context/AppSettings";
+import { authenticate } from "~/shopify.server";
+import { json } from "@remix-run/node";
+import {
+  useActionData,
+  useLoaderData,
+  useNavigate,
+  useNavigation,
+  useSubmit,
+} from "@remix-run/react";
 import { DiamondAlertMajor, ImageMajor } from "@shopify/polaris-icons";
+
 export async function action({ request }) {
-  const { admin, session,  sessionToken } = await authenticate.admin(request);
+  const { admin, session, sessionToken } = await authenticate.admin(request);
 
   const formData = await request.formData();
   const state = JSON.parse(formData.get("state"));
@@ -24,13 +43,12 @@ export async function action({ request }) {
   //return json(responseJson.data);
 }
 
-
 export async function loader({ request }) {
   const { admin, session } = await authenticate.admin(request);
 
-    const QUERY = `
+  const QUERY = `
     {
-      metaobjects(type: "vendors", first: 1) {
+      metaobjects(type: "vendors", first: 20) {
         nodes {
           handle
           type
@@ -41,7 +59,19 @@ export async function loader({ request }) {
               status
             }
           }
+          image: field(key: "image") {
+            reference {
+                ... on MediaImage {
+                    image {
+                        originalSrc
+                    }
+                }
+            }
+           }
           description: field(key: "description") {
+            value
+          }
+          title: field(key: "title") {
             value
           }
           created_at: field(key: "created_at") {
@@ -50,10 +80,11 @@ export async function loader({ request }) {
           line_items: field(key: "line_items") {
             value
           }
-          status: field(key: "status") {
+
+          show_name: field(key: "show_name") {
             value
           }
-          show_name: field(key: "show_name") {
+          status: field(key: "status") {
             value
           }
         }
@@ -62,42 +93,48 @@ export async function loader({ request }) {
   `;
 
   const variables = {
-    first: 1,  // You can customize this or make it dynamic
-    after: "" // This can be made dynamic based on pagination or cursor
+    first: 1, // You can customize this or make it dynamic
+    after: "", // This can be made dynamic based on pagination or cursor
   };
 
   const response = await admin.graphql(QUERY);
   const responseJson = await response.json();
 
   //create new object with only the fields we need
-    const vendors = responseJson.data?.metaobjects?.nodes.map((vendor) => {
-        return {
-            id: vendor.id,
-            handle: vendor.handle,
-            description: vendor.description?.value,
-            updatedAt: vendor.updatedAt,
-            line_items: vendor.line_items?.value,
-            status: vendor.capabilities?.publishable?.status,
-            show_name: vendor.show_name?.value,
-        };
-    })
+  const vendors = responseJson.data?.metaobjects?.nodes.map((vendor) => {
+    return {
+      id: vendor.id,
+      handle: vendor.handle,
+      description: vendor.description?.value,
+      updatedAt: vendor.updatedAt,
+      line_items: vendor.line_items?.value,
+      published: vendor.capabilities?.publishable?.status,
+      show_name: vendor.show_name?.value,
+      title: vendor.title?.value,
+      image: vendor.image?.reference?.image?.originalSrc,
+      status: JSON.parse(vendor.status?.value),
+    };
+  });
 
   return {
     sellers: vendors || [],
+    shop: session.shop,
   };
 }
 
-
 const EmptysellerState = ({ onAction }) => (
   <EmptyState
-    heading="Create unique QR codes for your product"
+    heading="You can manually create your Vendors as metaobjects"
     action={{
-      content: "Create QR code",
+      content: "Create a vendor",
       onAction,
     }}
     image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
   >
-    <p>Allow customers to scan codes and buy products using their phones.</p>
+    <p>
+      You can manually create your Vendors as metaobjects. You can also just
+      wait for the first vendor sign up to come in and approve it here after.
+    </p>
   </EmptyState>
 );
 
@@ -107,98 +144,186 @@ function truncate(str, { length = 25 } = {}) {
   return str.slice(0, length) + "…";
 }
 
-const SellerTable = ({ sellers }) => (
-  <IndexTable
-    resourceName={{
-      singular: "Seller",
-      plural: "Sellers",
-    }}
-    itemCount={sellers.length}
-    headings={[
-      { title: "Thumbnail", hidden: true },
-      { title: "Title" },
-      { title: "Product" },
-      { title: "Last update" },
-      { title: "Status" },
-    ]}
-    selectable={false}
-  >
-    {sellers.map((seller) => (
-      <SellerTableRow key={seller.id} seller={seller} />
-    ))}
-  </IndexTable>
-);
-
-const SellerTableRow = ({ seller }) => {
-    const regex = /(\d+)$/;
-    let sellerIdOnly = seller?.id?.match(regex);
-
-    if (sellerIdOnly) {
-        sellerIdOnly = sellerIdOnly[1];
-    }
-    return (
-        <IndexTable.Row id={sellerIdOnly} position={sellerIdOnly}>
-            <IndexTable.Cell>
-                {/*<Thumbnail*/}
-                {/*  source={seller.productImage || ImageMajor}*/}
-                {/*  alt={seller.productTitle}*/}
-                {/*  size="small"*/}
-                {/*/>*/}
-            </IndexTable.Cell>
-            <IndexTable.Cell>
-                <Link to={`/app/seller/${sellerIdOnly}`}>{truncate(seller.handle)}</Link>
-            </IndexTable.Cell>
-            <IndexTable.Cell>
-                {seller.productDeleted ? (
-                    <HorizontalStack align="start" gap="2">
-          <span style={{ width: "20px" }}>
-            <Icon source={DiamondAlertMajor} color="critical" />
-          </span>
-                        <Text color="critical" as="span">
-                            product has been deleted
-                        </Text>
-                    </HorizontalStack>
-                ) : (
-                    truncate(seller.productTitle)
-                )}
-            </IndexTable.Cell>
-            <IndexTable.Cell>
-                {new Date(seller.updatedAt).toDateString()}
-            </IndexTable.Cell>
-            <IndexTable.Cell>{seller.status}</IndexTable.Cell>
-        </IndexTable.Row>
-    )
+function handleApprove() {
+  alert("a");
 }
 
+const SellerTableRow = ({ seller, shop }) => {
+  const regex = /(\d+)$/;
+  let sellerIdOnly = seller?.id?.match(regex);
+
+  if (sellerIdOnly) {
+    sellerIdOnly = sellerIdOnly[1];
+  }
+  const storeName = shop?.split(".")[0];
+  return (
+    <IndexTable.Row id={sellerIdOnly} position={sellerIdOnly}>
+      <IndexTable.Cell>
+        <Thumbnail
+          source={seller.image || ImageMajor}
+          alt={seller.productTitle}
+          size="small"
+        />
+      </IndexTable.Cell>
+      <IndexTable.Cell>{seller.title}</IndexTable.Cell>
+      <IndexTable.Cell>
+        <Link
+          url={
+            "https://admin.shopify.com/store/" +
+            storeName +
+            "/content/entries/vendors/" +
+            sellerIdOnly
+          }
+          target={"_blank"}
+        >
+          {truncate(seller.handle)}
+        </Link>
+      </IndexTable.Cell>
+      <IndexTable.Cell>{truncate(seller.description)}</IndexTable.Cell>
+
+      <IndexTable.Cell>
+        {new Date(seller.updatedAt).toDateString()}
+      </IndexTable.Cell>
+      <IndexTable.Cell>
+        {(seller.status == "Approved" && (
+          <Badge status="success">Approved</Badge>
+        )) ||
+          (seller.status == "Declined" && (
+            <Badge status="critical">Declined</Badge>
+          )) ||
+          (seller.status == "Pending" && (
+            <Badge status="warning">Pending</Badge>
+          )) || <Badge status="info">Not assigned</Badge>}
+      </IndexTable.Cell>
+    </IndexTable.Row>
+  );
+};
+
 export default function Index() {
-  const { sellers } = useLoaderData();
+  const { sellers, shop } = useLoaderData();
+  const storeName = shop?.split(".")[0];
+  const [selectedSellers, setSelectedSellers] = useState([]);
+  const [view, setView] = useState("All"); // possible values: "all", "pending"
+  const [itemStrings, setItemStrings] = useState([
+    "All",
+    "Pending Approval",
+    "Approved",
+    "Declined",
+  ]);
+  const statusMapping = {
+    "Pending Approval": "Pending",
+    Approved: "Approved",
+    Declined: "Declined",
+  };
+  const { mode, setMode } = useSetIndexFiltersMode();
+  const tabs = itemStrings.map((item, index) => ({
+    content: item,
+    index,
+    onAction: () => {
+      setView(item);
+    },
+    id: `${item}-${index}`,
+    isLocked: index === 0,
+    actions: index === 0 ? [] : [],
+  }));
+  const displayedSellers = sellers.filter((seller) => {
+    if (view === "All") return true;
+    return seller.status == statusMapping[view];
+  });
 
   const navigate = useNavigate();
 
   return (
-      <Page
-          divider
-          title="Sellers"
-          primaryAction={{ content: "Create new seller" }}
-          secondaryActions={[
-              {
-                  content: "Approve Seller",
-                  disabled: true,
-                  accessibilityLabel: "Secondary action label",
-                  onAction: () => alert("Duplicate action"),
-              },
-          ]}
-      >
+    <Page
+      divider
+      title="Sellers"
+      primaryAction={{
+        content: "Create new vendor",
+        onAction: () => {
+          window.open(
+            "https://admin.shopify.com/store/" +
+              storeName +
+              "/content/entries/vendors/new",
+            "_blank",
+          );
+        },
+      }}
+      secondaryActions={[]}
+    >
       <Layout>
         <Layout.Section>
+          <Banner>
+            Use this page to filter approved vendors, you can edit all
+            information on{" "}
+            <Link
+              target={"_blank"}
+              url={
+                "https://admin.shopify.com/store/" +
+                storeName +
+                "/content/entries/vendors/"
+              }
+            >
+              Vendors
+            </Link>{" "}
+            page.
+            <br />
+            Clicking a slug will open the Vendor edit page.
+          </Banner>
+          <br />
           <Card padding="0">
-              {JSON.stringify(sellers)}
-            {sellers.length === 0 ? (
-              <EmptysellerState onAction={() => navigate("sellers/new")} />
-            ) : (
-
-               <SellerTable sellers={sellers} />
-            )}
+            <>
+              <IndexFilters
+                sortOptions={[]}
+                sortSelected={[]}
+                queryValue={""}
+                queryPlaceholder="Searching in all"
+                onQueryChange={() => {}}
+                onQueryClear={() => {}}
+                onSort={() => {}}
+                cancelAction={{
+                  onAction: () => {},
+                  disabled: false,
+                  loading: false,
+                }}
+                tabs={tabs}
+                selected={tabs.indexOf(
+                  tabs.find((tab) => tab.content === view),
+                )}
+                canCreateNewView={false}
+                mode={mode}
+                setMode={setMode}
+              />
+              {displayedSellers.length === 0 ? (
+                <EmptysellerState onAction={() => navigate("sellers/new")} />
+              ) : (
+                <IndexTable
+                  selectable={false}
+                  selectedItemsCount={selectedSellers.length}
+                  onSelectionChange={setSelectedSellers}
+                  resourceName={{
+                    singular: "Vendor",
+                    plural: "Vendors",
+                  }}
+                  itemCount={displayedSellers.length}
+                  headings={[
+                    { title: "Thumbnail", hidden: true },
+                    { title: "Title" },
+                    { title: "Slug" },
+                    { title: "Bio" },
+                    { title: "Last update" },
+                    { title: "Status" },
+                  ]}
+                >
+                  {displayedSellers.map((seller) => (
+                    <SellerTableRow
+                      key={seller.id}
+                      seller={seller}
+                      shop={shop}
+                    />
+                  ))}
+                </IndexTable>
+              )}
+            </>
           </Card>
         </Layout.Section>
       </Layout>

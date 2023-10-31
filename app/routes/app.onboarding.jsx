@@ -1,23 +1,37 @@
 import {
-  Box, Button, CalloutCard,
-  Card, HorizontalGrid, ProgressBar,
+  Box,
+  Button,
+  CalloutCard,
+  Card,
+  ProgressBar,
   Layout,
   Link,
   List,
   Page,
-  Text, Thumbnail,
-  VerticalStack, HorizontalStack, Collapsible, Icon,
+  Text,
+  Thumbnail,
+  InlineGrid,
+  Collapsible,
+  Icon,
 } from "@shopify/polaris";
 import {
-  ChevronDownMinor,ChevronUpMinor,CircleDotsMajor} from '@shopify/polaris-icons';
-import React, {useEffect, useState} from "react";
+  ChevronDownMinor,
+  ChevronUpMinor,
+  CircleDotsMajor,
+} from "@shopify/polaris-icons";
+import React, { useEffect, useState } from "react";
 import OnboardingModal from "../components/OnboardingModal";
-import {useActionData, useLoaderData, useNavigation, useSubmit} from "@remix-run/react";
-import {authenticate, login} from "~/shopify.server";
-import {json} from "@remix-run/node";
-import {useSettings} from "~/context/AppSettings";
+import {
+  useActionData,
+  useLoaderData,
+  useNavigation,
+  useSubmit,
+} from "@remix-run/react";
+import { authenticate, login } from "~/shopify.server";
+import { json } from "@remix-run/node";
+import { useSettings } from "~/context/AppSettings";
 export async function action({ request }) {
-  const { admin, session,  sessionToken } = await authenticate.admin(request);
+  const { admin, session, sessionToken } = await authenticate.admin(request);
 
   const formData = await request.formData();
   const state = JSON.parse(formData.get("state"));
@@ -45,14 +59,14 @@ export const loader = async ({ request }) => {
     {
       variables: {
         type: "vendors",
-      }
-    }
+      },
+    },
   );
   const responseJson = await response.json();
   console.log(JSON.stringify(responseJson.data));
 
   return json({ shop: session.shop.replace(".myshopify.com", "") });
-}
+};
 
 export default function AppOnboarding() {
   /*const [collapsibleStates, setCollapsibleStates] = useState({
@@ -68,33 +82,35 @@ export default function AppOnboarding() {
     }));
   };*/
   const nav = useNavigation();
-  const {state, dispatch} = useSettings();
+  const { state, dispatch } = useSettings();
   const isLoading =
     ["loading", "submitting"].includes(nav.state) && nav.formMethod === "POST";
   const actionData = useActionData();
   const submit = useSubmit();
-  const generateMetafields = () => submit({
-    state: JSON.stringify(state),
-  }, { replace: true, method: "POST" });
-
+  const generateMetafields = () =>
+    submit(
+      {
+        state: JSON.stringify(state),
+      },
+      { replace: true, method: "POST" },
+    );
 
   useEffect(() => {
     console.log(actionData);
     if (!actionData) return;
-
   }, [actionData, state]);
 
   return (
     <Page>
-      <ui-title-bar title="Generate metafields 🎉" >
+      <ui-title-bar title="Generate metafields 🎉">
         <button variant="primary" onClick={generateMetafields}>
           Finish Onboarding
         </button>
       </ui-title-bar>
 
-      <VerticalStack >
+      <InlineGrid>
         <Card>
-        {/*{actionData?.product && (
+          {/*{actionData?.product && (
           <Button
             url={`https://admin.shopify.com/store/${shop}/admin/products/${productId}`}
             target="_blank"
@@ -103,27 +119,35 @@ export default function AppOnboarding() {
           </Button>
         )}*/}
           <Text as={"p"}>
-            Welcome! 🎉 <br/>
-            To start you need to click the button below to generate the metafields. <br/>
-            <strong>First step is to create the metaobject "Seller" that will be your sellers from now on. <br/></strong>
-            <br/>
-            We will generate the Metaobject "Seller" that will be your sellers from now on. <br/>
-            We need to also connect this with Products, Orders, Collections and Customers. <br/>
-            Everything is shopify native and you can always remove that. <br/>
-            Nothing will be added on the frontend of your site. <br/>
-            <br/>
+            Welcome! 🎉 <br />
+            To start you need to click the button below to generate the
+            metafields. <br />
+            <strong>
+              First step is to create the metaobject "Seller" that will be your
+              sellers from now on. <br />
+            </strong>
+            <br />
+            We will generate the Metaobject "Seller" that will be your sellers
+            from now on. <br />
+            We need to also connect this with Products, Orders, Collections and
+            Customers. <br />
+            Everything is shopify native and you can always remove that. <br />
+            Nothing will be added on the frontend of your site. <br />
+            <br />
           </Text>
-          <Thumbnail source="https://cdn.shopify.com/s/files/1/0757/9955/files/empty-state.svg" alt="Empty state" />
-        <Button loading={isLoading} primary onClick={generateMetafields}>
-          Finish Onboarding
-        </Button>
+          <Thumbnail
+            source="https://cdn.shopify.com/s/files/1/0757/9955/files/empty-state.svg"
+            alt="Empty state"
+          />
+          <Button loading={isLoading} primary onClick={generateMetafields}>
+            Finish Onboarding
+          </Button>
         </Card>
-      </VerticalStack>
+      </InlineGrid>
       <OnboardingModal />
     </Page>
   );
 }
-
 
 function Code({ children }) {
   return (

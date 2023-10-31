@@ -1,40 +1,66 @@
-{% liquid
-  render 'customer-page'
-  render 'css-variables'
+{% if customer %}
+  {% liquid
+    render 'customer-page'
+    render 'css-variables'
 
-  render 'vite-tag' with 'customerPage.css'
-  render 'vite-tag' with 'customerPage.jsx'
--%}
-
+    render 'vite-tag' with 'customerPage.css'
+    render 'vite-tag' with 'customerPage.jsx'
+  -%}
+{% else %}
+  Please login to join as a seller.
+{% endif %}
 {% schema %}
   {
-    "name": "Customer Page",
+    "name": "t:blocks.customer-page.heading",
     "target": "section",
     "settings": [
       {
+        "label": "Join us text",
+        "id": "join_us",
+        "type": "text",
+        "default": "Ready to sell? Join us!"
+      },
+      {
+        "type": "select",
+        "id": "auto_approval",
+        "label": "Auto approval?",
+        "options": [
+          {
+            "value": "true",
+            "label": "Yes"
+          },
+          {
+            "value": "false",
+            "label": "No"
+          }
+        ],
+        "default": "true"
+      },
+      {
         "label": "Text Colors",
-        "id": "text-color",
+        "id": "text_color",
         "type": "color",
         "default": "#000"
       }, {
-        "label": "Links Colors",
-        "id": "link-color",
+        "label": "Links Color",
+        "id": "link_color",
         "type": "color",
         "default": "#000"
       }, {
-        "label": "Button colors",
-        "id": "button-color",
+        "label": "Button color",
+        "id": "button_color",
         "type": "color",
         "default": "#000"
       }, {
         "label": "Button Text color",
-        "id": "button-text-color",
+        "id": "button_text_color",
         "type": "color",
         "default": "#fff"
       }
     ],
     "enabled_on": {
-      "templates": ["customers/account"]
+      "templates": ["customers/account","page"]
     }
   }
 {% endschema %}
+

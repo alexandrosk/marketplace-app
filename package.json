@@ -19,21 +19,21 @@
   },
   "dependencies": {
     "@preact/signals": "^1.1.5",
-    "@prisma/client": "^4.13.0",
+    "@prisma/client": "^5.4.2",
     "@remix-run/node": "^1.19.1",
     "@remix-run/react": "^1.19.1",
     "@remix-run/serve": "^1.19.1",
     "@shopify/app": "^3.48",
     "@shopify/app-bridge-types": "^0.0.3",
     "@shopify/cli": "^3.48",
-    "@shopify/polaris": "^12.0.0-beta.0",
+    "@shopify/polaris": "^12.0.2",
     "@shopify/polaris-viz": "^9.11.0",
+    "@shopify/react-i18n-universal-provider": "^3.0.22",
     "@shopify/shopify-app-remix": "^1.1.0",
     "@shopify/shopify-app-session-storage-prisma": "^1.0.0",
     "@shopify/shopify-app-session-storage-redis": "^1.1.8",
     "cross-env": "^7.0.3",
     "isbot": "latest",
-    "prisma": "^4.13.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "remix-utils": "^6.6.0"
@@ -43,9 +43,12 @@
     "@remix-run/dev": "^1.19.1",
     "@remix-run/eslint-config": "^1.19.1",
     "@types/eslint": "^8.40.0",
-    "eslint": "^8.42.0",
-    "eslint-config-prettier": "^8.8.0",
-    "prettier": "^2.8.8"
+    "eslint": "8.49.0",
+    "eslint-config-next": "^13.5.4",
+    "eslint-config-prettier": "9.0.0",
+    "eslint-plugin-prettier": "5.0.0",
+    "prettier": "3.0.3",
+    "prisma": "^5.4.2"
   },
   "workspaces": {
     "packages": [

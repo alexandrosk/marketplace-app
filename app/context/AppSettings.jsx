@@ -1,28 +1,29 @@
-import React, { createContext, useContext, useReducer } from 'react';
-import {useLoaderData} from "@remix-run/react";
-import {json} from "@remix-run/node";
-import { authenticate } from '~/shopify.server';
-
+import React, { createContext, useContext, useReducer } from "react";
+import { useLoaderData } from "@remix-run/react";
+import { json } from "@remix-run/node";
+import { authenticate } from "~/shopify.server";
 
 const SettingsContext = createContext(
-  { state: {}, dispatch: ({}) => {}} // default value
+  { state: {}, dispatch: ({}) => {} }, // default value
 );
 
 export const useSettings = () => {
   const context = useContext(SettingsContext);
 
   if (!context) {
-    throw new Error('useSettings must be used within a SettingsProvider');
+    throw new Error("useSettings must be used within a SettingsProvider");
   }
   return context;
 };
 
-
-export const SettingProvider = ({ children, initialAppInstallationId, settings}) => {
-
+export const SettingProvider = ({
+  children,
+  initialAppInstallationId,
+  settings,
+}) => {
   const SettingReducer = (state, action) => {
     switch (action.type) {
-      case 'ADD_SETTING':
+      case "ADD_SETTING":
         return {
           ...state,
           [action.resourceId]: [
@@ -30,7 +31,7 @@ export const SettingProvider = ({ children, initialAppInstallationId, settings})
             action.setting,
           ],
         };
-      case 'SET_SETTING':
+      case "SET_SETTING":
         return {
           ...state,
           settings: {
@@ -44,11 +45,10 @@ export const SettingProvider = ({ children, initialAppInstallationId, settings})
   };
 
   const initialState = {
-    'appId': initialAppInstallationId,
-    'activePlan': 'free',
-    'settings': settings || {}
+    appId: initialAppInstallationId,
+    activePlan: "free",
+    settings: settings || {},
   };
-
 
   const [state, dispatch] = useReducer(SettingReducer, initialState);
 

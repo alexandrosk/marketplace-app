@@ -1,12 +1,1 @@
-{
-  "blocks": {
-    "customer-page": {
-      "name": "Customer Page",
-      "settings": {
-        "text-color": {
-          "label": "Text Color"
-        }
-      }
-    }
-  }
-}
+{}

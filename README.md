@@ -214,3 +214,44 @@ This template uses [Remix](https://remix.run). The following Shopify tools are a
 - [App extensions](https://shopify.dev/docs/apps/app-extensions/list)
 - [Shopify Functions](https://shopify.dev/docs/api/functions)
 - [Getting started with internationalizing your app](https://shopify.dev/docs/apps/best-practices/internationalization/getting-started)
+
+get metaobject definition
+
+```
+query metaobjectDefinitionByType($type: String!) {
+  metaobjectDefinitionByType(type: $type) {
+    id
+    access {
+      storefront
+    }
+    capabilities {
+      publishable {
+        enabled
+      }
+    }
+    name
+    type
+    fieldDefinitions {
+      name
+      key
+      type {
+        name
+        category
+        supportedValidations {
+          name
+          type
+        }
+      }
+      description
+      required
+      validations {
+        name
+        type
+        value
+      }
+    }
+  }
+
+}
+
+```
