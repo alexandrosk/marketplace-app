@@ -38,6 +38,25 @@ export const getProfile = async (customerId) => {
   }
 };
 
+export const getSettings = async () => {
+  try {
+    const response = await fetch("/apps/frontend/app/settings", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return await response.json();
+    //const savedProfile = await response.json();
+  } catch (error) {
+    console.error("Error fetching profile:", error);
+    return null; // Return null in case of error
+  }
+};
+
 export const saveProfile = async (profile) => {
   try {
     const response = await fetch("/apps/frontend/user/profile", {

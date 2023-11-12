@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PlusSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +23,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@radix-ui/react-select";
+import { getSettings } from "../utils/api";
 
 const CreateListing = () => {
   const [variations, setVariations] = useState([{ label: "", quantity: "" }]);
@@ -44,6 +45,25 @@ const CreateListing = () => {
   const handleVariationInputToggle = () => {
     setVariationInputVisibility(!variationInputVisibility);
   };
+
+  const [settings, setSettings] = useState({}); //[{"key":"test","value":"test"}]);
+
+  useEffect(() => {
+    getSettings().then(function (response) {
+      setSettings(response);
+    });
+  }, []);
+
+  function renderCategories(categoriesString) {
+    try {
+      return JSON.parse(categoriesString).map((category, index) => (
+        <DropdownMenuItem key={index}>{category.label}</DropdownMenuItem>
+      ));
+    } catch (e) {
+      console.error("Error parsing allowed categories JSON", e);
+      return null;
+    }
+  }
 
   return (
     <>
@@ -72,9 +92,8 @@ const CreateListing = () => {
                   Select Category
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem>Electronics</DropdownMenuItem>
-                  <DropdownMenuItem>Fashion</DropdownMenuItem>
-                  <DropdownMenuItem>Home Appliances</DropdownMenuItem>
+                  {settings?.settings?.allowed_categories &&
+                    renderCategories(settings.settings.allowed_categories)}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>

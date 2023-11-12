@@ -13,6 +13,13 @@ import {
   InlineGrid,
   Collapsible,
   Icon,
+  PageActions,
+  SettingToggle,
+  ChoiceList,
+  FormLayout,
+  TextField,
+  Checkbox,
+  AccountConnection,
 } from "@shopify/polaris";
 import {
   ChevronDownMinor,
@@ -101,50 +108,85 @@ export default function AppOnboarding() {
   }, [actionData, state]);
 
   return (
-    <Page>
-      <ui-title-bar title="Generate metafields 🎉">
-        <button variant="primary" onClick={generateMetafields}>
-          Finish Onboarding
-        </button>
-      </ui-title-bar>
-
-      <InlineGrid>
-        <Card>
-          {/*{actionData?.product && (
-          <Button
-            url={`https://admin.shopify.com/store/${shop}/admin/products/${productId}`}
-            target="_blank"
-          >
-            View product
-          </Button>
-        )}*/}
-          <Text as={"p"}>
-            Welcome! 🎉 <br />
-            To start you need to click the button below to generate the
-            metafields. <br />
-            <strong>
-              First step is to create the metaobject "Seller" that will be your
-              sellers from now on. <br />
-            </strong>
-            <br />
-            We will generate the Metaobject "Seller" that will be your sellers
-            from now on. <br />
-            We need to also connect this with Products, Orders, Collections and
-            Customers. <br />
-            Everything is shopify native and you can always remove that. <br />
-            Nothing will be added on the frontend of your site. <br />
-            <br />
-          </Text>
-          <Thumbnail
-            source="https://cdn.shopify.com/s/files/1/0757/9955/files/empty-state.svg"
-            alt="Empty state"
+    <Page
+      title="Settings"
+      breadcrumbs={[{ content: "Back to Dashboard", url: "/dashboard" }]}
+      primaryAction={{ content: "Save", disabled: false }}
+    >
+      <Layout>
+        <Layout.AnnotatedSection
+          title="Account Connection"
+          description="Connect your account to external services."
+        >
+          <AccountConnection
+            connected
+            accountName="Jane Doe"
+            title="Facebook"
+            action={{
+              content: "Disconnect",
+              onAction: void 0,
+            }}
+            details="No account connected"
           />
-          <Button loading={isLoading} primary onClick={generateMetafields}>
-            Finish Onboarding
-          </Button>
-        </Card>
-      </InlineGrid>
-      <OnboardingModal />
+        </Layout.AnnotatedSection>
+
+        <Layout.AnnotatedSection
+          title="General Settings"
+          description="Configure the general settings for your application."
+        >
+          <Card sectioned>
+            <FormLayout>
+              <TextField label="Store name" value={void 0} onChange={void 0} />
+              <Checkbox
+                label="Enable feature X"
+                checked={void 0}
+                onChange={void 0}
+              />
+              <ChoiceList
+                title="Order processing"
+                choices={[
+                  { label: "Automatic", value: "automatic" },
+                  { label: "Manual", value: "manual" },
+                ]}
+                selected={["automatic"]}
+                onChange={void 0}
+              />
+            </FormLayout>
+          </Card>
+        </Layout.AnnotatedSection>
+
+        <Layout.AnnotatedSection
+          title="Notifications"
+          description="Manage your notification settings."
+        >
+          <SettingToggle
+            action={{
+              content: "enable",
+              onAction: void 0,
+            }}
+            enabled={true}
+          >
+            {true
+              ? "Notifications are enabled."
+              : "Notifications are disabled."}
+          </SettingToggle>
+        </Layout.AnnotatedSection>
+
+        <Layout.Section>
+          <PageActions
+            primaryAction={{
+              content: "Save",
+              onAction: void 0,
+            }}
+            secondaryActions={[
+              {
+                content: "Discard",
+                onAction: void 0,
+              },
+            ]}
+          />
+        </Layout.Section>
+      </Layout>
     </Page>
   );
 }

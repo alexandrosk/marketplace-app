@@ -26,6 +26,11 @@ const shopify = shopifyApp({
       deliveryMethod: DeliveryMethod.Http,
       callbackUrl: "/webhooks",
     },
+    PRODUCTS_UPDATE: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl:
+        "https://worker-flat-breeze-f20c.alexandroskoukis.workers.dev/",
+    },
   },
   hooks: {
     afterAuth: async ({ session }) => {

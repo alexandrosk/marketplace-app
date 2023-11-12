@@ -70,7 +70,7 @@ export const loader = async ({ request }) => {
 
   const response = await admin.graphql(QUERY, { variables });
   const responseJson = await response.json();
-
+  console.log(responseJson.data.collections.edges);
   return {
     shop: session.shop,
     collections: responseJson.data.collections.edges,
@@ -104,13 +104,28 @@ export default function SettingsPage() {
 
   useEffect(() => {
     if (state.settings.allowed_categories) {
-      //explode comma seperated string the allowed categories
-      setRightItems(state.settings.allowed_categories.split(","));
-      setLeftItems(
-        collections
-          .map((collection) => collection.node.id)
-          .filter((item) => !state.settings.allowed_categories.includes(item)),
-      );
+      try {
+        // Parse the JSON string to get the array of allowed categories
+        const allowedCategoriesArray = JSON.parse(
+          state.settings.allowed_categories,
+        );
+        const allowedCategoryIds = allowedCategoriesArray.map(
+          (cat) => cat.value,
+        );
+        console.log(allowedCategoryIds);
+
+        // Filter the collections to create the leftItems array, excluding those that are allowed (i.e., on the right)
+        setLeftItems(
+          collections
+            .map((collection) => collection.node.id)
+            .filter((id) => !allowedCategoryIds.includes(id)),
+        );
+
+        setRightItems(allowedCategoryIds);
+      } catch (error) {
+        console.error("Error parsing allowed categories:", error);
+        // Handle the error or set some default state
+      }
     }
     setCommission(state.settings.default_commision);
   }, [state.settings]);
@@ -146,7 +161,12 @@ export default function SettingsPage() {
         disabled: rightItems.length === 0,
         onAction: () => {
           updateSetting("default_commision", commission);
-          updateSetting("allowed_categories", rightItems);
+          updateSetting(
+            "allowed_categories",
+            JSON.stringify(
+              allOptions.filter((option) => rightItems.includes(option.value)),
+            ),
+          );
         },
       }}
       secondaryActions={[

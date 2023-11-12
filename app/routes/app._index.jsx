@@ -15,6 +15,7 @@ import {
   Button,
   Box,
   Divider,
+  InlineStack,
   List,
   CalloutCard,
   AccountConnection,
@@ -96,8 +97,8 @@ export async function action({ request }) {
             //   }
             // }
           },
-          name: "Seller",
-          type: "seller",
+          name: "Vendors",
+          type: "vendors",
           displayNameKey: "title",
           fieldDefinitions: [
             {
@@ -179,10 +180,10 @@ export async function action({ request }) {
     {
       variables: {
         definition: {
-          name: "Seller",
-          namespace: "seller",
-          key: "seller_id",
-          description: "Seller of the product",
+          name: "Vendor",
+          namespace: "vendor",
+          key: "vendor_id",
+          description: "Vendor of the product",
           type: "metaobject_reference",
           pin: true,
           ownerType: "PRODUCT",
@@ -226,7 +227,7 @@ export async function action({ request }) {
       variables: {
         definition: {
           name: "CustomerId",
-          namespace: "seller",
+          namespace: "vendor",
           key: "customer_id",
           useAsCollectionCondition: true,
           description:
@@ -264,10 +265,10 @@ export async function action({ request }) {
     {
       variables: {
         definition: {
-          name: "Seller",
-          namespace: "seller",
-          key: "seller_ids",
-          description: "Connected sellers",
+          name: "Vendor",
+          namespace: "vendor",
+          key: "vendor_ids",
+          description: "Connected vendors",
           type: "list.metaobject_reference",
           pin: true,
           ownerType: "ORDER",
@@ -309,10 +310,10 @@ export async function action({ request }) {
     {
       variables: {
         definition: {
-          name: "Seller",
-          namespace: "seller",
-          key: "seller_id",
-          description: "Connected sellers",
+          name: "Vendor",
+          namespace: "vendor",
+          key: "vendor_id",
+          description: "Connected vendors",
           type: "list.metaobject_reference",
           pin: true,
           ownerType: "COLLECTION",
@@ -354,10 +355,10 @@ export async function action({ request }) {
     {
       variables: {
         definition: {
-          name: "Seller",
-          namespace: "seller",
-          key: "seller_id",
-          description: "Connected sellers",
+          name: "Vendor",
+          namespace: "vendor",
+          key: "vendor_id",
+          description: "Connected vendors",
           type: "list.metaobject_reference",
           pin: true,
           ownerType: "LOCATION",
@@ -519,6 +520,7 @@ export default function Index() {
                       width: "80%",
                     }}
                   >
+                    {/*@todo Demo: of course we can't check this with  0-3, except we disable previous steps */}
                     <ProgressBar
                       progress={
                         state.settings.onboarding_step === 0
@@ -532,13 +534,13 @@ export default function Index() {
                       size="small"
                     />
                   </div>
-                  <Divider />
                 </InlineGrid>
+                <br />
                 <InlineGrid gap="2">
                   {state.settings.onboarding_step === 0 && (
                     <div style={{ height: "200px" }}>
                       <Card background={"bg-subdued"}>
-                        <HorizontalStack>
+                        <InlineStack>
                           <div style={{ width: "2rem" }}>
                             <svg
                               width="24"
@@ -588,8 +590,8 @@ export default function Index() {
                             <br />
                             <Text as="h2" variant="headingMd">
                               <p>
-                                We need to setup the Seller metaobject and the
-                                Seller metafields on Orders, Customers Products
+                                We need to setup the Vendor metaobject and the
+                                Vendor metafields on Orders, Customers Products
                                 and Collections. <br />
                                 You can easily remove this from the app settings
                                 later if you want to.
@@ -618,14 +620,14 @@ export default function Index() {
                               alt={""}
                             />
                           </div>
-                        </HorizontalStack>
+                        </InlineStack>
                       </Card>
                     </div>
                   )}
                   {state.settings.onboarding_step < 2 && (
                     <div style={{ height: "200px" }}>
                       <Card background={"bg-subdued"}>
-                        <InlineGrid>
+                        <InlineStack>
                           <div style={{ width: "2rem" }}>
                             <svg
                               width="24"
@@ -702,14 +704,14 @@ export default function Index() {
                               alt={""}
                             />
                           </div>
-                        </InlineGrid>
+                        </InlineStack>
                       </Card>
                     </div>
                   )}
                   {state.settings.onboarding_step < 3 && (
                     <div style={{ height: "200px" }}>
                       <Card background={"bg-subdued"}>
-                        <InlineGrid>
+                        <InlineStack>
                           <div style={{ width: "2rem" }}>
                             <svg
                               width="24"
@@ -787,7 +789,7 @@ export default function Index() {
                               alt={""}
                             />
                           </div>
-                        </InlineGrid>
+                        </InlineStack>
                       </Card>
                     </div>
                   )}
@@ -831,7 +833,7 @@ export default function Index() {
                 content: "Read the docs",
                 onAction: () => {},
               }}
-              description="Add the app to your customer page to show the sellers.
+              description="Add the app to your customer page to show the vendors.
                 Or any other related page that you prefer for vendor to see their info and upload products."
               popoverActions={[{ content: "Dismiss", onAction: () => {} }]}
             >

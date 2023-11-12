@@ -1,0 +1,28 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+name = "multivendor-shop"
+client_id = "134aee47e256fdd2f4857a79372287f5"
+application_url = "https://fairfield-payday-township-chapel.trycloudflare.com"
+embedded = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products,read_products,read_metaobjects,write_metaobjects,read_metaobject_definitions,write_metaobject_definitions,write_customers,read_orders,write_orders"
+use_legacy_install_flow = true
+
+[auth]
+redirect_urls = [
+  "https://fairfield-payday-township-chapel.trycloudflare.com/auth/callback",
+  "https://fairfield-payday-township-chapel.trycloudflare.com/auth/shopify/callback",
+  "https://fairfield-payday-township-chapel.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2023-10"
+
+[pos]
+embedded = false
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "newathens.myshopify.com"
