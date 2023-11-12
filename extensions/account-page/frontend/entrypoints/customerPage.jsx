@@ -76,7 +76,7 @@ const CustomerPage = ({ customerid = "", settings = "" }) => {
             <p>Please try again in the future.</p>
           </div>
         )) ||
-        (!isVendor && isLoaded && (
+        (!isVendor && (
           <div className="request-vendor">
             <Link href="/seller-form" class="">
               {settingsData.join_us}
