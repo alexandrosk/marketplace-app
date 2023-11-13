@@ -21,20 +21,22 @@ Also it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exten
 1. `pnpm i`
 2. `pnpm run dev`
 3. `cd extensions/account-page && pnpm i && pnpm run dev`
-4. `Important for theme app extension: change the proxy url in the shopify app settings to your updated cloudflare url`
+4. Important for theme app extension: change the proxy url in the shopify app settings to your updated cloudflare url
 
 
 ## To Do 📝
 
 ### Frontend Seller
-- [ ] Webhook for new vendor -> collection
 - [ ] Create new product - huge
-  - [ ] Collection setup (after 1st product)
-  - [ ] Location — add 1 - 2 - 3 locations and then connect with products
-- [ ] Commission setup 
-- [ ] Dashboard - connection with data
-- [x] User settings 
-  - [ ] Setup PayPal payments
+  - [ ] Edit product
+  - [ ] Add product images
+  - [x] Categories 
+  - [ ] Product variants & qty
+  - [ ] Location — let vendor add, then connect with products
+- [ ] Dashboard - connection with real data
+- [x] User settings
+  - [ ] Disable vendor button (webhook)
+  - [ ] Setup a way to get payments
 - [x] Setup profile
   - [x] Profile Request
   - [x] Theme app extension for profile
@@ -47,12 +49,13 @@ Also it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exten
 - [x] Extension for account page/or related page
 
 ### Admin
-- [ ] Only use Vendor as metaobject (some references to seller are still there)
+- [ ] Setup Payouts page 
+  - [ ] Connect orders with vendors
 - [ ] Send email for new vendor setup
 - [x] Settings - like categories etc commission
 - [x] Approve vendors
   - [x] Connect status
-  - [x] + collection template + app block with dynamic info ?
+  - [x] collection template + app block with dynamic info ?
   - [x] -> after approve create auto collection for products with vendorID?
 - [x] Show vendor data and redirect to meta object 
 

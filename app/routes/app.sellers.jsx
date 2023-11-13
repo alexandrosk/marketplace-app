@@ -186,14 +186,14 @@ const SellerTableRow = ({ seller, shop }) => {
       </IndexTable.Cell>
       <IndexTable.Cell>
         {(seller.status == "Approved" && (
-          <Badge status="success">Approved</Badge>
+          <Badge tone="success">Approved</Badge>
         )) ||
           (seller.status == "Declined" && (
-            <Badge status="critical">Declined</Badge>
+            <Badge tone="critical">Declined</Badge>
           )) ||
           (seller.status == "Pending" && (
-            <Badge status="warning">Pending</Badge>
-          )) || <Badge status="info">Not assigned</Badge>}
+            <Badge tone="warning">Pending</Badge>
+          )) || <Badge tone="info">Not assigned</Badge>}
       </IndexTable.Cell>
     </IndexTable.Row>
   );
@@ -236,7 +236,7 @@ export default function Index() {
   return (
     <Page
       divider
-      title="Sellers"
+      title="Vendors"
       primaryAction={{
         content: "Create new vendor",
         onAction: () => {

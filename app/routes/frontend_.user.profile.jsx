@@ -98,6 +98,11 @@ export let action = async ({ request }) => {
                 metaobject {
                   handle
                   id
+                  capabilities {
+                    publishable {
+                      status
+                    }
+                  }
                   slug: field(key: "slug") {
                     value
                   }
@@ -105,6 +110,9 @@ export let action = async ({ request }) => {
                     value
                   }
                     description: field(key: "bio") {
+                        value
+                    }
+                    status: field(key: "status") {
                         value
                     }
                 }
@@ -120,6 +128,11 @@ export let action = async ({ request }) => {
           metaobject: {
             type: "vendors",
             handle: formData.username,
+            capabilities: {
+              publishable: {
+                status: "ACTIVE",
+              },
+            },
             fields: [
               {
                 key: "slug",
@@ -132,6 +145,10 @@ export let action = async ({ request }) => {
               {
                 key: "description",
                 value: formData.bio,
+              },
+              {
+                key: "status",
+                value: JSON.stringify(["Pending"]),
               },
             ],
           },

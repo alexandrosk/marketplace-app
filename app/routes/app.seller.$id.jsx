@@ -119,7 +119,7 @@ export default function SellerPage() {
   };
   return (
     <Page
-      backAction={{ content: "Sellers", url: "/app/sellers" }}
+      backAction={{ content: "Vendors", url: "/app/sellers" }}
       title={vendor.handle}
       primaryAction={{
         content: "Edit Vendor",
