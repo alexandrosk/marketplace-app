@@ -49,7 +49,11 @@ export async function action({ request }) {
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
-
+  console.log(
+    JSON.stringify(
+      json(admin.rest.resources.Product.all({ session, limit: 10 })),
+    ),
+  );
   const response = await admin.graphql(
     `#graphql
     query getMetaobjectDefinitionByType($type: String!) {
@@ -70,7 +74,7 @@ export const loader = async ({ request }) => {
     },
   );
   const responseJson = await response.json();
-  console.log(JSON.stringify(responseJson.data));
+  //  console.log(JSON.stringify(responseJson.data));
 
   return json({ shop: session.shop.replace(".myshopify.com", "") });
 };

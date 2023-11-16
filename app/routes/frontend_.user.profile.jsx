@@ -18,43 +18,43 @@ export let action = async ({ request }) => {
     if (formData.vendorId) {
       const response = await admin.graphql(
         `#graphql
-                mutation UpdateMetaobject($metaobject: MetaobjectUpdateInput!, $id: ID!) {
-                    metaobjectUpdate(id: $id, metaobject: $metaobject) {
-                        metaobject {
-                            handle
-                            id
-                            slug: field(key: "slug") {
-                                value
-                            }
-                            title: field(key: "title") {
-                                value
-                            }
-                            description: field(key: "bio") {
-                                value
-                            }
-                            social: field(key: "social") {
-                                value
-                            }
-                            enabled: field(key: "enabled") {
-                                value
-                            }
-                            image: field(key: "image") {
-                                reference {
-                                    ... on MediaImage {
-                                        image {
-                                            originalSrc
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        userErrors {
-                            field
-                            message
-                            code
-                        }
+        mutation UpdateMetaobject($metaobject: MetaobjectUpdateInput!, $id: ID!) {
+          metaobjectUpdate(id: $id, metaobject: $metaobject) {
+            metaobject {
+              handle
+              id
+              slug: field(key: "slug") {
+                value
+              }
+              title: field(key: "title") {
+                value
+              }
+              description: field(key: "bio") {
+                value
+              }
+              social: field(key: "social") {
+                value
+              }
+              enabled: field(key: "enabled") {
+                value
+              }
+              image: field(key: "image") {
+                reference {
+                  ... on MediaImage {
+                    image {
+                      originalSrc
                     }
-                }`,
+                  }
+                }
+              }
+            }
+            userErrors {
+              field
+              message
+              code
+            }
+          }
+        }`,
         {
           variables: {
             metaobject: {
@@ -93,36 +93,36 @@ export let action = async ({ request }) => {
     }
     const response = await admin.graphql(
       `#graphql
-            mutation CreateMetaobject($metaobject: MetaobjectCreateInput!) {
-              metaobjectCreate(metaobject: $metaobject) {
-                metaobject {
-                  handle
-                  id
-                  capabilities {
-                    publishable {
-                      status
-                    }
-                  }
-                  slug: field(key: "slug") {
-                    value
-                  }
-                  title: field(key: "title") {
-                    value
-                  }
-                    description: field(key: "bio") {
-                        value
-                    }
-                    status: field(key: "status") {
-                        value
-                    }
-                }
-                userErrors {
-                  field
-                  message
-                  code
-                }
+      mutation CreateMetaobject($metaobject: MetaobjectCreateInput!) {
+        metaobjectCreate(metaobject: $metaobject) {
+          metaobject {
+            handle
+            id
+            capabilities {
+              publishable {
+                status
               }
-            }`,
+            }
+            slug: field(key: "slug") {
+              value
+            }
+            title: field(key: "title") {
+              value
+            }
+            description: field(key: "bio") {
+              value
+            }
+            status: field(key: "status") {
+              value
+            }
+          }
+          userErrors {
+            field
+            message
+            code
+          }
+        }
+      }`,
       {
         variables: {
           metaobject: {
@@ -168,27 +168,27 @@ export let action = async ({ request }) => {
 
     const response2 = await admin.graphql(
       `#graphql
-              mutation updateCustomerMetafields($input: CustomerInput!) {
-                  customerUpdate(input: $input) {
-                    customer {
-                      id
-                      metafields(first: 3) {
-                        edges {
-                          node {
-                            id
-                            namespace
-                            key
-                            value
-                          }
-                        }
-                      }
-                    }
-                    userErrors {
-                      message
-                      field
-                    }
-                  }
-              }`,
+      mutation updateCustomerMetafields($input: CustomerInput!) {
+        customerUpdate(input: $input) {
+          customer {
+            id
+            metafields(first: 3) {
+              edges {
+                node {
+                  id
+                  namespace
+                  key
+                  value
+                }
+              }
+            }
+          }
+          userErrors {
+            message
+            field
+          }
+        }
+      }`,
       {
         variables: {
           input: {
@@ -227,42 +227,42 @@ export let loader = async ({ request }) => {
     const { admin } = await unauthenticated.admin(shop ?? "");
     const response = await admin.graphql(
       `#graphql
-            query getMetaObject($id: ID!) {
-              metaobject(id: $id) {
-                id
-                type
-                handle
-                capabilities {
-                    publishable {
-                        status
-                    }
-                }
-                title: field(key: "title") {
-                    value
-                }
-                bio: field(key: "description") {
-                    value
-                }
-                  enabled: field(key: "enabled") {
-                        value
-                  }
-                url: field(key: "social") {
-                    value
-                }
-                status: field(key: "status") {
-                    value
-                }
-                image: field(key: "image") {
-                    reference {
-                        ... on MediaImage {
-                            image {
-                                originalSrc
-                            }
-                        }
-                    }
+      query getMetaObject($id: ID!) {
+        metaobject(id: $id) {
+          id
+          type
+          handle
+          capabilities {
+            publishable {
+              status
+            }
+          }
+          title: field(key: "title") {
+            value
+          }
+          bio: field(key: "description") {
+            value
+          }
+          enabled: field(key: "enabled") {
+            value
+          }
+          url: field(key: "social") {
+            value
+          }
+          status: field(key: "status") {
+            value
+          }
+          image: field(key: "image") {
+            reference {
+              ... on MediaImage {
+                image {
+                  originalSrc
                 }
               }
-            }`,
+            }
+          }
+        }
+      }`,
       {
         variables: {
           id: customerId,

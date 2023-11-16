@@ -36,10 +36,10 @@
     "isbot": "latest",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "remix-utils": "^6.6.0"
+    "remix-utils": "^6.6.0",
+    "resend": "^2.0.0"
   },
   "devDependencies": {
-    "@preact/preset-vite": "^2.5.0",
     "@remix-run/dev": "^1.19.1",
     "@remix-run/eslint-config": "^1.19.1",
     "@types/eslint": "^8.40.0",

@@ -449,19 +449,7 @@ export default function Index() {
     });
   };
   return (
-    <Page
-      divider
-      title={"Multivendor Shop"}
-      primaryAction={{ content: "Metafields Setup", disabled: true }}
-      secondaryActions={[
-        {
-          disabled: true,
-          content: "Settings",
-          accessibilityLabel: "Secondary action label",
-          onAction: () => alert("Duplicate action"),
-        },
-      ]}
-    >
+    <Page divider title={"Multivendor Shop"}>
       <InlineGrid gap="5">
         <Layout>
           <Layout.Section>

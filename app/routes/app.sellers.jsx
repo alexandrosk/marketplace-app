@@ -48,7 +48,7 @@ export async function loader({ request }) {
 
   const QUERY = `
     {
-      metaobjects(type: "vendors", first: 20) {
+      metaobjects(type: "vendors", first: 20, sortKey: "updated_at") {
         nodes {
           handle
           type

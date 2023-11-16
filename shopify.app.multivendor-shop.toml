@@ -2,7 +2,7 @@
 
 name = "multivendor-shop"
 client_id = "134aee47e256fdd2f4857a79372287f5"
-application_url = "https://encouraged-pharmaceutical-undefined-incurred.trycloudflare.com"
+application_url = "https://groundwater-privilege-hopefully-virginia.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -12,9 +12,10 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://encouraged-pharmaceutical-undefined-incurred.trycloudflare.com/auth/callback",
-  "https://encouraged-pharmaceutical-undefined-incurred.trycloudflare.com/auth/shopify/callback",
-  "https://encouraged-pharmaceutical-undefined-incurred.trycloudflare.com/api/auth/callback"
+  "https://groundwater-privilege-hopefully-virginia.trycloudflare.com/auth/callback",
+  "https://groundwater-privilege-hopefully-virginia.trycloudflare.com/auth/shopify/callback",
+  "https://groundwater-privilege-hopefully-virginia.trycloudflare.com/api/auth/callback",
+  "https://groundwater-privilege-hopefully-virginia.trycloudflare.com/.shopify/graphiql/auth/callback"
 ]
 
 [webhooks]

@@ -16,7 +16,8 @@
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.3",
     "vite": "^4.4.9",
-    "vite-plugin-shopify": "^2.2.1"
+    "vite-plugin-shopify": "^2.2.1",
+    "@preact/preset-vite": "^2.5.0"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.1",

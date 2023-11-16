@@ -18,22 +18,22 @@ export let action = async ({ request }) => {
     handle = handle.replace(/\s+/g, "-").toLowerCase();
     const response = await admin.graphql(
       `#graphql
-            mutation CreateMetaobject($metaobject: MetaobjectCreateInput!) {
-              metaobjectCreate(metaobject: $metaobject) {
-                metaobject {
-                  handle
-                  id
-                  slug: field(key: "slug") {
-                    value
-                  }
-                }
-                userErrors {
-                  field
-                  message
-                  code
-                }
-              }
-            }`,
+      mutation CreateMetaobject($metaobject: MetaobjectCreateInput!) {
+        metaobjectCreate(metaobject: $metaobject) {
+          metaobject {
+            handle
+            id
+            slug: field(key: "slug") {
+              value
+            }
+          }
+          userErrors {
+            field
+            message
+            code
+          }
+        }
+      }`,
       {
         variables: {
           metaobject: {
@@ -55,27 +55,27 @@ export let action = async ({ request }) => {
 
     const response2 = await admin.graphql(
       `#graphql
-              mutation updateCustomerMetafields($input: CustomerInput!) {
-                  customerUpdate(input: $input) {
-                    customer {
-                      id
-                      metafields(first: 3) {
-                        edges {
-                          node {
-                            id
-                            namespace
-                            key
-                            value
-                          }
-                        }
-                      }
-                    }
-                    userErrors {
-                      message
-                      field
-                    }
-                  }
-              }`,
+      mutation updateCustomerMetafields($input: CustomerInput!) {
+        customerUpdate(input: $input) {
+          customer {
+            id
+            metafields(first: 3) {
+              edges {
+                node {
+                  id
+                  namespace
+                  key
+                  value
+                }
+              }
+            }
+          }
+          userErrors {
+            message
+            field
+          }
+        }
+      }`,
       {
         variables: {
           input: {

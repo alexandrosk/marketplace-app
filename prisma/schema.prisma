@@ -28,6 +28,8 @@ model Settings {
   id                      Int      @id @default(autoincrement())
   shop                    String   @unique
   default_commision       Float?
+  allows_shipping         String?
+  available_sizes         Json?
   auto_approve            Boolean?
   // seperate_seller registration and dashboard page
   seller_shipping_methods Boolean?
@@ -37,4 +39,15 @@ model Settings {
   minimum_order_amount    Float?
   quantity_limit          Int?
   onboarding_step         Int?
+  // include API key, from email, from name, etc
+  from_email              String?
+  from_email_api_key      String?
+}
+
+model Variants {
+  id     Int     @id @default(autoincrement())
+  shop   String
+  title  String
+  key    String?
+  values Json?
 }

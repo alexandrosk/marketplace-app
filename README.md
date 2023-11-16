@@ -51,7 +51,7 @@ Also it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exten
 ### Admin
 - [ ] Setup Payouts page 
   - [ ] Connect orders with vendors
-- [ ] Send email for new vendor setup
+- [ ] Send email for new vendor setup + approved 
 - [x] Settings - like categories etc commission
 - [x] Approve vendors
   - [x] Connect status
