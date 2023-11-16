@@ -52,7 +52,12 @@ Also it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exten
 - [ ] Setup Payouts page 
   - [ ] Connect orders with vendors
 - [ ] Send email for new vendor setup + approved 
-- [x] Settings - like categories etc commission
+  - [X] Email ResendAPi 
+- [ ] Settings - categories, variants, commission, shipping etc
+  - [x] Mass update settings from state
+  - [x] Variants setup
+  - [ ] Options for Variants (Missing GraphQL update)
+  - [ ] Commission
 - [x] Approve vendors
   - [x] Connect status
   - [x] collection template + app block with dynamic info ?

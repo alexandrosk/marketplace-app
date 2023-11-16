@@ -14,7 +14,9 @@ import {
   Toast,
   Tag,
   Frame,
+  Modal,
   ChoiceList,
+  Link,
 } from "@shopify/polaris";
 
 import { json } from "@remix-run/node";
@@ -34,21 +36,22 @@ export const action = async ({ request }) => {
   let settings = formData.get("settings");
   let variants = formData.get("variants");
 
-  variants = JSON.parse(variants);
-
   try {
     const settingsCallback = await updateAllSettings(
       session.shop,
       JSON.parse(settings),
     );
-    const variantsCallback = await updateAllVariants(
-      session.shop,
-      JSON.parse(variants),
-    );
-    if (variantsCallback && settingsCallback) {
+
+    JSON.parse(variants).map(async (variant) => {
+      const variantsCallback = await updateAllVariants(session.shop, variant);
+      console.log(variantsCallback);
+    });
+
+    if (settingsCallback) {
       return json({ success: true }, { status: 200 });
     }
   } catch (error) {
+    console.log(error);
     return json({ error }, { status: 500 });
   }
   return json({ success: false }, { status: 500 });
@@ -118,9 +121,6 @@ export default function SettingsPage() {
     [],
   );
 
-  console.log(leftItems);
-  console.log(rightItems);
-
   const handleVariantChange = (value) => {
     setNewVariant(value);
   };
@@ -133,7 +133,7 @@ export default function SettingsPage() {
     }
 
     if (newVariant) {
-      setVariants([...variants, { title: newVariant, values: [] }]);
+      setVariants([...variants, { title: newVariant, values: "[]" }]);
       setNewVariant("");
     }
   };
@@ -185,6 +185,49 @@ export default function SettingsPage() {
     [leftItems, rightItems, selectedLeft, selectedRight],
   );
 
+  const [activeModal, setActiveModal] = useState(false);
+  const [currentVariant, setCurrentVariant] = useState(null);
+  const [variantValues, setVariantValues] = useState("");
+
+  const handleVariantValuesChange = (value) => {
+    setVariantValues(value);
+  };
+
+  const handleTagClick = (variant) => {
+    setCurrentVariant(variant);
+
+    const valuesArray = variant.values
+      ? JSON.parse(variant.values)
+          .map((item) => item.label)
+          .join(", ")
+      : "";
+    setVariantValues(valuesArray);
+
+    setActiveModal(true);
+  };
+
+  const handleModalClose = () => {
+    setActiveModal(false);
+    setCurrentVariant(null);
+    setVariantValues("");
+  };
+
+  const handleModalSubmit = () => {
+    // Convert the string back to JSON format
+    const updatedValues = JSON.stringify(
+      variantValues.split(",").map((value) => ({
+        label: value.trim(),
+        value: `gid://shopify/Collection/${value.trim()}`,
+      })),
+    );
+
+    const updatedVariants = variants.map((v) =>
+      v.id === currentVariant.id ? { ...v, values: updatedValues } : v,
+    );
+    setVariants(updatedVariants);
+    handleModalClose();
+  };
+
   const handleSubmit = (event) => {
     const formData = new FormData();
     formData.append("variants", JSON.stringify(variants));
@@ -214,6 +257,30 @@ export default function SettingsPage() {
     >
       <Frame>
         {toastMarkup}
+        <Modal
+          open={activeModal}
+          onClose={handleModalClose}
+          title={`Add values to ${currentVariant?.title}`}
+          primaryAction={{
+            content: "Add",
+            onAction: handleModalSubmit,
+          }}
+          secondaryActions={[
+            {
+              content: "Cancel",
+              onAction: handleModalClose,
+            },
+          ]}
+        >
+          <Modal.Section>
+            <TextField
+              label="Values"
+              value={variantValues}
+              onChange={handleVariantValuesChange}
+              placeholder="e.g., Small, Medium, Large"
+            />
+          </Modal.Section>
+        </Modal>
         {/*{JSON.stringify(variantsDb)}*/}
         <BlockStack gap={{ xs: "800", sm: "400" }}>
           {console.log(state.settings)}
@@ -304,7 +371,9 @@ export default function SettingsPage() {
                 <InlineStack gap={"100"}>
                   {variants.map((variant) => (
                     <Tag key={variant.title} onRemove={removeTag(variant)}>
-                      {variant.title}
+                      <Link to="#" onClick={() => handleTagClick(variant)}>
+                        {variant.title}
+                      </Link>
                     </Tag>
                   ))}
                 </InlineStack>
