@@ -231,7 +231,9 @@ export let loader = async ({ request }) => {
         metaobject(id: $id) {
           id
           type
-          handle
+          slug: field(key: "slug") {
+            value
+          }
           capabilities {
             publishable {
               status

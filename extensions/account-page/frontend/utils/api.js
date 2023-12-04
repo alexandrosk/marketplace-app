@@ -78,3 +78,25 @@ export const saveProfile = async (profile) => {
     throw error; // Re-throw the error so that calling function can handle it
   }
 };
+
+export const createProduct = async (product) => {
+  try {
+    const response = await fetch("/apps/frontend/user/products", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(product),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json(); // Assuming the server returns a JSON error
+      throw new Error(errorData.error || "Network response was not ok");
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error saving product:", error);
+    throw error;
+  }
+};

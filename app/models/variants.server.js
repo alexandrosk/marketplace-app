@@ -24,3 +24,13 @@ export async function updateAllVariants(shop, variant) {
     throw error; // It's good practice to rethrow the error so the caller can handle it
   }
 }
+
+export async function getVariants(shop) {
+  try {
+    return await db.variants.findMany({
+      where: { shop },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}

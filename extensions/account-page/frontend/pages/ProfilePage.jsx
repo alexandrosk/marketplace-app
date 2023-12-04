@@ -49,7 +49,7 @@ const ProfilePage = ({ isVendor, profileData }) => {
   // Setting up defaultValues based on the fetched profileData
   const defaultValues = profileData
     ? {
-        username: profileData?.handle || "",
+        username: profileData?.slug?.value || "",
         bio: profileData?.bio?.value || "Description goes here",
         enabled: profileData?.enabled?.value === "true",
         urls: JSON.parse(profileData?.url?.value) || [
@@ -153,6 +153,12 @@ const ProfilePage = ({ isVendor, profileData }) => {
               <FormDescription>
                 This is your public display handle. And will be linking to your
                 collection.
+              </FormDescription>
+              <FormDescription>
+                Use this url to link to your store:{" "}
+                <a href={"/collections/" + field.value} target="_blank">
+                  {field.value}
+                </a>
               </FormDescription>
               <FormMessage />
             </FormItem>

@@ -5,7 +5,7 @@
 
 ### All contributions are welcome! 🙏
 Refactor as much as you want, add new features, fix bugs, etc.
-Since this was done as a demo
+Since this was done as a demo and PoC for most of the time I didn't focus on the code quality and structure.
 
 ## Description 📝 
 This is a shopify app that allows you to create a multivendor marketplace.
@@ -28,35 +28,46 @@ Also it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exten
 
 ### Frontend Seller
 - [ ] Create new product - huge
+  - [ ] New product [WIP]
   - [ ] Edit product
-  - [ ] Add product images
+  - [ ] Google feed XML update products ?
+  - [x] Add product images
   - [x] Categories 
-  - [ ] Product variants & qty
+  - [x] Product qty set
+  - [x] Product options and variants from admin settings 
   - [ ] Location — let vendor add, then connect with products
+  - [ ] Shipping - let vendor add shipping costs and choose on products
 - [ ] Dashboard - connection with real data
+  - [ ] Orders
+  - [ ] Shipping
+  - [ ] Sold products etc
 - [x] User settings
   - [ ] Disable vendor button (webhook)
+  - [ ] Shipping rates
+  - [ ] Locations to handle
   - [ ] Setup a way to get payments
 - [x] Setup profile
   - [x] Profile Request
   - [x] Theme app extension for profile
-  - [ ] Setup handle + SEO description on collection
+  - [ ] Setup handle + SEO description for vendor - collection pages
   - [x] Bio, socials, titles etc & info
 
 ### Frontend Theme app extensions
-- [ ] Extension for product page
+- [ ] Extension for product page - vendor info
+- [ ] Extension for product page bottom
 - [X] Extension for collection page
 - [x] Extension for account page/or related page
 
 ### Admin
 - [ ] Setup Payouts page 
-  - [ ] Connect orders with vendors
+  - [ ] Connect orders with vendors - stripe
 - [ ] Send email for new vendor setup + approved 
   - [X] Email ResendAPi 
+  - [ ] Email templates
 - [ ] Settings - categories, variants, commission, shipping etc
   - [x] Mass update settings from state
   - [x] Variants setup
-  - [ ] Options for Variants (Missing GraphQL update)
+  - [x] Options for Variants setup modal 
   - [ ] Commission
 - [x] Approve vendors
   - [x] Connect status
