@@ -29,21 +29,21 @@ Also it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exten
 ### Frontend Seller
 - [ ] Create new product - huge
   - [ ] New product [WIP]
+  - [ ] Product variants
   - [ ] Edit product
   - [ ] Google feed XML update products ?
   - [x] Add product images
   - [x] Categories 
   - [x] Product qty set
-  - [x] Product options and variants from admin settings 
-  - [ ] Location — let vendor add, then connect with products
-  - [ ] Shipping - let vendor add shipping costs and choose on products
+  - [x] Product options and variants from admin settings
 - [ ] Dashboard - connection with real data
   - [ ] Orders
   - [ ] Shipping
   - [ ] Sold products etc
+- [ ] Location — let vendor add, then connect with products
+- [ ] Shipping - let vendor add shipping costs and choose on products
 - [x] User settings
   - [ ] Disable vendor button (webhook)
-  - [ ] Shipping rates
   - [ ] Locations to handle
   - [ ] Setup a way to get payments
 - [x] Setup profile
@@ -54,13 +54,14 @@ Also it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exten
 
 ### Frontend Theme app extensions
 - [ ] Extension for product page - vendor info
-- [ ] Extension for product page bottom
+- [ ] Extension for product page bottom - related products
 - [X] Extension for collection page
 - [x] Extension for account page/or related page
 
 ### Admin
 - [ ] Setup Payouts page 
-  - [ ] Connect orders with vendors - stripe
+  - [ ] Connect orders with vendors and calculate payouts
+  - [ ] Automatic payouts stripe (later)
 - [ ] Send email for new vendor setup + approved 
   - [X] Email ResendAPi 
   - [ ] Email templates
@@ -77,6 +78,7 @@ Also it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exten
 
 ### Webhooks 
 - [ ] New vendor - create collection
+- [ ] Edit vendor - update collection 
 - [ ] Disable vendor - disable collection & products
 - [ ] Admin disables product - notify vendor
 - [ ] New order notify vendor
