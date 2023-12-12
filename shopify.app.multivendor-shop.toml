@@ -2,20 +2,20 @@
 
 name = "multivendor-shop"
 client_id = "134aee47e256fdd2f4857a79372287f5"
-application_url = "https://premiere-hack-phi-verification.trycloudflare.com"
+application_url = "https://frog-prevent-mission-nancy.trycloudflare.com"
 embedded = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products,read_products,read_metaobjects,write_metaobjects,read_metaobject_definitions,write_metaobject_definitions,write_customers,read_orders,write_orders"
+scopes = "write_products,read_products,read_metaobjects,write_metaobjects,read_metaobject_definitions,write_metaobject_definitions,write_customers,read_orders,write_orders,write_files,write_themes"
 use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://premiere-hack-phi-verification.trycloudflare.com/auth/callback",
-  "https://premiere-hack-phi-verification.trycloudflare.com/auth/shopify/callback",
-  "https://premiere-hack-phi-verification.trycloudflare.com/api/auth/callback",
-  "https://premiere-hack-phi-verification.trycloudflare.com/.shopify/graphiql/auth/callback"
+  "https://frog-prevent-mission-nancy.trycloudflare.com/auth/callback",
+  "https://frog-prevent-mission-nancy.trycloudflare.com/auth/shopify/callback",
+  "https://frog-prevent-mission-nancy.trycloudflare.com/api/auth/callback",
+  "https://frog-prevent-mission-nancy.trycloudflare.com/.shopify/graphiql/auth/callback"
 ]
 
 [webhooks]

@@ -53,8 +53,9 @@ export default function App() {
         </Link>
         <Link to="/app/sellers">Vendors</Link>
         <Link to="/app/settings">Settings</Link>
+        <Link to="/app/payouts">Payouts</Link>
+        <Link to="/app/billing">Subscription</Link>
         <Link to="/app/onboarding">Onboarding</Link>
-        <Link to="/app/billing">Plans</Link>
       </ui-nav-menu>
       <PolarisVizProvider>
         <PolarisAppProvider

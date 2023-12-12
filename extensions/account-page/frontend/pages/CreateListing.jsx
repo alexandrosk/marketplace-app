@@ -18,6 +18,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -45,32 +46,61 @@ const defaultValues = {
   // Initialize other fields
 };
 
-const CreateProductPage = () => {
+const CreateProductPage = ({ customerId }) => {
   const [configuration, setConfiguration] = useState({});
-
+  const [imagePreviews, setImagePreviews] = useState([]); // State to store image previews
+  const [files, setFiles] = useState([]); // State to store image previews
+  const [loading, setLoading] = useState(false);
   const form = useForm({
     resolver: zodResolver(productFormSchema),
     defaultValues,
     mode: "onChange",
   });
 
+  const handleImageChange = (event) => {
+    const fileList = Array.from(event.target.files);
+    const newImagePreviews = fileList.map((file) => URL.createObjectURL(file));
+
+    setImagePreviews(newImagePreviews); // For displaying image previews in UI
+    setFiles(fileList); // Store the actual file objects for uploading
+  };
+
   async function onSubmit(data) {
     try {
-      const response = await createProduct(data);
+      const formData = new FormData();
+      setLoading(true);
+
+      files.forEach((file, index) => {
+        formData.append(`images[${index}]`, file, file.name);
+      });
+
+      // Append other data from the form
+      Object.entries(data).forEach(([key, value]) => {
+        if (key !== "images") {
+          formData.append(key, value);
+        }
+      });
+      formData.append("vendorId", customerId);
+
+      const response = await createProduct(formData);
+      //add loading until response
 
       if (response) {
+        setLoading(false);
         toast({
           title: "Product Created",
           description: "Your listing has been successfully created.",
         });
       }
     } catch (error) {
+      setLoading(false);
       toast({
         title: "Error",
         description: error.message || error,
       });
     }
   }
+
   useEffect(() => {
     getSettings().then(function (response) {
       setConfiguration(response ?? {});
@@ -78,6 +108,11 @@ const CreateProductPage = () => {
   }, []);
   return (
     <Form {...form}>
+      {loading && (
+        <div className="flex items-center justify-center absolute h-full w-full bg-opacity-25 bg-white ">
+          <Loader2 className="animate-spin" size={64} />
+        </div>
+      )}
       <div className={"mb-10"}>
         <h2>Create new listing</h2>
         <div className="text-left">
@@ -92,6 +127,62 @@ const CreateProductPage = () => {
         className=" space-x-8 grid gap-6 md:grid-cols-2 lg:grid-cols-7"
       >
         <div className={"col-span-5 space-y-8"}>
+          <FormField
+            control={form.control}
+            name="images"
+            render={({ field: { onChange, value, ...rest } }) => (
+              <>
+                <FormItem>
+                  <FormLabel>Images</FormLabel>
+                  <FormControl>
+                    <Input
+                      multiple
+                      type="file"
+                      {...rest}
+                      onChange={handleImageChange}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Upload images for your product. First one will be used as a
+                    cover image.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              </>
+            )}
+          />
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+            {imagePreviews.map((src, index) => (
+              <div
+                key={index}
+                className="relative group rounded-lg overflow-hidden"
+              >
+                <img
+                  alt={`Uploaded Image ${index + 1}`}
+                  className="object-cover w-full h-48"
+                  src={src}
+                  style={{ aspectRatio: "200/200", objectFit: "cover" }}
+                />
+                <div className="absolute bottom-0 left-0 bg-white dark:bg-gray-800 bg-opacity-60 p-2 w-full text-center">
+                  Image {index + 1}
+                </div>
+                {/* Implement remove functionality as needed */}
+                <Button
+                  className="absolute top-0 right-0 m-2"
+                  variant="destructive"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setImagePreviews((prev) =>
+                      prev.filter((_, i) => i !== index),
+                    );
+                  }}
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+          </div>
+
           <FormField
             control={form.control}
             name="title"
@@ -171,28 +262,6 @@ const CreateProductPage = () => {
           />
 
           <Button type="submit">Create Product</Button>
-        </div>
-        <div className="preview col-span-2">
-          <div className="space-y-3">
-            <span data-state="closed">
-              <div className=" rounded-md">
-                <img
-                  alt="React Rendezvous"
-                  loading="lazy"
-                  width="250"
-                  height="330"
-                  decoding="async"
-                  data-nimg="1"
-                  className="h-auto w-auto object-cover transition-all hover:scale-105 aspect-[3/4] rounded-md"
-                  src="https://fakeimg.pl/300x500/000000/ffffff?text=-&font=bebas"
-                />
-              </div>
-            </span>
-            <div className="space-y-1 text-sm">
-              <h3 className="font-medium leading-none">Title</h3>
-              <p className="text-xs text-muted-foreground">Price</p>
-            </div>
-          </div>
         </div>
       </form>
     </Form>

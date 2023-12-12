@@ -13,6 +13,7 @@ import { fetchProductsFromProxy, getProfile } from "~/utils/api";
 import { useEffect, useState } from "react"; // Import ListingsPage
 import CreateListingPage from "../pages/CreateListing.jsx";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 
 const TestPage = () => (
@@ -62,15 +63,22 @@ const CustomerPage = ({ customerid = "", settings = "" }) => {
 
   return (
     <div>
-      {(underReview && isLoaded && (
-        <div className="under-review">
-          <h2 className={"h2"}>Your shop profile is under review</h2>
-          <p>
-            Once your account is approved you will be able to start selling.
-          </p>
-        </div>
+      {(!isLoaded && (
+        <>
+          <div className="flex items-center justify-center  h-full w-full bg-opacity-25 bg-white py-5 text-center">
+            <Loader2 className="animate-spin" size={64} />
+          </div>
+        </>
       )) ||
-        (isLoaded && !isVendor && !underReview && (
+        (underReview && (
+          <div className="under-review">
+            <h2 className={"h2"}>Your shop profile is under review</h2>
+            <p>
+              Once your account is approved you will be able to start selling.
+            </p>
+          </div>
+        )) ||
+        (!isVendor && !underReview && (
           <div className="under-review">
             <h2 className={"h2"}>Your shop profile is declined</h2>
             <p>Please try again in the future.</p>
@@ -113,7 +121,10 @@ const CustomerPage = ({ customerid = "", settings = "" }) => {
                       profileData={profileData}
                     />
                     <ListingsPage path="/listings" products={products} />
-                    <CreateListingPage path="/create-listing" />
+                    <CreateListingPage
+                      path="/create-listing"
+                      customerId={customerId}
+                    />
                     <TestPage path="/test" />
                   </Router>
                 </div>

@@ -28,6 +28,7 @@ import { authenticate } from "~/shopify.server";
 import { useSettings } from "~/context/AppSettings";
 import { useLoaderData, useSubmit } from "@remix-run/react";
 import db from "~/db.server";
+import { boolean } from "zod";
 export const action = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
 
@@ -235,6 +236,9 @@ export default function SettingsPage() {
     //state.settings.id = undefined;
     formData.append("settings", JSON.stringify(state.settings));
     submit(formData, { method: "post", action: "/app/settings" });
+
+    setToastMessage("Settings saved!");
+    toggleActiveToast();
   };
 
   return (
@@ -415,6 +419,61 @@ export default function SettingsPage() {
                   }
                   helpText="This is the default commission that will be applied to all products. You can override this on a per vendor or product basis."
                   autoComplete="commission"
+                />
+              </BlockStack>
+            </Card>
+          </InlineGrid>
+
+          <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
+            <Box
+              as="section"
+              paddingInlineStart={{ xs: 400, sm: 0 }}
+              paddingInlineEnd={{ xs: 400, sm: 0 }}
+            >
+              <BlockStack gap="400">
+                <Text as="h3" variant="headingMd">
+                  Approval of Vendor and Products
+                </Text>
+                <Text as="p" variant="bodyMd">
+                  Enable Auto product approval and vendor approval. <br />
+                  If disabled, you will have to manually approve vendors and
+                  products. <br />
+                  You will get an email when a vendor or product is submitted
+                  for approval.
+                </Text>
+              </BlockStack>
+            </Box>
+            <Card roundedAbove="sm">
+              <BlockStack gap="400">
+                <ChoiceList
+                  title="Auto Publish Products"
+                  choices={[
+                    { label: "Enabled", value: "true" },
+                    { label: "Disabled", value: "false" },
+                  ]}
+                  selected={[state.settings.auto_publish_products]}
+                  onChange={(value) =>
+                    dispatch({
+                      type: "SET_SETTING",
+                      resourceId: "auto_publish_products",
+                      value: value[0],
+                    })
+                  }
+                />
+                <ChoiceList
+                  title="Auto Approve Vendors"
+                  choices={[
+                    { label: "Enabled", value: "true" },
+                    { label: "Disabled", value: "false" },
+                  ]}
+                  selected={[state.settings.auto_approve]}
+                  onChange={(value) =>
+                    dispatch({
+                      type: "SET_SETTING",
+                      resourceId: "auto_approve",
+                      value: value[0],
+                    })
+                  }
                 />
               </BlockStack>
             </Card>

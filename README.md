@@ -16,7 +16,7 @@ The idea is that by using this app we will be able to create a multivendor marke
 
 ## Setup 🛠
 This app uses shopify's [remix app template](https://github.com/Shopify/shopify-app-template-remix) as a base. 
-Also it uses shopify [react vite](https://github.com/montalvomiguelo/theme-extension-vite) as a base for the frontend, theme app extension.
+Also, it uses shopify [react vite](https://github.com/montalvomiguelo/theme-extension-vite) as a base for the frontend, theme app extension.
 
 1. `pnpm i`
 2. `pnpm run dev`
@@ -28,10 +28,11 @@ Also it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exten
 
 ### Frontend Seller
 - [ ] Create new product - huge
-  - [ ] New product [WIP]
+  - [X] New product **[WIP]**
+  - [X] Use staged upload to upload images
   - [ ] Product variants
   - [ ] Edit product
-  - [ ] Google feed XML update products ?
+  - [ ] Google feed XML update products ? _[future]_
   - [x] Add product images
   - [x] Categories 
   - [x] Product qty set
@@ -40,8 +41,7 @@ Also it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exten
   - [ ] Orders
   - [ ] Shipping
   - [ ] Sold products etc
-- [ ] Location — let vendor add, then connect with products
-- [ ] Shipping - let vendor add shipping costs and choose on products
+- [ ] Shipping - let vendor add shipping costs on their products
 - [x] User settings
   - [ ] Disable vendor button (webhook)
   - [ ] Locations to handle
@@ -70,10 +70,13 @@ Also it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exten
   - [x] Variants setup
   - [x] Options for Variants setup modal 
   - [ ] Commission
-- [x] Approve vendors
-  - [x] Connect status
+- [ ] Approve Products manually
+  - [x] Add settings for selecting auto approval
+  - [ ] Specific Vendor auto approve their products
+- [ ] Approve vendors
+  - [x] Add approval status
   - [x] collection template + app block with dynamic info ?
-  - [x] -> after approve create auto collection for products with vendorID?
+  - [ ] Webhook -> after approve create auto collection for products with vendorID?
 - [x] Show vendor data and redirect to meta object 
 
 ### Webhooks 

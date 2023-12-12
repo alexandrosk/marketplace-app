@@ -45,7 +45,6 @@
     "@remix-run/eslint-config": "^1.19.1",
     "@types/eslint": "^8.40.0",
     "eslint": "8.49.0",
-    "eslint-config-next": "^13.5.4",
     "eslint-config-prettier": "9.0.0",
     "eslint-plugin-prettier": "5.0.0",
     "prettier": "3.0.3",

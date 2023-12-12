@@ -83,10 +83,7 @@ export const createProduct = async (product) => {
   try {
     const response = await fetch("/apps/frontend/user/products", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(product),
+      body: product,
     });
 
     if (!response.ok) {

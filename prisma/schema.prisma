@@ -25,15 +25,15 @@ model Session {
 
 // multivendor app settings for merchant
 model Settings {
-  id                      Int      @id @default(autoincrement())
-  shop                    String   @unique
+  id                      Int     @id @default(autoincrement())
+  shop                    String  @unique
   default_commision       Float?
   allows_shipping         String?
   available_sizes         Json?
-  auto_approve            Boolean?
+  auto_approve            String? @default("false")
   // seperate_seller registration and dashboard page
-  seller_shipping_methods Boolean?
-  auto_publish_products   Boolean?
+  seller_shipping_methods String? @default("false")
+  auto_publish_products   String? @default("false")
   allowed_categories      Json?
   allowed_countries       Json?
   minimum_order_amount    Float?
