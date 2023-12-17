@@ -29,6 +29,7 @@ Also, it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exte
 ### Frontend Seller
 - [ ] Create new product - huge
   - [X] New product **[WIP]**
+  - [ ] Show tags etc on product upload 
   - [X] Use staged upload to upload images
   - [ ] Product variants
   - [ ] Edit product
@@ -71,6 +72,7 @@ Also, it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exte
   - [x] Options for Variants setup modal 
   - [ ] Commission
 - [ ] Approve Products manually
+  - [ ] Page to Approve products (?)
   - [x] Add settings for selecting auto approval
   - [ ] Specific Vendor auto approve their products
 - [ ] Approve vendors

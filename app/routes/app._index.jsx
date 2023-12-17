@@ -33,6 +33,8 @@ import { useSettings } from "~/context/AppSettings";
 import { settingsHook } from "~/hooks/useSettings";
 import LandingBars from "~/components/LandingBars";
 import { ClientOnly } from "remix-utils";
+import { CREATE_METAOBJECT_VENDOR } from "~/graphql/mutations/createMetaobjectVendor";
+import { CREATE_METAFIELD_DEFINITION } from "~/graphql/mutations/createMetafield";
 
 export const loader = async ({ request }) => {
   const { session } = await authenticate.admin(request);
@@ -43,140 +45,84 @@ export const loader = async ({ request }) => {
 export async function action({ request }) {
   const { admin } = await authenticate.admin(request);
 
-  const response = await admin.graphql(
-    `#graphql
-    mutation CreateMetaobjectDefinition($definition: MetaobjectDefinitionCreateInput!) {
-      metaobjectDefinitionCreate(definition: $definition) {
-        metaobjectDefinition {
-          id
-          access {
-            storefront
-          }
-          capabilities {
-            publishable {
-              enabled
-            }
-#            renderable {
-#              enabled
-#              data {
-#                metaTitleKey
-#                metaDescriptionKey
-#              }
-#            }
-          }
-          name
-          type
-          fieldDefinitions {
-            name
-            key
-          }
-        }
-        userErrors {
-          field
-          message
-          code
-        }
-      }
-    }`,
-    {
-      variables: {
-        definition: {
-          access: {
-            /*"admin": "MERCHANT_READ_WRITE",*/
-            storefront: "PUBLIC_READ",
-          },
-          capabilities: {
-            publishable: {
-              enabled: true,
-            },
-            // "renderable": {
-            //   "enabled": true,
-            //   "data": {
-            //     "metaTitleKey": "title",
-            //     "metaDescriptionKey": "description"
-            //   }
-            // }
-          },
-          name: "Vendors",
-          type: "vendors",
-          displayNameKey: "title",
-          fieldDefinitions: [
-            {
-              name: "Title",
-              key: "title",
-              type: "single_line_text_field",
-            },
-            {
-              name: "Description",
-              key: "description",
-              type: "multi_line_text_field",
-            },
-            { name: "slug", key: "slug", type: "single_line_text_field" },
-            { name: "enabled", key: "enabled", type: "boolean" },
-            {
-              name: "rating",
-              key: "rating",
-              type: "rating",
-              validations: [
-                {
-                  name: "scale_min",
-                  value: "0",
-                },
-                {
-                  name: "scale_max",
-                  value: "5",
-                },
-              ],
-            },
-            {
-              name: "rating_total",
-              key: "rating_total",
-              type: "number_integer",
-            },
-            { name: "social", key: "social", type: "json" },
-            { name: "image", key: "image", type: "file_reference" },
-            { name: "color", key: "background", type: "color" },
-            { name: "country", key: "country", type: "single_line_text_field" },
-            {
-              name: "paypal_email",
-              key: "paypal_email",
-              type: "single_line_text_field",
-            },
-            {
-              name: "product_list",
-              key: "product_list",
-              type: "collection_reference",
-            },
-          ],
+  const createMetaobjectVendor = await admin.graphql(CREATE_METAOBJECT_VENDOR, {
+    variables: {
+      definition: {
+        access: {
+          /*"admin": "MERCHANT_READ_WRITE",*/
+          storefront: "PUBLIC_READ",
         },
+        capabilities: {
+          publishable: {
+            enabled: true,
+          },
+          // "renderable": {
+          //   "enabled": true,
+          //   "data": {
+          //     "metaTitleKey": "title",
+          //     "metaDescriptionKey": "description"
+          //   }
+          // }
+        },
+        name: "Vendors",
+        type: "vendors",
+        displayNameKey: "title",
+        fieldDefinitions: [
+          {
+            name: "Title",
+            key: "title",
+            type: "single_line_text_field",
+          },
+          {
+            name: "Description",
+            key: "description",
+            type: "multi_line_text_field",
+          },
+          { name: "slug", key: "slug", type: "single_line_text_field" },
+          { name: "enabled", key: "enabled", type: "boolean" },
+          {
+            name: "rating",
+            key: "rating",
+            type: "rating",
+            validations: [
+              {
+                name: "scale_min",
+                value: "0",
+              },
+              {
+                name: "scale_max",
+                value: "5",
+              },
+            ],
+          },
+          {
+            name: "rating_total",
+            key: "rating_total",
+            type: "number_integer",
+          },
+          { name: "social", key: "social", type: "json" },
+          { name: "image", key: "image", type: "file_reference" },
+          { name: "color", key: "background", type: "color" },
+          { name: "country", key: "country", type: "single_line_text_field" },
+          {
+            name: "paypal_email",
+            key: "paypal_email",
+            type: "single_line_text_field",
+          },
+          {
+            name: "product_list",
+            key: "product_list",
+            type: "collection_reference",
+          },
+        ],
       },
     },
-  );
-  const responseJson = await response.json();
+  });
+  const responseJson = await createMetaobjectVendor.json();
 
   //if(responseJson.data.metaobjectDefinitionCreate.userErrors.length < 1){
-  const response2 = await admin.graphql(
-    `#graphql
-          mutation CreateMetafieldDefinition($definition: MetafieldDefinitionInput!) {
-            metafieldDefinitionCreate(definition: $definition) {
-              createdDefinition {
-                id
-                name
-                namespace
-                key
-                ownerType
-                validations {
-                  name
-                  value
-                }
-              }
-              userErrors {
-                field
-                message
-                code
-              }
-            }
-          }`,
+  const productVendorReference = await admin.graphql(
+    CREATE_METAFIELD_DEFINITION,
     {
       variables: {
         definition: {
@@ -200,29 +146,8 @@ export async function action({ request }) {
     },
   );
 
-  const response2_1 = await admin.graphql(
-    `#graphql
-    mutation CreateMetafieldDefinition($definition: MetafieldDefinitionInput!) {
-      metafieldDefinitionCreate(definition: $definition) {
-        createdDefinition {
-          id
-          name
-          namespace
-          key
-          ownerType
-          useAsCollectionCondition
-          validations {
-            name
-            value
-          }
-        }
-        userErrors {
-          field
-          message
-          code
-        }
-      }
-    }`,
+  const CustomerVendorReference = await admin.graphql(
+    CREATE_METAFIELD_DEFINITION,
     {
       variables: {
         definition: {
@@ -240,28 +165,8 @@ export async function action({ request }) {
     },
   );
 
-  const response3 = await admin.graphql(
-    `#graphql
-          mutation CreateMetafieldDefinition($definition: MetafieldDefinitionInput!) {
-            metafieldDefinitionCreate(definition: $definition) {
-              createdDefinition {
-                id
-                name
-                namespace
-                key
-                ownerType
-                validations {
-                  name
-                  value
-                }
-              }
-              userErrors {
-                field
-                message
-                code
-              }
-            }
-          }`,
+  const OrderVendorReference = await admin.graphql(
+    CREATE_METAFIELD_DEFINITION,
     {
       variables: {
         definition: {
@@ -285,28 +190,8 @@ export async function action({ request }) {
     },
   );
 
-  const response4 = await admin.graphql(
-    `#graphql
-    mutation CreateMetafieldDefinition($definition: MetafieldDefinitionInput!) {
-      metafieldDefinitionCreate(definition: $definition) {
-        createdDefinition {
-          id
-          name
-          namespace
-          key
-          ownerType
-          validations {
-            name
-            value
-          }
-        }
-        userErrors {
-          field
-          message
-          code
-        }
-      }
-    }`,
+  const CollectionVendorReference = await admin.graphql(
+    CREATE_METAFIELD_DEFINITION,
     {
       variables: {
         definition: {
@@ -330,28 +215,8 @@ export async function action({ request }) {
     },
   );
 
-  const response5 = await admin.graphql(
-    `#graphql
-    mutation CreateMetafieldDefinition($definition: MetafieldDefinitionInput!) {
-      metafieldDefinitionCreate(definition: $definition) {
-        createdDefinition {
-          id
-          name
-          namespace
-          key
-          ownerType
-          validations {
-            name
-            value
-          }
-        }
-        userErrors {
-          field
-          message
-          code
-        }
-      }
-    }`,
+  const LocationVendorRerefence = await admin.graphql(
+    CREATE_METAFIELD_DEFINITION,
     {
       variables: {
         definition: {
@@ -375,22 +240,27 @@ export async function action({ request }) {
     },
   );
 
-  const responseJson2 = await response2.json();
-  const responseJson2_1 = await response2_1.json();
-  const responseJson3 = await response3.json();
-  const responseJson4 = await response4.json();
-  const responseJson5 = await response5.json();
+  const otherResponses = await Promise.all([
+    productVendorReference.json(),
+    CustomerVendorReference.json(),
+    OrderVendorReference.json(),
+    CollectionVendorReference.json(),
+    LocationVendorRerefence.json(),
+  ]);
+
+  console.log(...otherResponses);
+  /*
+  //**Debug*
 
   console.log(
     JSON.stringify(responseJson.data),
-    JSON.stringify(responseJson2.data),
-    JSON.stringify(responseJson2_1.data),
-    JSON.stringify(responseJson3.data),
-    JSON.stringify(responseJson4.data),
-    JSON.stringify(responseJson5.data),
-  );
+    JSON.stringify(productReferenceJson.data),
+    JSON.stringify(customerReferenceJson.data),
+    JSON.stringify(orderReferenceJson.data),
+    JSON.stringify(collectionReferenceJson.data),
+    JSON.stringify(locationReferenceJson.data),
+  );*/
 
-  //}
   return json(responseJson.data);
 }
 
@@ -426,7 +296,7 @@ export default function Index() {
   const generateProduct = () => submit({}, { replace: true, method: "POST" });
 
   function setupAppExtension() {
-    updateSetting("onboarding_step", 2);
+    updateSetting(state.settings.shop, "onboarding_step", 2);
     dispatch({ type: "SET_SETTING", resourceId: "onboarding_step", value: 2 });
     window.open(
       "https://" +
@@ -435,7 +305,7 @@ export default function Index() {
     );
   }
   const openSettings = () => {
-    updateSetting("onboarding_step", 3).then(() => {
+    updateSetting(state.settings.shop, "onboarding_step", 3).then(() => {
       dispatch({
         type: "SET_SETTING",
         resourceId: "onboarding_step",
@@ -467,7 +337,7 @@ export default function Index() {
                 </InlineGrid>
                 {actionData && (
                   <Box
-                    padding="4"
+                    padding="400"
                     background="bg-subdued"
                     borderColor="border"
                     borderWidth="1"
@@ -504,8 +374,9 @@ export default function Index() {
                     </Text>
                   </div>
                   <div
+                    className={"mt-10"}
                     style={{
-                      width: "80%",
+                      width: "100%",
                     }}
                   >
                     {/*@todo Demo: of course we can't check this with  0-3, except we disable previous steps */}
@@ -572,7 +443,7 @@ export default function Index() {
                           </div>
                           <div style={{ maxWidth: "40rem" }}>
                             <Text as="h2" variant="headingMd">
-                              1. Setup Your Database{" "}
+                              1. Setup Your Metaobjects{" "}
                               <Badge status="critical">Required</Badge>
                             </Text>
                             <br />
@@ -613,7 +484,14 @@ export default function Index() {
                     </div>
                   )}
                   {state.settings.onboarding_step < 2 && (
-                    <div style={{ height: "200px" }}>
+                    <div
+                      style={{ height: "200px" }}
+                      className={
+                        state.settings.onboarding_step !== 1
+                          ? "disabled-div"
+                          : ""
+                      }
+                    >
                       <Card background={"bg-subdued"}>
                         <InlineStack>
                           <div style={{ width: "2rem" }}>
@@ -667,17 +545,24 @@ export default function Index() {
                                 Add our app extension in your customers account
                                 page or on any other page you'd like to.
                               </p>
-                              <Link url="#">Test link</Link>
+                              <Link
+                                url="https://www.multivendorshop.com/docs/admin/theme"
+                                target={"_blank"}
+                              >
+                                Theme App Documentation
+                              </Link>
                             </Text>
                             <br />
-                            <Button
-                              onClick={setupAppExtension}
-                              ariaExpanded={open}
-                              primary
-                              ariaControls="basic-collapsible"
-                            >
-                              Add App extension
-                            </Button>
+                            {state.settings.onboarding_step == 1 && (
+                              <Button
+                                onClick={setupAppExtension}
+                                ariaExpanded={open}
+                                primary
+                                ariaControls="basic-collapsible"
+                              >
+                                Add App extension
+                              </Button>
+                            )}
                           </div>
                           <div
                             style={{
@@ -697,7 +582,14 @@ export default function Index() {
                     </div>
                   )}
                   {state.settings.onboarding_step < 3 && (
-                    <div style={{ height: "200px" }}>
+                    <div
+                      style={{ height: "200px" }}
+                      className={
+                        state.settings.onboarding_step !== 1
+                          ? "disabled-div"
+                          : ""
+                      }
+                    >
                       <Card background={"bg-subdued"}>
                         <InlineStack>
                           <div style={{ width: "2rem" }}>
@@ -752,17 +644,24 @@ export default function Index() {
                                 default commissions, auto approval, fields for
                                 customers to fill in and more.
                               </p>
-                              <Link url="#">Test link</Link>
+                              <Link
+                                url="https://www.multivendorshop.com/docs/admin/settings"
+                                target={"_blank"}
+                              >
+                                Settings Documentation
+                              </Link>
                             </Text>
                             <br />
-                            <Button
-                              onClick={openSettings}
-                              ariaExpanded={open}
-                              primary
-                              ariaControls="basic-collapsible"
-                            >
-                              Settings setup
-                            </Button>
+                            {state.settings.onboarding_step == 2 && (
+                              <Button
+                                onClick={openSettings}
+                                ariaExpanded={open}
+                                primary
+                                ariaControls="basic-collapsible"
+                              >
+                                Settings setup
+                              </Button>
+                            )}
                           </div>
                           <div
                             style={{

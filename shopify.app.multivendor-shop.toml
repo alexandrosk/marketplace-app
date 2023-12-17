@@ -2,7 +2,7 @@
 
 name = "multivendor-shop"
 client_id = "134aee47e256fdd2f4857a79372287f5"
-application_url = "https://frog-prevent-mission-nancy.trycloudflare.com"
+application_url = "https://exist-rouge-plc-eve.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -12,10 +12,10 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://frog-prevent-mission-nancy.trycloudflare.com/auth/callback",
-  "https://frog-prevent-mission-nancy.trycloudflare.com/auth/shopify/callback",
-  "https://frog-prevent-mission-nancy.trycloudflare.com/api/auth/callback",
-  "https://frog-prevent-mission-nancy.trycloudflare.com/.shopify/graphiql/auth/callback"
+  "https://exist-rouge-plc-eve.trycloudflare.com/auth/callback",
+  "https://exist-rouge-plc-eve.trycloudflare.com/auth/shopify/callback",
+  "https://exist-rouge-plc-eve.trycloudflare.com/api/auth/callback",
+  "https://exist-rouge-plc-eve.trycloudflare.com/.shopify/graphiql/auth/callback"
 ]
 
 [webhooks]
