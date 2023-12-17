@@ -1,4 +1,4 @@
-import { json } from "@remix-run/node";
+import { json } from "@vercel/remix";
 import verifySignature from "~/utils/verifyLoggedSignature";
 import { getAllSettings } from "~/models/settings.server";
 import { getVariants } from "~/models/variants.server";

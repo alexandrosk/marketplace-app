@@ -1,5 +1,5 @@
 import React from "react";
-import { json } from "@remix-run/node";
+import { json } from "@vercel/remix";
 import { Link, Outlet, useLoaderData, useRouteError } from "@remix-run/react";
 import {
   AppProvider as PolarisAppProvider,

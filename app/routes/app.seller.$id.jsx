@@ -21,7 +21,7 @@ import {
   DuplicateMinor,
 } from "@shopify/polaris-icons";
 import { useRouteLoaderData } from "@remix-run/react";
-import { json } from "@remix-run/node";
+import { json } from "@vercel/remix";
 import { useLoaderData } from "@remix-run/react";
 import { authenticate } from "~/shopify.server";
 

@@ -35,7 +35,7 @@ import {
   useSubmit,
 } from "@remix-run/react";
 import { authenticate, login } from "~/shopify.server";
-import { json } from "@remix-run/node";
+import { json } from "@vercel/remix";
 import { useSettings } from "~/context/AppSettings";
 export async function action({ request }) {
   const { admin, session, sessionToken } = await authenticate.admin(request);

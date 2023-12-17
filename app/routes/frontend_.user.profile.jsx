@@ -1,4 +1,4 @@
-import { json } from "@remix-run/node";
+import { json } from "@vercel/remix";
 import verifySignature from "~/utils/verifyLoggedSignature";
 import { authenticate, unauthenticated } from "~/shopify.server";
 

@@ -23,7 +23,7 @@ import {
 import { useEffect, useState } from "react";
 import { useSettings } from "~/context/AppSettings";
 import { authenticate } from "~/shopify.server";
-import { json } from "@remix-run/node";
+import { json } from "@vercel/remix";
 import {
   useActionData,
   useLoaderData,

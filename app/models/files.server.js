@@ -1,4 +1,4 @@
-import { fetch, FormData } from "@remix-run/node";
+import { fetch, FormData } from "@vercel/remix";
 
 const prepareFiles = (files) =>
   files.map((file) => ({

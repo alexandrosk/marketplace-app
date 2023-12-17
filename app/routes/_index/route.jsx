@@ -1,4 +1,4 @@
-import { json, redirect } from "@remix-run/node";
+import { json, redirect } from "@vercel/remix";
 import { Form, useLoaderData } from "@remix-run/react";
 
 import { login } from "../../shopify.server";
