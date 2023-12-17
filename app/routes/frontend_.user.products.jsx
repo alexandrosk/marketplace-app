@@ -1,4 +1,4 @@
-import { json } from "@vercel/remix";
+import { json } from "@remix-run/node";
 import { unauthenticated } from "~/shopify.server"; // Adjust this import path as needed
 import { PRODUCT_LIST_BY_METAFIELD_QUERY } from "~/graphql/queries/productListByMetafield";
 import { CREATE_PRODUCT_MUTATION } from "~/graphql/mutations/createProduct";

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { json } from "@vercel/remix";
+import { json } from "@remix-run/node";
 import {
   AppProvider as PolarisAppProvider,
   Button,

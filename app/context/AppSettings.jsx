@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useReducer } from "react";
 import { useLoaderData } from "@remix-run/react";
-import { json } from "@vercel/remix";
+import { json } from "@remix-run/node";
 import { authenticate } from "~/shopify.server";
 
 const SettingsContext = createContext(

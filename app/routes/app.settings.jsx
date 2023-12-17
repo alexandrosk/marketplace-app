@@ -19,7 +19,7 @@ import {
   Link,
 } from "@shopify/polaris";
 
-import { json } from "@vercel/remix";
+import { json } from "@remix-run/node";
 import React, { useCallback, useEffect, useState } from "react";
 import { updateAllSettings } from "~/models/settings.server";
 import { updateAllVariants } from "~/models/variants.server";

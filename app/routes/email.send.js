@@ -1,4 +1,4 @@
-import { json } from "@vercel/remix";
+import { json } from "@remix-run/node";
 import { Resend } from "resend";
 import { getSetting } from "~/models/settings.server";
 

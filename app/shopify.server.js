@@ -9,7 +9,7 @@ import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prism
 import { restResources } from "@shopify/shopify-api/rest/admin/2023-07";
 
 import prisma from "./db.server";
-import { json } from "@vercel/remix";
+import { json } from "@remix-run/node";
 
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,

@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import { parse } from "url";
-import { json } from "@vercel/remix";
+import { json } from "@remix-run/node";
 
 const SHARED_SECRET = process.env.SHOPIFY_API_SECRET;
 

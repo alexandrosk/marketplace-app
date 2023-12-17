@@ -7,7 +7,7 @@ import {
   Page,
   IndexTable,
 } from "@shopify/polaris";
-import { json, redirect } from "@vercel/remix";
+import { json, redirect } from "@remix-run/node";
 import { useState, useEffect } from "react";
 
 import { useSubmit, useActionData, useLoaderData } from "@remix-run/react";
