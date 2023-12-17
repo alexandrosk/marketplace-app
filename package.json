@@ -32,6 +32,7 @@
     "@shopify/shopify-app-remix": "^1.1.0",
     "@shopify/shopify-app-session-storage-prisma": "^1.0.0",
     "@shopify/shopify-app-session-storage-redis": "^1.1.8",
+    "@vercel/remix": "^2.4.0",
     "cross-env": "^7.0.3",
     "isbot": "latest",
     "react": "^18.2.0",
