@@ -6,10 +6,8 @@ import {
   LATEST_API_VERSION,
 } from "@shopify/shopify-app-remix/server";
 import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
-import { restResources } from "@shopify/shopify-api/rest/admin/2023-07";
-
+import { restResources } from "@shopify/shopify-api/rest/admin/2023-10";
 import prisma from "./db.server";
-import { json } from "@remix-run/node";
 
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
@@ -26,16 +24,15 @@ const shopify = shopifyApp({
       deliveryMethod: DeliveryMethod.Http,
       callbackUrl: "/webhooks",
     },
-    /*PRODUCTS_UPDATE: {
-      deliveryMethod: DeliveryMethod.Http,
-      callbackUrl:
-        "https://worker-flat-breeze-f20c.alexandroskoukis.workers.dev/",
-    },*/
   },
   hooks: {
     afterAuth: async ({ session }) => {
       shopify.registerWebhooks({ session });
     },
+  },
+  future: {
+    v3_webhookAdminContext: true,
+    v3_authenticatePublic: true,
   },
   ...(process.env.SHOP_CUSTOM_DOMAIN
     ? { customShopDomains: [process.env.SHOP_CUSTOM_DOMAIN] }

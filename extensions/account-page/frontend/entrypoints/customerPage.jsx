@@ -40,7 +40,7 @@ const CustomerPage = ({ customerid = "", settings = "" }) => {
       if (response && status == "Approved") {
         setIsVendor(true);
         setProfileData(response.metaobject);
-        fetchProductsFromProxy()
+        fetchProductsFromProxy(customerId)
           .then((response) => setProducts(response.products))
           .catch((error) => console.error("Error fetching products:", error));
       } else if (response && status == "Pending") {

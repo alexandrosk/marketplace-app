@@ -1,4 +1,5 @@
-import { fetch, FormData } from "@remix-run/node";
+import { FormData } from "@remix-run/web-form-data";
+import { fetch } from "@remix-run/web-fetch";
 
 const prepareFiles = (files) =>
   files.map((file) => ({

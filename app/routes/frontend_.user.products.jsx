@@ -1,19 +1,21 @@
 import { json } from "@remix-run/node";
-import { unauthenticated } from "~/shopify.server"; // Adjust this import path as needed
+import { unauthenticated, authenticate } from "~/shopify.server"; // Adjust this import path as needed
 import { PRODUCT_LIST_BY_METAFIELD_QUERY } from "~/graphql/queries/productListByMetafield";
 import { CREATE_PRODUCT_MUTATION } from "~/graphql/mutations/createProduct";
 import { uploadFile } from "~/models/files.server";
-const fetchProductsByMetafield = async (admin, customerId) => {
-  const response = await admin.graphql(PRODUCT_LIST_BY_METAFIELD_QUERY, {
+const fetchProductsByMetafield = async (storefront, customerId) => {
+  const response = await storefront.graphql(PRODUCT_LIST_BY_METAFIELD_QUERY, {
     variables: { customerId },
   });
   const responseJson = await response.json();
-
-  return responseJson.data.products.edges.map(({ node }) => ({
+  console.log(JSON.stringify(responseJson));
+  return responseJson.data.collection.products.edges.map(({ node }) => ({
+    handle: "products/" + node.handle,
     id: node.id,
     title: node.title,
     description: node.description,
     price: node.priceRange.minVariantPrice.amount,
+    images: node.images.edges.map(({ node }) => node.originalSrc),
   }));
 };
 
@@ -69,9 +71,9 @@ const createProductInShopify = async (admin, productData, files) => {
  * @returns {Promise<(Omit<Response, "json"> & {json(): Promise<{error: string}>})|(Omit<Response, "json"> & {json(): Promise<{products: *}>})>}
  */
 export async function loader({ request }) {
-  const url = new URL(request.url);
-  const shop = url.searchParams.get("shop");
-  const customerId = url.searchParams.get("customer_id");
+  const { searchParams } = new URL(request.url);
+  const shop = searchParams.get("shop");
+  const customerId = searchParams.get("customerId");
 
   if (!shop || !customerId) {
     return json(
@@ -79,9 +81,9 @@ export async function loader({ request }) {
       { status: 400 },
     );
   }
+  const { storefront } = await authenticate.public.appProxy(request);
 
-  const { admin } = await unauthenticated.admin(shop);
-  const products = await fetchProductsByMetafield(admin, customerId);
+  const products = await fetchProductsByMetafield(storefront, customerId);
 
   return json({ products });
 }
@@ -113,7 +115,7 @@ export let action = async ({ request }) => {
     return json({ error: "Missing shop or product data" }, { status: 400 });
   }
 
-  const { admin } = await unauthenticated.admin(shop);
+  const { admin } = await authenticate.public.appProxy(request);
   try {
     const response = await createProductInShopify(admin, productData, files);
     console.log(JSON.stringify(response));

@@ -1,8 +1,11 @@
 export const PRODUCT_LIST_BY_METAFIELD_QUERY = `
-  query ProductsByMetafield($customerId: String!) {
-    products(first: 10, query: "metafield:'vendor.customer_id:$customerId'") {
+  query AllProducts {
+  collection(handle: "nike-vintage") {
+    handle
+    products(first: 10) {
       edges {
         node {
+          handle
           id
           title
           description
@@ -11,7 +14,15 @@ export const PRODUCT_LIST_BY_METAFIELD_QUERY = `
               amount
             }
           }
+          images(first: 1) {
+            edges {
+              node {
+                originalSrc
+              }
+            }
+          }
         }
       }
     }
-  }`;
+  }
+}`;

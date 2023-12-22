@@ -2,20 +2,20 @@
 
 name = "multivendor-shop"
 client_id = "134aee47e256fdd2f4857a79372287f5"
-application_url = "https://tu-adidas-walls-stable.trycloudflare.com"
+application_url = "https://church-disease-dist-livecam.trycloudflare.com"
 embedded = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products,read_products,read_metaobjects,write_metaobjects,read_metaobject_definitions,write_metaobject_definitions,write_customers,read_orders,write_orders,write_files,write_themes"
+scopes = "unauthenticated_read_product_listings,write_products,read_products,read_metaobjects,write_metaobjects,read_metaobject_definitions,write_metaobject_definitions,write_customers,read_orders,write_orders,write_files,write_themes"
 use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://tu-adidas-walls-stable.trycloudflare.com/auth/callback",
-  "https://tu-adidas-walls-stable.trycloudflare.com/auth/shopify/callback",
-  "https://tu-adidas-walls-stable.trycloudflare.com/api/auth/callback",
-  "https://tu-adidas-walls-stable.trycloudflare.com/.shopify/graphiql/auth/callback"
+  "https://church-disease-dist-livecam.trycloudflare.com/auth/callback",
+  "https://church-disease-dist-livecam.trycloudflare.com/auth/shopify/callback",
+  "https://church-disease-dist-livecam.trycloudflare.com/api/auth/callback",
+  "https://church-disease-dist-livecam.trycloudflare.com/.shopify/graphiql/auth/callback"
 ]
 
 [webhooks]

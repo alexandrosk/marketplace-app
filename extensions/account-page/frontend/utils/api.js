@@ -1,8 +1,11 @@
-export const fetchProductsFromProxy = async () => {
+export const fetchProductsFromProxy = async (customerId) => {
   try {
-    const response = await fetch("/apps/frontend/user/products", {
-      method: "GET",
-    });
+    const response = await fetch(
+      "/apps/frontend/user/products?customerId=" + customerId,
+      {
+        method: "GET",
+      },
+    );
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }

@@ -31,8 +31,6 @@ import {
 import { authenticate } from "../shopify.server";
 import { useSettings } from "~/context/AppSettings";
 import { settingsHook } from "~/hooks/useSettings";
-import LandingBars from "~/components/LandingBars";
-import { ClientOnly } from "remix-utils";
 import { CREATE_METAOBJECT_VENDOR } from "~/graphql/mutations/createMetaobjectVendor";
 import { CREATE_METAFIELD_DEFINITION } from "~/graphql/mutations/createMetafield";
 
@@ -698,11 +696,6 @@ export default function Index() {
                   <Text as="h2" variant="headingMd">
                     Dashboard
                   </Text>
-
-                  <ClientOnly
-                    fallback={<div></div>}
-                    children={() => <LandingBars />}
-                  />
                 </InlineGrid>
               </Card>
             )}

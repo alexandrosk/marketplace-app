@@ -10,7 +10,6 @@ import { boundary } from "@shopify/shopify-app-remix/server";
 import { SettingProvider } from "~/context/AppSettings";
 import { authenticate } from "../shopify.server";
 import db from "~/db.server";
-import { PolarisVizProvider } from "@shopify/polaris-viz";
 
 export const links = () => [{ rel: "stylesheet", href: polarisStyles }];
 
@@ -57,16 +56,14 @@ export default function App() {
         <Link to="/app/billing">Subscription</Link>
         <Link to="/app/onboarding">Onboarding</Link>
       </ui-nav-menu>
-      <PolarisVizProvider>
-        <PolarisAppProvider
-          i18n={polarisTranslations}
-          linkComponent={RemixPolarisLink}
-        >
-          <SettingProvider {...data}>
-            <Outlet />
-          </SettingProvider>
-        </PolarisAppProvider>
-      </PolarisVizProvider>
+      <PolarisAppProvider
+        i18n={polarisTranslations}
+        linkComponent={RemixPolarisLink}
+      >
+        <SettingProvider {...data}>
+          <Outlet />
+        </SettingProvider>
+      </PolarisAppProvider>
     </>
   );
 }
