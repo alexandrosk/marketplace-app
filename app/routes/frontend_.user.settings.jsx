@@ -12,7 +12,7 @@ async function createMetaobject(admin, username) {
 
   const response = await admin.graphql(
     `#graphql
-    mutation CreateMetaobject($metaobject: MetaobjectCreateInput!) {
+    mutation CreateMetaobjectSimple($metaobject: MetaobjectCreateInput!) {
       metaobjectCreate(metaobject: $metaobject) {
         metaobject {
           id
@@ -64,7 +64,6 @@ async function updateCustomerMetafields(admin, customerId, vendorId) {
 
 export let action = async ({ request }) => {
   try {
-    verifySignature(request.url);
     const { searchParams } = new URL(request.url);
     const shop = searchParams.get("shop");
     const customerId = searchParams.get("logged_in_customer_id");

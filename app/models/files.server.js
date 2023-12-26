@@ -68,15 +68,17 @@ export const uploadFile = async (files, graphql) => {
 
   await Promise.all(promises);
 
-  await graphql(
+  const fileId = await graphql(
     `
       mutation fileCreate($files: [FileCreateInput!]!) {
         fileCreate(files: $files) {
           files {
-            id
-            preview {
-              image {
-                url
+            ... on MediaImage {
+              id
+              preview {
+                image {
+                  url
+                }
               }
             }
           }
@@ -97,8 +99,11 @@ export const uploadFile = async (files, graphql) => {
     },
   );
 
+  const fileIdResponse = await fileId.json();
+
   return {
     stagedTargets: response.data.stagedUploadsCreate.stagedTargets,
     errors: response.data.stagedUploadsCreate.userErrors,
+    files: fileIdResponse.data.fileCreate.files,
   };
 };

@@ -1,9 +1,12 @@
-export const fetchProductsFromProxy = async (customerId) => {
+export const fetchProductsFromProxy = async (vendorSlug) => {
   try {
     const response = await fetch(
-      "/apps/frontend/user/products?customerId=" + customerId,
+      "/apps/frontend/user/products?vendorSlug=" + vendorSlug,
       {
         method: "GET",
+        headers: {
+          "ngrok-skip-browser-warning": "69420",
+        },
       },
     );
     if (!response.ok) {
@@ -27,6 +30,7 @@ export const getProfile = async (customerId) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "69420",
         },
       },
     );
@@ -47,6 +51,7 @@ export const getSettings = async () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "69420",
       },
     });
     if (!response.ok) {
@@ -65,9 +70,9 @@ export const saveProfile = async (profile) => {
     const response = await fetch("/apps/frontend/user/profile", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "69420",
       },
-      body: JSON.stringify(profile),
+      body: profile,
     });
 
     if (!response.ok) {
@@ -82,10 +87,18 @@ export const saveProfile = async (profile) => {
   }
 };
 
+/**
+ * NOT JSON, since this needs to upload images
+ * @param product
+ * @returns {Promise<boolean>}
+ */
 export const createProduct = async (product) => {
   try {
     const response = await fetch("/apps/frontend/user/products", {
       method: "POST",
+      headers: {
+        "ngrok-skip-browser-warning": "69420",
+      },
       body: product,
     });
 

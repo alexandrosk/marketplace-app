@@ -1,7 +1,7 @@
 {% if collection.metafields.custom.vendors.value %}
     <div class="vendor-profile">
         <div class="vendor-image">
-            <img width="120" height="120" src={{ collection.metafields.custom.vendors.value.image.value.preview_image.src | json }} />
+            <img loading="eager" width="120" height="120" src={{ collection.metafields.custom.vendors.value.image.value.preview_image.src | json }} />
         </div>
         <h1 class="vendor-title">
             {{ collection.metafields.custom.vendors.value.title }}

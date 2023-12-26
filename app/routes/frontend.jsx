@@ -4,8 +4,6 @@ import verifySignature from "../utils/verifyLoggedSignature";
 export async function loader({ request }) {
   const url = new URL(request.url);
   try {
-    verifySignature(request.url);
-
     return json({
       products: [
         {

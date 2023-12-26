@@ -3,3 +3,9 @@
 //if vendor deactivates shop, also deactivate collection & products
 //if vendor is approved, create related collection
 //https://shopify.dev/docs/api/admin-graphql/2024-01/enums/WebhookSubscriptionTopic
+
+export const metaobject_update = async (topic, shop, session, payload) => {
+  if (payload.vendor && payload.vendor === "Vendors") {
+    console.log("metaobject_update", topic, shop, payload, session);
+  }
+};

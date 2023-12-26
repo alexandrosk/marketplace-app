@@ -49,6 +49,7 @@ Also, it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exte
   - [ ] Setup a way to get payments
 - [x] Setup profile
   - [x] Profile Request
+  - [x] Profile Image
   - [x] Theme app extension for profile
   - [ ] Setup handle + SEO description for vendor - collection pages
   - [x] Bio, socials, titles etc & info

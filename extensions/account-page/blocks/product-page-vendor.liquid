@@ -1,0 +1,27 @@
+{% assign vendor = product.metafields.vendor.vendor_id %}
+{% if vendor %}
+    <div class="vendor-profile">
+        <div class="vendor-image">
+            <img alt="{{ vendor.value.title }}" loading="eager" width="50" height="50"
+                 style="border-radius:100%"
+                 src={{ vendor.value.image.value.preview_image.src | json }}
+            />
+        </div>
+        <h3 class="vendor-title" style="margin: 0">
+            {{ vendor.value.title }}
+        </h3>
+      <a href="/collections/{{ vendor.value.slug }}" style="text-decoration: none">@{{ vendor.value.slug }}</a>
+    </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "t:blocks.product-page-vendor",
+  "target": "section",
+  "settings": [],
+  "enabled_on": {
+    "templates": ["product"]
+  }
+}
+{% endschema %}
+

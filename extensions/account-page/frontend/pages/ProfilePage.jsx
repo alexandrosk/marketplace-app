@@ -23,16 +23,13 @@ import { Label } from "@/components/ui/label";
 import { boolean } from "zod";
 
 const profileFormSchema = z.object({
-  username: z
+  title: z
     .string()
     .min(2, {
-      message: "Username must be at least 2 characters.",
+      message: "Title must be at least 2 characters.",
     })
     .max(30, {
-      message: "Username must not be longer than 30 characters.",
-    })
-    .regex(/^[a-zA-Z0-9_]+$/, {
-      message: "Username must only contain letters, numbers, and underscores.",
+      message: "Title must not be longer than 30 characters.",
     }),
   enabled: z.boolean(),
   bio: z.string(),
@@ -46,10 +43,12 @@ const profileFormSchema = z.object({
 const ProfilePage = ({ isVendor, profileData }) => {
   //const [profileData, setProfileData] = useState(initProfileData?? null);
 
+  const [image, setImage] = useState(null);
   // Setting up defaultValues based on the fetched profileData
   const defaultValues = profileData
     ? {
         username: profileData?.slug?.value || "",
+        title: profileData?.title?.value || "",
         bio: profileData?.bio?.value || "Description goes here",
         enabled: profileData?.enabled?.value === "true",
         urls: JSON.parse(profileData?.url?.value) || [
@@ -69,10 +68,39 @@ const ProfilePage = ({ isVendor, profileData }) => {
     name: "urls",
     control: form.control,
   });
+  const [preview, setPreview] = useState(
+    profileData?.image?.reference?.image?.originalSrc || null,
+  );
+
+  function getImageData(event) {
+    // FileList is immutable, so we need to create a new one
+    const dataTransfer = new DataTransfer();
+
+    // Add newly uploaded images
+    Array.from(event.target.files).forEach((image) =>
+      dataTransfer.items.add(image),
+    );
+    setImage(event.target.files[0]);
+    const files = dataTransfer.files;
+    const displayUrl = URL.createObjectURL(event.target.files[0]);
+    return { files, displayUrl };
+  }
 
   function onSubmit(data) {
-    data = { ...data, vendorId: profileData?.id };
-    saveProfile(data).then(function (response) {
+    const formData = new FormData();
+
+    // Append other data from the form
+    Object.entries(data).forEach(([key, value]) => {
+      if (key !== "images") {
+        formData.append(key, value);
+      }
+    });
+    formData.append("vendorId", profileData?.id);
+    // @ts-ignore
+    formData.append("image", image, image.name);
+
+    console.log(formData);
+    saveProfile(formData).then(function (response) {
       if (response) {
         toast({
           title: "Profile updated",
@@ -89,22 +117,6 @@ const ProfilePage = ({ isVendor, profileData }) => {
         </pre>
       ),
     });
-  }
-  const [preview, setPreview] = useState(
-    profileData?.image?.reference?.image?.originalSrc || null,
-  );
-
-  function getImageData(event) {
-    // FileList is immutable, so we need to create a new one
-    const dataTransfer = new DataTransfer();
-
-    // Add newly uploaded images
-    Array.from(event.target.files).forEach((image) =>
-      dataTransfer.items.add(image),
-    );
-    const files = dataTransfer.files;
-    const displayUrl = URL.createObjectURL(event.target.files[0]);
-    return { files, displayUrl };
   }
 
   return (
@@ -143,16 +155,33 @@ const ProfilePage = ({ isVendor, profileData }) => {
         />
         <FormField
           control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Title</FormLabel>
+              <FormControl>
+                <Input placeholder="username" {...field} />
+              </FormControl>
+              <FormDescription>
+                Your public profile shop title <br />
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="username"
+          disabled={true}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder="username" {...field} />
               </FormControl>
               <FormDescription>
                 This is your public display handle. And will be linking to your
-                collection.
+                collection. <br />
               </FormDescription>
               <FormDescription>
                 Use this url to link to your store:{" "}

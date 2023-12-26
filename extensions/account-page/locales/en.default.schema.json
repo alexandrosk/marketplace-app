@@ -35,6 +35,9 @@
         }
       }
     },
+    "product-page-vendor": {
+      "name": "Product Page Vendor Info"
+    },
     "product-reviews": {
       "name": "Product Reviews",
       "settings": {

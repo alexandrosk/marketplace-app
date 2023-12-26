@@ -1,6 +1,6 @@
 export const PRODUCT_LIST_BY_METAFIELD_QUERY = `
-  query AllProducts {
-  collection(handle: "nike-vintage") {
+  query AllProducts ($vendorSlug: String!) {
+  collection(handle: $vendorSlug) {
     handle
     products(first: 10) {
       edges {

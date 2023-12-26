@@ -14,7 +14,6 @@ function formatCategoriesQuery(categories) {
     .join(" OR ");
 }
 export async function loader({ request }) {
-  verifySignature(request.url);
   const { searchParams } = new URL(request.url);
   const shop = searchParams.get("shop");
 

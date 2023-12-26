@@ -3,9 +3,9 @@ import { unauthenticated, authenticate } from "~/shopify.server"; // Adjust this
 import { PRODUCT_LIST_BY_METAFIELD_QUERY } from "~/graphql/queries/productListByMetafield";
 import { CREATE_PRODUCT_MUTATION } from "~/graphql/mutations/createProduct";
 import { uploadFile } from "~/models/files.server";
-const fetchProductsByMetafield = async (storefront, customerId) => {
+const fetchProductsByMetafield = async (storefront, vendorSlug) => {
   const response = await storefront.graphql(PRODUCT_LIST_BY_METAFIELD_QUERY, {
-    variables: { customerId },
+    variables: { vendorSlug: vendorSlug },
   });
   const responseJson = await response.json();
   console.log(JSON.stringify(responseJson));
@@ -28,6 +28,7 @@ const fetchProductsByMetafield = async (storefront, customerId) => {
  */
 const createProductInShopify = async (admin, productData, files) => {
   const imageUploads = await uploadFile(files, admin.graphql);
+
   const shopifyProductData = {
     title: productData.title,
     metafields: [
@@ -73,9 +74,8 @@ const createProductInShopify = async (admin, productData, files) => {
 export async function loader({ request }) {
   const { searchParams } = new URL(request.url);
   const shop = searchParams.get("shop");
-  const customerId = searchParams.get("customerId");
-
-  if (!shop || !customerId) {
+  const vendorSlug = searchParams.get("vendorSlug");
+  if (!shop || !vendorSlug) {
     return json(
       { error: "Shop or Customer ID parameter is missing" },
       { status: 400 },
@@ -83,7 +83,7 @@ export async function loader({ request }) {
   }
   const { storefront } = await authenticate.public.appProxy(request);
 
-  const products = await fetchProductsByMetafield(storefront, customerId);
+  const products = await fetchProductsByMetafield(storefront, vendorSlug);
 
   return json({ products });
 }

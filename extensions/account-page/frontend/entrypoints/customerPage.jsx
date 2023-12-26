@@ -37,10 +37,11 @@ const CustomerPage = ({ customerid = "", settings = "" }) => {
   useEffect(() => {
     getProfile(customerId).then(function (response) {
       const status = JSON.parse(response.metaobject?.status?.value);
+      const vendorSlug = response.metaobject?.slug?.value;
       if (response && status == "Approved") {
         setIsVendor(true);
         setProfileData(response.metaobject);
-        fetchProductsFromProxy(customerId)
+        fetchProductsFromProxy(vendorSlug)
           .then((response) => setProducts(response.products))
           .catch((error) => console.error("Error fetching products:", error));
       } else if (response && status == "Pending") {
