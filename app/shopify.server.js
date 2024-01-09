@@ -3,7 +3,6 @@ import {
   AppDistribution,
   DeliveryMethod,
   shopifyApp,
-  LATEST_API_VERSION,
 } from "@shopify/shopify-app-remix/server";
 import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
 import { restResources } from "@shopify/shopify-api/rest/admin/2023-10";
@@ -12,7 +11,8 @@ import prisma from "./db.server";
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
   apiSecretKey: process.env.SHOPIFY_API_SECRET || "",
-  apiVersion: LATEST_API_VERSION,
+  // @ts-ignore
+  apiVersion: "2024-01",
   scopes: process.env.SCOPES?.split(","),
   appUrl: process.env.SHOPIFY_APP_URL || "",
   authPathPrefix: "/auth",
@@ -24,18 +24,67 @@ const shopify = shopifyApp({
       deliveryMethod: DeliveryMethod.Http,
       callbackUrl: "/webhooks",
     },
-    METAOBJECTS_UPDATE: {
+    PRODUCTS_UPDATE: {
       deliveryMethod: DeliveryMethod.Http,
       callbackUrl: "/webhooks",
     },
-    PRODUCTS_UPDATE: {
+    ORDERS_UPDATED: {
       deliveryMethod: DeliveryMethod.Http,
       callbackUrl: "/webhooks",
     },
   },
   hooks: {
-    afterAuth: async ({ session }) => {
+    afterAuth: async ({ session, admin }) => {
       shopify.registerWebhooks({ session });
+
+      // Create webhook subscription for metaobjects since it doesnt exist on api
+      const { accessToken, shop } = session;
+      try {
+        const response = await fetch(
+          `https://${shop}/admin/api/${apiVersion}/graphql.json`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Shopify-Access-Token": accessToken,
+            },
+            body: JSON.stringify({
+              query: `mutation {
+                webhookSubscriptionCreate1: webhookSubscriptionCreate(
+                  topic: METAOBJECTS_UPDATE
+                  subTopic: "type:vendors"
+                  webhookSubscription: {callbackUrl: "https://impala-top-visually.ngrok-free.app/webhooks", format: JSON}
+                ) {
+                  userErrors {
+                    field
+                    message
+                  }
+                  webhookSubscription {
+                    id
+                  }
+                }
+                webhookSubscriptionCreate2: webhookSubscriptionCreate(
+                  topic: METAOBJECTS_CREATE
+                  subTopic: "type:vendors"
+                  webhookSubscription: {callbackUrl: "https://impala-top-visually.ngrok-free.app/webhooks", format: JSON}
+                ) {
+                  userErrors {
+                    field
+                    message
+                  }
+                  webhookSubscription {
+                    id
+                  }
+                }
+              }`,
+            }),
+          },
+        );
+        const responseJson = await response.json();
+        console.log(JSON.stringify(responseJson));
+      } catch (error) {
+        console.log(JSON.stringify(error));
+      }
     },
   },
   future: {
@@ -48,7 +97,7 @@ const shopify = shopifyApp({
 });
 
 export default shopify;
-export const apiVersion = LATEST_API_VERSION;
+export const apiVersion = "2024-01";
 export const addDocumentResponseHeaders = shopify.addDocumentResponseHeaders;
 export const authenticate = shopify.authenticate;
 export const unauthenticated = shopify.unauthenticated;

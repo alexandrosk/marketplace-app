@@ -224,43 +224,79 @@ const CreateProductPage = ({ customerId }) => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="category"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Category</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue
-                        placeholder={field.value || "Select a category"}
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {configuration?.settings?.allowed_categories?.map(
-                      (category) => (
-                        <SelectItem value={category.node.id}>
-                          {category.node.title}
-                        </SelectItem>
-                      ),
-                    )}
-                  </SelectContent>
-                </Select>
+          <div className="grid grid-cols-2">
+            {configuration?.variants?.map((variant) => (
+              <FormField
+                control={form.control}
+                name={`variants.${variant.title}`}
+                render={({ field }) => (
+                  <FormItem className={"w-1/2"}>
+                    <FormLabel>{variant.title}</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={variant.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue
+                            placeholder={
+                              variant.value || "Select a" + " " + variant.title
+                            }
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {JSON.parse(variant.values).map((option) => (
+                          <SelectItem value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ))}
+          </div>
+          {configuration?.settings?.allowed_categories?.length && (
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue
+                          placeholder={field.value || "Select a category"}
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {configuration?.settings?.allowed_categories?.map(
+                        (category) => (
+                          <SelectItem value={category.node.id}>
+                            {category.node.title}
+                          </SelectItem>
+                        ),
+                      )}
+                    </SelectContent>
+                  </Select>
 
-                <FormDescription>
-                  From the list of categories, select the one that best
-                  describes your product.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
+                  <FormDescription>
+                    From the list of categories, select the one that best
+                    describes your product.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
           <Button type="submit">Create Product</Button>
         </div>
       </form>

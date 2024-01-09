@@ -62,8 +62,8 @@ export async function action({ request }) {
           //   }
           // }
         },
-        name: "Vendors",
-        type: "vendors",
+        name: "Vendor",
+        type: "vendor",
         displayNameKey: "title",
         fieldDefinitions: [
           {
@@ -383,10 +383,10 @@ export default function Index() {
                         state.settings.onboarding_step === 0
                           ? 0
                           : state.settings.onboarding_step === 1
-                          ? 33
-                          : state.settings.onboarding_step === 2
-                          ? 66
-                          : 100
+                            ? 33
+                            : state.settings.onboarding_step === 2
+                              ? 66
+                              : 100
                       }
                       size="small"
                     />

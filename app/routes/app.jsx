@@ -1,10 +1,7 @@
 import React from "react";
 import { json } from "@remix-run/node";
 import { Link, Outlet, useLoaderData, useRouteError } from "@remix-run/react";
-import {
-  AppProvider as PolarisAppProvider,
-  FooterHelp,
-} from "@shopify/polaris";
+import { AppProvider as PolarisAppProvider } from "@shopify/polaris";
 import polarisStyles from "@shopify/polaris/build/esm/styles.css";
 import { boundary } from "@shopify/shopify-app-remix/server";
 import { SettingProvider } from "~/context/AppSettings";
@@ -52,7 +49,7 @@ export default function App() {
         </Link>
         <Link to="/app/sellers">Vendors</Link>
         <Link to="/app/settings">Settings</Link>
-        <Link to="/app/payouts">Payouts</Link>
+        {/*<Link to="/app/payouts">Payouts</Link>*/}
         <Link to="/app/billing">Subscription</Link>
         <Link to="/app/onboarding">Onboarding</Link>
       </ui-nav-menu>

@@ -16,9 +16,16 @@
 
 {% schema %}
 {
-  "name": "t:blocks.product-page-vendor",
+  "name": "t:blocks.product-page-vendor.heading",
   "target": "section",
-  "settings": [],
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_reviews",
+      "label": "Show reviews",
+      "default": false
+    }
+  ],
   "enabled_on": {
     "templates": ["product"]
   }

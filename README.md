@@ -28,10 +28,11 @@ Also, it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exte
 
 ### Frontend Seller
 - [ ] Create new product - huge
-  - [X] New product **[WIP]**
-  - [ ] Show tags etc on product upload 
+  - [X] New product **[WIP]** 
   - [X] Use staged upload to upload images
   - [ ] Product variants
+    - [X] Add variants
+    - [ ] GraphQL Variants
   - [ ] Edit product
   - [ ] Google feed XML update products ? _[future]_
   - [x] Add product images
@@ -40,8 +41,9 @@ Also, it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exte
   - [x] Product options and variants from admin settings
 - [ ] Dashboard - connection with real data
   - [ ] Orders
+    - [x] Graphql get Order data
   - [ ] Shipping
-  - [ ] Sold products etc
+  - [ ] Sold products, statistics etc
 - [ ] Shipping - let vendor add shipping costs on their products
 - [x] User settings
   - [ ] Disable vendor button (webhook)
@@ -55,12 +57,15 @@ Also, it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exte
   - [x] Bio, socials, titles etc & info
 
 ### Frontend Theme app extensions
-- [ ] Extension for product page - vendor info
-- [ ] Extension for product page bottom - related products
+- [x] Extension for product page - vendor info
+- [x] Extension for product page bottom - related products
 - [X] Extension for collection page
 - [x] Extension for account page/or related page
 
 ### Admin
+- [ ] Orders Page
+  - [x] Add vendor to order
+  - [x] Show payouts block and tags on admin order
 - [ ] Setup Payouts page 
   - [ ] Connect orders with vendors and calculate payouts
   - [ ] Automatic payouts stripe (later)
@@ -89,3 +94,4 @@ Also, it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exte
 - [ ] Admin disables product - notify vendor
 - [ ] New order notify vendor
 - [ ] Vendor creates new product - notify admin?
+- [x] New order, add vendor to order

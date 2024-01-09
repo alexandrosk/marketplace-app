@@ -30,13 +30,19 @@
       "name": "Vendor Collection",
       "heading": "Vendor Collection",
       "settings": {
-        "text-color": {
+        "show_reviews": {
           "label": "Text Color"
         }
       }
     },
     "product-page-vendor": {
-      "name": "Product Page Vendor Info"
+      "name": "Product Page Vendor Info",
+      "heading": "Product Page Vendor Info",
+      "settings": {
+        "text-color": {
+          "label": "Text Color"
+        }
+      }
     },
     "product-reviews": {
       "name": "Product Reviews",

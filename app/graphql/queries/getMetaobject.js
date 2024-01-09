@@ -11,6 +11,9 @@ query getMetaObject($id: ID!) {
         status
       }
     }
+    commission: field(key: "commission") {
+      value
+    }
     title: field(key: "title") {
       value
     }
@@ -31,6 +34,38 @@ query getMetaObject($id: ID!) {
       ... on MediaImage {
           image {
             originalSrc
+          }
+        }
+      }
+    }
+  }
+}`;
+
+export const getOrdersFromVendors = `#graphql
+query getMetaObject($id: ID!) {
+  metaobject(id: $id) {
+    id
+    type
+    referencedBy(first: 10) {
+      nodes {
+        referencer {
+          ... on Order {
+            id
+            email
+            shippingAddress{
+              firstName
+            }
+            billingAddress {
+              firstName
+            }
+            billingAddressMatchesShippingAddress
+            metafields(first:10, namespace: "vendor") {
+              nodes{
+                id
+                key
+                value
+              }
+            }
           }
         }
       }
