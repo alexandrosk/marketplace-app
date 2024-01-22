@@ -22,6 +22,9 @@ export const CREATE_METAOBJECT_MUTATION = `
             status: field(key: "status") {
               value
             }
+            general: field(key: "general") {
+              value
+            }
           }
           userErrors {
             field
@@ -52,6 +55,9 @@ export const UPDATE_METAOBJECT = `
                 value
               }
               enabled: field(key: "enabled") {
+                value
+              }
+              product_list: field(key: "product_list") {
                 value
               }
               image: field(key: "image") {

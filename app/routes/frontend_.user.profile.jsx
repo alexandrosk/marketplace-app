@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 
-import { authenticate, unauthenticated } from "~/shopify.server";
+import { authenticate } from "~/shopify.server";
 import {
   CREATE_METAOBJECT_MUTATION,
   UPDATE_METAOBJECT,
@@ -15,6 +15,7 @@ export let action = async ({ request }) => {
 
     const customerId = searchParams.get("logged_in_customer_id");
     const profileData = {};
+    console.log(request);
     const formData = await request.formData();
 
     for (let [key, value] of formData) {
@@ -25,10 +26,13 @@ export let action = async ({ request }) => {
     if (!admin) {
       return json({ error: "Invalid shop" }, { status: 400 });
     }
-    const imageUploads = await uploadFile([profileData.image], admin?.graphql);
 
-    let handle = profileData.username;
+    //existing user so update vendor
     if (profileData.vendorId) {
+      const imageUploads = await uploadFile(
+        [profileData.image],
+        admin?.graphql,
+      );
       const response = await admin?.graphql(UPDATE_METAOBJECT, {
         variables: {
           metaobject: {
@@ -76,11 +80,13 @@ export let action = async ({ request }) => {
       }
       return json({ error: "Vendor updated" }, { status: 200 });
     }
+
+    //new user here so create a new vendor
     const response = await admin.graphql(CREATE_METAOBJECT_MUTATION, {
       variables: {
         metaobject: {
           type: "vendors",
-          handle: formData.username,
+          handle: profileData.username,
           capabilities: {
             publishable: {
               status: "ACTIVE",
@@ -89,19 +95,26 @@ export let action = async ({ request }) => {
           fields: [
             {
               key: "slug",
-              value: formData.username,
+              value: profileData.username,
             },
             {
               key: "title",
-              value: formData.title,
+              value: profileData.title,
             },
             {
               key: "description",
-              value: formData.bio,
+              value: profileData.bio,
             },
             {
               key: "status",
               value: JSON.stringify(["Pending"]),
+            },
+            {
+              key: "general",
+              value: JSON.stringify({
+                previous_status: "pending",
+                customerId: customerId,
+              }),
             },
           ],
         },

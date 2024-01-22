@@ -1,18 +1,11 @@
-import {
-  Badge,
-  Card,
-  InlineGrid,
-  Button,
-  Text,
-  Page,
-  IndexTable,
-} from "@shopify/polaris";
+import { Box, InlineGrid, InlineStack, Page, Text } from "@shopify/polaris";
 import { json, redirect } from "@remix-run/node";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { useSubmit, useActionData, useLoaderData } from "@remix-run/react";
+import { useActionData, useSubmit } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
 import { useSettings } from "~/context/AppSettings";
+import { PricingCard } from "~/components/PricingCard";
 
 export async function action({ request }) {
   const { admin } = await authenticate.admin(request);
@@ -88,10 +81,6 @@ export default function BillingPage() {
   const { subscriptionUrl } = useActionData() || {};
   const [activePlan, setActivePlan] = useState(null);
 
-  const selectPlan = (plan) => () => {
-    createSubscription(plan);
-  };
-
   useEffect(() => {
     if (subscriptionUrl) {
       //create a and click
@@ -114,76 +103,74 @@ export default function BillingPage() {
     }
   }, [state]);
 
-  const plans = [
-    {
-      name: "Free Plan",
-      price: "$0",
-      primary: false,
-    },
-    {
-      name: "Pro Plan",
-      price: "$20",
-      primary: true,
-    },
-    {
-      name: "Premium Plan",
-      price: "$50",
-      primary: true,
-    },
-  ];
-
   return (
     <Page
       divider
       title="Billing"
-      primaryAction={{ content: "View on your store", disabled: true }}
+      //primaryAction={{ content: "View on your store", disabled: true }}
       secondaryActions={[
         {
-          content: "Duplicate",
-          accessibilityLabel: "Secondary action label",
-          onAction: () => alert("Duplicate action"),
+          content: "Pricing Docs",
+          onAction() {
+            window.open("https://www.multivendorshop.com/docs/admin/pricing");
+          },
         },
       ]}
     >
-      <InlineGrid gap="4">
+      <InlineGrid gap={"400"} columns={1}>
         <Text variant="heading2xl" as="h2">
           Choose a plan
         </Text>
         <Text variant="bodySm" as="h2">
           Start your 14-day free trial today.
         </Text>
-        <InlineGrid gap="4">
-          {plans.map((plan) => {
-            return (
-              <PricingOption
-                plan={plan.name}
-                price={plan.price}
-                primary={plan.primary}
-                onClick={selectPlan(plan.name)}
-                active={activePlan === plan.name}
-              />
-            );
-          })}
-        </InlineGrid>
       </InlineGrid>
+      <Box padding="400"></Box>
+      <InlineStack gap={"400"}>
+        <InlineStack gap="600">
+          <PricingCard
+            title="Basic"
+            featuredText="Most Popular"
+            description="For stores that are growing and need a reliable solution to scale with them"
+            features={[
+              "100% API Access (everything based on native Shopify)\n",
+              "Unlimited Vendors",
+              "Unlimited Products per Vendor",
+              "Full control over metaobjects",
+              "Email support",
+              "Onboarding from Docs and Tutorials",
+            ]}
+            price="$49"
+            frequency="month"
+            button={{
+              content: "Select Plan",
+              props: {
+                variant: "primary",
+                onClick: () => createSubscription("basic"),
+              },
+            }}
+          />
+          <PricingCard
+            title="Premium"
+            description="The best of the best, for stores that have the highest order processing needs"
+            features={[
+              "Everything from basic plan",
+              "Support per email",
+              "Another really cool feature",
+              "24/7 Customer Support",
+            ]}
+            price="$99"
+            frequency="month"
+            button={{
+              content: "Select Plan",
+              props: {
+                variant: "primary",
+                onClick: () => createSubscription("premium"),
+              },
+            }}
+          />
+        </InlineStack>
+      </InlineStack>
     </Page>
   );
 }
-
-const PricingOption = ({ plan, price, primary, onClick, active }) => (
-  <div id={plan}>
-    <Card>
-      {primary && <Badge status="info">Recommended</Badge>}
-      {active && <Badge status="success">Active</Badge>}
-      <Text variant="headingMd" as="h2">
-        {plan}
-      </Text>
-      <p>{price} per month</p>
-      {!active && (
-        <Button primary={primary} onClick={onClick}>
-          Choose Plan
-        </Button>
-      )}
-    </Card>
-  </div>
-);

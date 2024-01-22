@@ -54,7 +54,15 @@ const CreateProfilePage = ({ isVendor }) => {
 
   async function onSubmit(data) {
     try {
-      const response = await saveProfile(data);
+      const formData = new FormData();
+
+      // Append other data from the form
+      Object.entries(data).forEach(([key, value]) => {
+        if (key !== "images") {
+          formData.append(key, value);
+        }
+      });
+      const response = await saveProfile(formData);
 
       if (response) {
         document.getElementById("submit-profile").style.display = "none";

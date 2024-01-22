@@ -1,7 +1,7 @@
 // @ts-nocheck
 import "vite/modulepreload-polyfill";
 import register from "preact-custom-element";
-import { Router, Link } from "preact-router";
+import { Link, Router } from "preact-router";
 import { useSignal } from "@preact/signals";
 import { createHashHistory } from "history";
 import Menu from "~/components/Menu";
@@ -12,7 +12,6 @@ import DashboardPage from "../pages/Dashboard";
 import { fetchProductsFromProxy, getProfile } from "~/utils/api";
 import { useEffect, useState } from "react"; // Import ListingsPage
 import CreateListingPage from "../pages/CreateListing.jsx";
-import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -29,26 +28,45 @@ const CustomerPage = ({ customerid = "", settings = "" }) => {
   const settingsData = JSON.parse(settings ?? "{}");
   console.log(JSON.parse(settings ?? "{}"));
   const [products, setProducts] = useState([]);
-  const [isVendor, setIsVendor] = useState(false);
-  const [underReview, setUnderReview] = useState(false);
+  const [isVendor, setIsVendor] = useState(null);
+  const [underReview, setUnderReview] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isNew, setIsNew] = useState(false);
   const [profileData, setProfileData] = useState(false);
 
   useEffect(() => {
-    getProfile(customerId).then(function (response) {
-      const status = JSON.parse(response.metaobject?.status?.value);
-      const vendorSlug = response.metaobject?.slug?.value;
-      if (response && status == "Approved") {
+    getProfile(customerId).then((response) => {
+      if (!response || response.error) {
+        setIsNew(true);
+        setIsLoaded(true);
+        return;
+      }
+
+      console.log(JSON.parse(response.metaobject?.status?.value));
+
+      if (
+        response?.metaobject &&
+        JSON.parse(response.metaobject?.status?.value)[0] === "Approved"
+      ) {
+        const vendorSlug = response.metaobject?.slug?.value;
         setIsVendor(true);
         setProfileData(response.metaobject);
         fetchProductsFromProxy(vendorSlug)
           .then((response) => setProducts(response.products))
           .catch((error) => console.error("Error fetching products:", error));
-      } else if (response && status == "Pending") {
+      } else if (
+        response?.metaobject &&
+        JSON.parse(response.metaobject?.status?.value)[0] === "Pending"
+      ) {
         setUnderReview(true);
-      } else {
+      } else if (response.error) {
+        //new vendor request
         setIsVendor(false);
+        setIsNew(true);
+      } else {
+        //declined
         setUnderReview(false);
+        setIsVendor(false);
       }
       setIsLoaded(true);
     });
@@ -58,7 +76,7 @@ const CustomerPage = ({ customerid = "", settings = "" }) => {
     { label: "Dashboard", path: "/" },
     { label: "Profile", path: "/profile" },
     { label: "Listings", path: "/listings" },
-    { label: "Settings", path: "/create-listing" },
+    /*{ label: "Settings", path: "/create-listing" },*/
     // Add more menu items here as needed
   ];
 
@@ -79,13 +97,13 @@ const CustomerPage = ({ customerid = "", settings = "" }) => {
             </p>
           </div>
         )) ||
-        (!isVendor && !underReview && (
+        (!isVendor && underReview === false && (
           <div className="under-review">
             <h2 className={"h2"}>Your shop profile is declined</h2>
             <p>Please try again in the future.</p>
           </div>
         )) ||
-        (!isVendor && (
+        (isNew && (
           <div className="request-vendor">
             <Link href="/seller-form" class="">
               {settingsData.join_us}

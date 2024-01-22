@@ -22,10 +22,8 @@ import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { getSettings } from "../utils/api";
+import { createProduct, getSettings } from "../utils/api";
 import { useEffect, useState } from "react";
-import { CheckIcon } from "lucide-react";
-import { createProduct } from "../utils/api";
 
 const productFormSchema = z.object({
   title: z.string().min(1, "Product name is required."),
@@ -36,6 +34,7 @@ const productFormSchema = z.object({
     message: "Expected number, received a string",
   }),
   category: z.string(),
+  variants: z.record(z.string()).optional(),
   // Add more fields as required
 });
 
@@ -74,9 +73,12 @@ const CreateProductPage = ({ customerId }) => {
         formData.append(`images[${index}]`, file, file.name);
       });
 
-      // Append other data from the form
       Object.entries(data).forEach(([key, value]) => {
-        if (key !== "images") {
+        if (key === "variants") {
+          Object.entries(value).forEach(([variantKey, variantValue]) => {
+            formData.append(`variants[${variantKey}]`, variantValue);
+          });
+        } else {
           formData.append(key, value);
         }
       });
@@ -247,7 +249,7 @@ const CreateProductPage = ({ customerId }) => {
                       </FormControl>
                       <SelectContent>
                         {JSON.parse(variant.values).map((option) => (
-                          <SelectItem value={option.value}>
+                          <SelectItem value={option.label}>
                             {option.label}
                           </SelectItem>
                         ))}

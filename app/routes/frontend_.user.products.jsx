@@ -1,14 +1,18 @@
 import { json } from "@remix-run/node";
-import { unauthenticated, authenticate } from "~/shopify.server"; // Adjust this import path as needed
+import { authenticate } from "~/shopify.server"; // Adjust this import path as needed
 import { PRODUCT_LIST_BY_METAFIELD_QUERY } from "~/graphql/queries/productListByMetafield";
 import { CREATE_PRODUCT_MUTATION } from "~/graphql/mutations/createProduct";
 import { uploadFile } from "~/models/files.server";
+
 const fetchProductsByMetafield = async (storefront, vendorSlug) => {
   const response = await storefront.graphql(PRODUCT_LIST_BY_METAFIELD_QUERY, {
     variables: { vendorSlug: vendorSlug },
   });
   const responseJson = await response.json();
   console.log(JSON.stringify(responseJson));
+  if (!responseJson.data.collection) {
+    return [];
+  }
   return responseJson.data.collection.products.edges.map(({ node }) => ({
     handle: "products/" + node.handle,
     id: node.id,
@@ -31,6 +35,7 @@ const createProductInShopify = async (admin, productData, files) => {
 
   const shopifyProductData = {
     title: productData.title,
+    options: productData.variantOptions,
     metafields: [
       {
         namespace: "vendor",
@@ -47,15 +52,17 @@ const createProductInShopify = async (admin, productData, files) => {
     variants: [
       {
         price: productData.price,
+        options: productData.variantValues,
       },
     ],
+
     collectionsToJoin: [productData.category],
   };
   const shopifyProductImages = imageUploads.stagedTargets?.map((file) => ({
     originalSource: file.resourceUrl,
     mediaContentType: "IMAGE",
   }));
-
+  console.log(JSON.stringify(shopifyProductData));
   const response = await admin.graphql(CREATE_PRODUCT_MUTATION, {
     variables: {
       input: shopifyProductData,
@@ -100,15 +107,22 @@ export let action = async ({ request }) => {
   const formData = await request.formData();
   let productData = {};
   let files = [];
+  let variantOptions = new Set();
+  productData.variantValues = [];
 
   for (let [key, value] of formData) {
     if (value instanceof File) {
-      // Handle files differently
       files.push(value);
+    } else if (key.startsWith("variants[")) {
+      const variantName = key.match(/variants\[(.*?)\]/)[1];
+      variantOptions.add(variantName);
+      productData.variantValues.push(value);
     } else {
       productData[key] = value;
     }
   }
+
+  productData.variantOptions = Array.from(variantOptions);
   productData.customerId = searchParams.get("logged_in_customer_id");
 
   if (!shop || !productData) {

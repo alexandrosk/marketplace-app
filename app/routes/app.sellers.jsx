@@ -1,37 +1,20 @@
 import {
-  Box,
-  Button,
-  ButtonGroup,
+  Badge,
+  Banner,
   Card,
-  Collapsible,
   EmptyState,
-  InlineGrid,
-  Icon,
   IndexFilters,
   IndexTable,
   Layout,
-  List,
-  Page,
-  ProgressBar,
-  Text,
-  Thumbnail,
   Link,
+  Page,
+  Thumbnail,
   useSetIndexFiltersMode,
-  Badge,
-  Banner,
 } from "@shopify/polaris";
-import { useEffect, useState } from "react";
-import { useSettings } from "~/context/AppSettings";
+import { useState } from "react";
 import { authenticate } from "~/shopify.server";
-import { json } from "@remix-run/node";
-import {
-  useActionData,
-  useLoaderData,
-  useNavigate,
-  useNavigation,
-  useSubmit,
-} from "@remix-run/react";
-import { DiamondAlertMajor, ImageMajor } from "@shopify/polaris-icons";
+import { useLoaderData, useNavigate } from "@remix-run/react";
+import { ImageIcon } from "@shopify/polaris-icons";
 
 export async function action({ request }) {
   const { admin, session, sessionToken } = await authenticate.admin(request);
@@ -160,7 +143,7 @@ const SellerTableRow = ({ seller, shop }) => {
     <IndexTable.Row id={sellerIdOnly} position={sellerIdOnly}>
       <IndexTable.Cell>
         <Thumbnail
-          source={seller.image || ImageMajor}
+          source={seller.image || ImageIcon}
           alt={seller.productTitle}
           size="small"
         />

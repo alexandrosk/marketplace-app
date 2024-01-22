@@ -13,11 +13,19 @@ export const CREATE_PRODUCT_MUTATION = `
               }
             }
           }
+          options {
+            name
+            values
+            id
+            position
+          }
           variants(first: 5) {
-            edges {
-              node {
-                id
-                price
+            nodes {
+              id
+              title
+              selectedOptions {
+                name
+                value
               }
             }
           }

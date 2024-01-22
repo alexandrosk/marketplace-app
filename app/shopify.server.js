@@ -33,6 +33,9 @@ const shopify = shopifyApp({
       callbackUrl: "/webhooks",
     },
   },
+  /*logger: {
+    level: LogSeverity.Debug,
+  },*/
   hooks: {
     afterAuth: async ({ session, admin }) => {
       shopify.registerWebhooks({ session });
@@ -53,20 +56,7 @@ const shopify = shopifyApp({
                 webhookSubscriptionCreate1: webhookSubscriptionCreate(
                   topic: METAOBJECTS_UPDATE
                   subTopic: "type:vendors"
-                  webhookSubscription: {callbackUrl: "https://impala-top-visually.ngrok-free.app/webhooks", format: JSON}
-                ) {
-                  userErrors {
-                    field
-                    message
-                  }
-                  webhookSubscription {
-                    id
-                  }
-                }
-                webhookSubscriptionCreate2: webhookSubscriptionCreate(
-                  topic: METAOBJECTS_CREATE
-                  subTopic: "type:vendors"
-                  webhookSubscription: {callbackUrl: "https://impala-top-visually.ngrok-free.app/webhooks", format: JSON}
+                  webhookSubscription: {callbackUrl: "${process.env.SHOPIFY_APP_URL}/webhooks", format: JSON}
                 ) {
                   userErrors {
                     field

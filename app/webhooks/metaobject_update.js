@@ -5,9 +5,17 @@
 //https://shopify.dev/docs/api/admin-graphql/2024-01/enums/WebhookSubscriptionTopic
 
 import { CREATE_COLLECTION } from "~/graphql/mutations/createCollection";
+import { UPDATE_METAOBJECT } from "~/graphql/mutations/createMetaobject";
 
+/**
+ *
+ * @param admin
+ * @param shop
+ * @param session
+ * @param vendor
+ * @returns {Promise<boolean|*>}
+ */
 const createCollection = async (admin, shop, session, vendor) => {
-  console.log("createCollection");
   const generalInfo = JSON.parse(vendor.fields.general);
   try {
     const response = await admin.graphql(CREATE_COLLECTION, {
@@ -16,6 +24,14 @@ const createCollection = async (admin, shop, session, vendor) => {
           handle: vendor.handle,
           templateSuffix: "vendor",
           title: "Shop - " + vendor.fields.title,
+          metafields: [
+            {
+              key: "vendors",
+              //@todo replace this with vendor.vendor_id
+              namespace: "custom",
+              value: vendor.id,
+            },
+          ],
           ruleSet: {
             appliedDisjunctively: true,
             rules: {
@@ -32,33 +48,14 @@ const createCollection = async (admin, shop, session, vendor) => {
 
     const responseJson = await response.json();
 
-    if (responseJson.userErrors.length > 0) {
+    if (responseJson.userErrors) {
       console.error("Error in createCollection:", JSON.stringify(responseJson));
       return;
     }
-
-    const collection = responseJson.data.collectionCreate.collection;
-
-    //set metafields and publish
-    const custom_collection = new admin.rest.resources.CustomCollection({
-      session: session,
-    });
-    custom_collection.id = collection.id;
-    custom_collection.metafields = [
-      {
-        key: "vendor",
-        value: vendor.id,
-        type: "metaobject_reference",
-        namespace: "custom",
-      },
-    ];
-    custom_collection.published = true;
-
-    await custom_collection.save({
-      update: true,
-    });
+    return responseJson.data.collectionCreate.collection;
   } catch (error) {
-    console.error("Error in updateOrderMetafields:", JSON.stringify(error));
+    console.error("Error in updateOrderMetafields:", error);
+    return false;
   }
 };
 
@@ -70,14 +67,40 @@ export const metaobject_update = async (
   payload,
 ) => {
   console.log("metaobject_update", topic, shop, payload, session);
-
-  const generalInfo = JSON.parse(payload.fields.general);
-  if (
-    payload.fields.status === '["Approved"]' &&
-    generalInfo.previous_status === "pending" &&
-    !payload.product_list
-  ) {
-    await createCollection(admin, shop, session, payload);
+  try {
+    const generalInfo = JSON.parse(payload.fields.general);
+    if (
+      payload.fields.status === '["Approved"]' &&
+      generalInfo.previous_status === "pending" &&
+      !payload.product_list
+    ) {
+      const collection = await createCollection(admin, shop, session, payload);
+      if (collection) {
+        const response = await admin.graphql(UPDATE_METAOBJECT, {
+          variables: {
+            metaobject: {
+              fields: [
+                {
+                  key: "product_list",
+                  value: collection.id,
+                },
+                {
+                  key: "general",
+                  value: JSON.stringify(
+                    Object.assign(generalInfo, {
+                      previous_status: "approved",
+                    }),
+                  ),
+                },
+              ],
+            },
+            id: payload.id,
+          },
+        });
+      }
+    }
+  } catch (error) {
+    console.error("Error in metaobject_update:", JSON.stringify(error));
   }
   return new Response("metaobject_update", { status: 200 });
 };

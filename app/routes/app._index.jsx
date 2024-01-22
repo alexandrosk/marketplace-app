@@ -3,29 +3,23 @@ import { json } from "@remix-run/node";
 import {
   useActionData,
   useLoaderData,
-  useNavigate,
   useNavigation,
   useSubmit,
 } from "@remix-run/react";
 import {
-  Page,
-  Layout,
-  Text,
-  Card,
-  Button,
-  Box,
-  Divider,
-  InlineStack,
-  List,
-  CalloutCard,
-  AccountConnection,
-  Link,
-  FooterHelp,
-  ProgressBar,
-  Thumbnail,
   Badge,
-  MediaCard,
+  Box,
+  Button,
+  Card,
+  FooterHelp,
   InlineGrid,
+  InlineStack,
+  Layout,
+  Link,
+  MediaCard,
+  Page,
+  ProgressBar,
+  Text,
 } from "@shopify/polaris";
 
 import { authenticate } from "../shopify.server";
@@ -35,9 +29,25 @@ import { CREATE_METAOBJECT_VENDOR } from "~/graphql/mutations/createMetaobjectVe
 import { CREATE_METAFIELD_DEFINITION } from "~/graphql/mutations/createMetafield";
 
 export const loader = async ({ request }) => {
-  const { session } = await authenticate.admin(request);
+  const { admin, session } = await authenticate.admin(request);
 
-  return json({ shop: session.shop.replace(".myshopify.com", "") });
+  const getCustomerAccountVersion = await admin.graphql(`
+  #graphql
+  {
+    shop {
+      name
+      customerAccountsV2{
+        customerAccountsVersion
+      }
+    }
+  }`);
+  const responseJson = await getCustomerAccountVersion.json();
+
+  return json({
+    shop: session.shop.replace(".myshopify.com", ""),
+    customerAccountsVersion:
+      responseJson.data.shop.customerAccountsV2.customerAccountsVersion,
+  });
 };
 
 export async function action({ request }) {
@@ -264,7 +274,7 @@ export async function action({ request }) {
 
 export default function Index() {
   const nav = useNavigation();
-  const { shop } = useLoaderData();
+  const { shop, customerAccountsVersion } = useLoaderData();
   const actionData = useActionData();
   const submit = useSubmit();
   const { state, dispatch } = useSettings();
@@ -274,7 +284,6 @@ export default function Index() {
 
   const isLoading =
     ["loading", "submitting"].includes(nav.state) && nav.formMethod === "POST";
-
   const [open, setOpen] = useState(true);
 
   const handleToggle = useCallback(() => setOpen((open) => !open), []);
@@ -549,6 +558,16 @@ export default function Index() {
                               >
                                 Theme App Documentation
                               </Link>
+                              {customerAccountsVersion !== "CLASSIC" && (
+                                <Text as="h2" variant="headingMd">
+                                  SEEMS LIKE YOU'RE USING CUSTOMER ACCOUNTS V2{" "}
+                                  <br />
+                                  Vendors extension is not available for this
+                                  version yet. <br />
+                                  Either change back to classic or wait for the
+                                  next release.
+                                </Text>
+                              )}
                             </Text>
                             <br />
                             {state.settings.onboarding_step == 1 && (
@@ -564,8 +583,10 @@ export default function Index() {
                           </div>
                           <div
                             style={{
-                              maxWidth: "12rem",
+                              maxWidth: "10rem",
                               maxHeight: "9.5rem",
+                              position: "relative",
+                              right: "-4rem",
                               overflow: "hidden",
                             }}
                           >

@@ -17,7 +17,7 @@ model Session {
   shop        String
   state       String
   isOnline    Boolean   @default(false)
-  scope       String?
+  scope       String?   @db.VarChar(1000)
   expires     DateTime?
   accessToken String
   userId      BigInt?
@@ -30,10 +30,10 @@ model Settings {
   default_commision       Float?
   allows_shipping         String?
   available_sizes         Json?
-  auto_approve            String? @default("false")
+  auto_publish_vendors    Json?
   // seperate_seller registration and dashboard page
-  seller_shipping_methods String? @default("false")
-  auto_publish_products   String? @default("false")
+  seller_shipping_methods Json?
+  auto_publish_products   Json?
   allowed_categories      Json?
   allowed_countries       Json?
   minimum_order_amount    Float?

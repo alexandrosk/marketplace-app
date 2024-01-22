@@ -1,34 +1,33 @@
 import {
-  Page,
-  Card,
-  TextField,
-  Text,
-  Divider,
-  Box,
-  InlineGrid,
-  OptionList,
-  InlineStack,
-  useBreakpoints,
   BlockStack,
+  Box,
   Button,
-  Toast,
-  Tag,
-  Frame,
-  Modal,
+  Card,
   ChoiceList,
+  Divider,
+  Frame,
+  InlineGrid,
+  InlineStack,
   Link,
+  Modal,
+  OptionList,
+  Page,
+  Tag,
+  Text,
+  TextField,
+  Toast,
+  useBreakpoints,
 } from "@shopify/polaris";
 
 import { json } from "@remix-run/node";
 import React, { useCallback, useEffect, useState } from "react";
 import { updateAllSettings } from "~/models/settings.server";
 import { updateAllVariants } from "~/models/variants.server";
-import { settingsHook } from "~/hooks/useSettings";
 import { authenticate } from "~/shopify.server";
 import { useSettings } from "~/context/AppSettings";
 import { useLoaderData, useSubmit } from "@remix-run/react";
 import db from "~/db.server";
-import { boolean } from "zod";
+
 export const action = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
 
@@ -63,7 +62,7 @@ export const loader = async ({ request }) => {
 
   const QUERY = `
     {
-        collections(first: 100, query: "-vendor") {
+        collections(first: 100, query: "-shop") {
         edges {
           node {
             id
@@ -89,16 +88,44 @@ export const loader = async ({ request }) => {
     where: { shop: session.shop },
   });
 
+  const publications = await admin.graphql(`
+  #graphql
+  query publications {
+    publications(first: 10) {
+      edges {
+        node {
+          id
+          name
+          supportsFuturePublishing
+          app {
+            id
+            title
+            description
+            developerName
+          }
+        }
+      }
+    }
+  }
+  `);
+  const responsePublicationsData = await publications.json();
+
   return {
     shop: session.shop,
     collections: responseJson.data.collections.edges,
     variantsDb: variants,
+    publications:
+      responsePublicationsData.data.publications.edges.length > 0
+        ? responsePublicationsData.data.publications.edges
+        : null,
   };
 };
 
 export default function SettingsPage() {
   const { state, dispatch } = useSettings();
-  const { collections, variantsDb, shop } = useLoaderData();
+  const { collections, variantsDb, shop, publications } = useLoaderData();
+  //publications = [{"node":{"id":"gid://shopify/Publication/63068602519","name":"Online Store","supportsFuturePublishing":true,"app":{"id":"gid://shopify/App/580111","title":"Online Store","description":"Build a home for your brand with a beautiful and secure online store. Easily customize your store with apps and themes.","developerName":"Shopify"}}},{"node":{"id":"gid://shopify/Publication/91945468055","name":"Shopify GraphiQL App","supportsFuturePublishing":false,"app":{"id":"gid://shopify/App/2315872","title":"Shopify GraphiQL App","description":null,"developerName":"Shopify"}}}]
+
   const { smUp } = useBreakpoints();
   const [allOptions, setAllOptions] = useState([]);
   const [activeToast, setActiveToast] = useState(false);
@@ -108,7 +135,9 @@ export default function SettingsPage() {
     collections.map((collection) => collection.node.id),
   );
   const [rightItems, setRightItems] = useState(
-    state.settings.allowed_categories,
+    state.settings.allowed_categories?.length > 0
+      ? state.settings.allowed_categories
+      : [],
   );
   const [selectedLeft, setSelectedLeft] = useState([]);
   const [selectedRight, setSelectedRight] = useState([]);
@@ -218,7 +247,7 @@ export default function SettingsPage() {
     const updatedValues = JSON.stringify(
       variantValues.split(",").map((value) => ({
         label: value.trim(),
-        value: `gid://shopify/Collection/${value.trim()}`,
+        value: value.trim(),
       })),
     );
 
@@ -246,7 +275,7 @@ export default function SettingsPage() {
       title="Settings"
       primaryAction={{
         content: "Save",
-        disabled: rightItems.length === 0,
+        disabled: false,
         onAction: () => {
           handleSubmit();
         },
@@ -277,24 +306,29 @@ export default function SettingsPage() {
           ]}
         >
           <Modal.Section>
-            <TextField
-              label="Values"
-              value={variantValues}
-              onChange={handleVariantValuesChange}
-              placeholder="e.g., Small, Medium, Large"
-            />
+            <BlockStack gap={200}>
+              <TextField
+                label="Values"
+                value={variantValues}
+                onChange={handleVariantValuesChange}
+                placeholder="e.g., Small, Medium, Large"
+                autoComplete={""}
+              />
+              <Text as={"p"} variant={"bodySm"} tone="subdued">
+                Separate values with commas
+              </Text>
+            </BlockStack>
           </Modal.Section>
         </Modal>
         {/*{JSON.stringify(variantsDb)}*/}
         <BlockStack gap={{ xs: "800", sm: "400" }}>
-          {console.log(state.settings)}
           <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
             <Box as="section">
               <InlineStack gap="4">
                 <Text as="h3" variant="headingMd">
                   Product Assignment
                 </Text>
-                <Text as="p" variant="bodyMd">
+                <Text as="p" variant="bodyMd" tone={"subdued"}>
                   Categories that vendors can assign products to
                 </Text>
               </InlineStack>
@@ -338,7 +372,7 @@ export default function SettingsPage() {
                     verticalAlign="top"
                     onChange={setSelectedRight}
                     options={allOptions.filter((option) =>
-                      rightItems.includes(option.value),
+                      rightItems?.includes(option.value),
                     )}
                     selected={selectedRight}
                     allowMultiple
@@ -353,7 +387,7 @@ export default function SettingsPage() {
                 <Text as="h3" variant="headingMd">
                   Variant Assigments
                 </Text>
-                <Text as="p" variant="bodyMd">
+                <Text as="p" variant="bodyMd" tone={"subdued"}>
                   Variants that vendors will be able to use. <br />
                   <b>NOTE:</b> Add a new variant and select options for each
                   one.
@@ -395,8 +429,9 @@ export default function SettingsPage() {
                 <Text as="h3" variant="headingMd">
                   Payments
                 </Text>
-                <Text as="p" variant="bodyMd">
-                  Set commissions and payment settings
+                <Text as="p" variant="bodyMd" tone={"subdued"}>
+                  Set commissions and payment settings, you can also specify per
+                  vendor
                 </Text>
               </BlockStack>
             </Box>
@@ -434,10 +469,12 @@ export default function SettingsPage() {
                 <Text as="h3" variant="headingMd">
                   Approval of Vendor and Products
                 </Text>
-                <Text as="p" variant="bodyMd">
+                <Text as="p" variant="bodyMd" tone={"subdued"}>
                   Enable Auto product approval and vendor approval. <br />
-                  If disabled, you will have to manually approve vendors and
-                  products. <br />
+                  Select at{" "}
+                  <strong>least one publish channel for auto approval</strong>,
+                  else you will have to manually approve vendors and products.{" "}
+                  <br />
                   You will get an email when a vendor or product is submitted
                   for approval.
                 </Text>
@@ -446,40 +483,54 @@ export default function SettingsPage() {
             <Card roundedAbove="sm">
               <BlockStack gap="400">
                 <ChoiceList
+                  allowMultiple
                   title="Auto Publish Products"
-                  choices={[
-                    { label: "Enabled", value: "true" },
-                    { label: "Disabled", value: "false" },
-                  ]}
-                  selected={[state.settings.auto_publish_products]}
+                  choices={publications.map((publication) => ({
+                    label: publication.node.name,
+                    value: publication.node.id,
+                  }))}
+                  selected={JSON.parse(
+                    state.settings.auto_publish_products?.length > 0
+                      ? state.settings.auto_publish_products
+                      : "[]",
+                  )}
                   onChange={(value) =>
                     dispatch({
                       type: "SET_SETTING",
                       resourceId: "auto_publish_products",
-                      value: value[0],
+                      value: JSON.stringify(value),
                     })
                   }
                 />
                 <ChoiceList
-                  title="Auto Approve Vendors"
-                  choices={[
-                    { label: "Enabled", value: "true" },
-                    { label: "Disabled", value: "false" },
-                  ]}
-                  selected={[state.settings.auto_approve]}
+                  allowMultiple
+                  title="Auto Publish Vendor Collections"
+                  choices={publications.map((publication) => ({
+                    label: publication.node.name,
+                    value: publication.node.id,
+                  }))}
+                  selected={JSON.parse(
+                    state.settings.auto_publish_vendors?.length > 0
+                      ? state.settings.auto_publish_vendors
+                      : "[]",
+                  )}
                   onChange={(value) =>
                     dispatch({
                       type: "SET_SETTING",
-                      resourceId: "auto_approve",
-                      value: value[0],
+                      resourceId: "auto_publish_vendors",
+                      value: JSON.stringify(value),
                     })
                   }
                 />
+                <Text as={"p"} variant={"bodySm"} tone={"subdued"}>
+                  <strong>NOTE:</strong> You can manually publish vendors and
+                  products from the collections and products page.
+                </Text>
               </BlockStack>
             </Card>
           </InlineGrid>
 
-          <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
+          {/*<InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
             <Box
               as="section"
               paddingInlineStart={{ xs: 400, sm: 0 }}
@@ -514,7 +565,7 @@ export default function SettingsPage() {
                 />
               </BlockStack>
             </Card>
-          </InlineGrid>
+          </InlineGrid>*/}
 
           <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
             <Box
@@ -526,7 +577,7 @@ export default function SettingsPage() {
                 <Text as="h3" variant="headingMd">
                   Emails
                 </Text>
-                <Text as="p" variant="bodyMd">
+                <Text as="p" variant="bodyMd" tone={"subdued"}>
                   Set email from and templates
                 </Text>
               </BlockStack>
@@ -564,11 +615,11 @@ export default function SettingsPage() {
                   }
                   autoComplete="from_email_api_key"
                 />
-                <p>
+                <Text as={"p"} tone={"subdued"}>
                   Get your key from{" "}
                   <a href="https://resend.com/onboarding">Resend</a> (100 free
                   per day/ 3,000 per month)
-                </p>
+                </Text>
               </BlockStack>
             </Card>
           </InlineGrid>
