@@ -14,13 +14,11 @@ import {
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { saveProfile, getProfile } from "../utils/api";
+import { saveProfile } from "../utils/api";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { boolean } from "zod";
 
 const profileFormSchema = z.object({
   title: z
@@ -33,6 +31,7 @@ const profileFormSchema = z.object({
     }),
   enabled: z.boolean(),
   bio: z.string(),
+  payment_details: z.string(),
   urls: z.array(
     z.string().url({
       message: "URL must be a valid URL.",
@@ -50,6 +49,7 @@ const ProfilePage = ({ isVendor, profileData }) => {
         username: profileData?.slug?.value || "",
         title: profileData?.title?.value || "",
         bio: profileData?.bio?.value || "Description goes here",
+        payment_details: profileData?.payment_details?.value || "",
         enabled: profileData?.enabled?.value === "true",
         urls: JSON.parse(profileData?.url?.value) || [
           "https://shadcn.com",
@@ -97,7 +97,9 @@ const ProfilePage = ({ isVendor, profileData }) => {
     });
     formData.append("vendorId", profileData?.id);
     // @ts-ignore
-    formData.append("image", image, image.name);
+    if (image && image.name) {
+      formData.append("image", image, image.name);
+    }
 
     console.log(formData);
     saveProfile(formData).then(function (response) {
@@ -214,6 +216,7 @@ const ProfilePage = ({ isVendor, profileData }) => {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="enabled"
@@ -283,6 +286,27 @@ const ProfilePage = ({ isVendor, profileData }) => {
           </div>
         }
 
+        <FormField
+          control={form.control}
+          name="payment_details"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Payment details</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Payment details"
+                  className="resize-none"
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>
+                Add your SWIFT or IBAN details here. To receive payments from
+                the store admin when you ship the order.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button type="submit">Update profile</Button>
       </form>
     </Form>

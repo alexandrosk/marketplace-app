@@ -19491,23 +19491,84 @@
         })
       });
       const result = yield res.json();
+      console.log(result);
       if (result.data.order.metafield) {
         result.data.order.metafield.parsedValue = JSON.parse(
           result.data.order.metafield.value
         );
+        if (result.data.order.metafield.parsedValue[0].vendorId) {
+          const res2 = yield fetch("shopify:admin/api/graphql.json", {
+            method: "POST",
+            body: JSON.stringify({
+              query: `
+        query getMetaObject($id: ID!) {
+            metaobject(id: $id) {
+              id
+              type
+              slug: field(key: "slug") {
+                value
+              }
+              capabilities {
+                publishable {
+                  status
+                }
+              }
+              payment_details: field(key: "payment_details") {
+                value
+              }
+              commission: field(key: "commission") {
+                value
+              }
+              title: field(key: "title") {
+                value
+              }
+              bio: field(key: "description") {
+                value
+              }
+              enabled: field(key: "enabled") {
+                value
+              }
+              url: field(key: "social") {
+                value
+              }
+              status: field(key: "status") {
+                value
+              }
+              image: field(key: "image") {
+                reference {
+                ... on MediaImage {
+                    image {
+                      originalSrc
+                    }
+                  }
+                }
+              }
+            }
+          }
+      `,
+              variables: {
+                id: result.data.order.metafield.parsedValue[0].vendorId
+              }
+            })
+          });
+          const result2 = yield res2.json();
+          console.log(result2);
+          result.data.order.vendor = result2.data.metaobject;
+        }
       }
       return result.data.order;
     });
   }
   var BlockExtension_default = reactExtension(TARGET, () => /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(App, {}));
   function App() {
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
     const {
       extension: { target },
       i18n,
       data
     } = useApi(TARGET);
     const [order, setOrder] = (0, import_react13.useState)();
+    const [showPayout, setShowPayout] = (0, import_react13.useState)(false);
     (0, import_react13.useEffect)(() => {
       var _a2, _b2;
       const orderId = (_b2 = (_a2 = data.selected) == null ? void 0 : _a2[0]) == null ? void 0 : _b2.id;
@@ -19517,26 +19578,29 @@
     const commissionAmount = (_f = (_e = (_d = order == null ? void 0 : order.metafield) == null ? void 0 : _d.parsedValue) == null ? void 0 : _e[0]) == null ? void 0 : _f.commissionAmount;
     return (
       // The AdminBlock component provides an API for setting the title of the Block extension wrapper.
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(AdminBlock2, { title: "Vendor Payouts", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(BlockStack2, { children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(InlineStack2, { gap: true, inlineAlignment: "space-between", children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(Text2, { fontStyle: "italic", children: [
-          "Vendor ID: ",
-          vendorId
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(AdminBlock2, { title: "Vendor Payouts", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(BlockStack2, { children: [
+        /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(InlineStack2, { gap: true, inlineAlignment: "space-between", children: [
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(Text2, { fontStyle: "italic", children: [
+            "Vendor ID: ",
+            vendorId
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(Text2, { fontWeight: "bold", children: [
+            "You have to pay ",
+            commissionAmount
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Text2, { fontStyle: "italic", children: "Shipped" }),
+          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+            Button2,
+            {
+              onPress: () => {
+                setShowPayout(!showPayout);
+              },
+              children: "Mark as paid"
+            }
+          )
         ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(Text2, { fontWeight: "bold", children: [
-          "You have to pay ",
-          commissionAmount
-        ] }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Text2, { fontStyle: "italic", children: "Shipped" }),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-          Button2,
-          {
-            onPress: () => {
-              console.log("onPress event");
-            },
-            children: "Pay now"
-          }
-        )
-      ] }) }) })
+        showPayout && ((_h = (_g = order == null ? void 0 : order.vendor) == null ? void 0 : _g.payment_details) == null ? void 0 : _h.value) && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(InlineStack2, { gap: true, inlineAlignment: "space-between", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Text2, { children: (_j = (_i = order == null ? void 0 : order.vendor) == null ? void 0 : _i.payment_details) == null ? void 0 : _j.value }) })
+      ] }) })
     );
   }
 })();

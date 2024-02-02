@@ -33,10 +33,70 @@ async function getOrder(id) {
   const result = await res.json();
 
   // Parse the metafield value if it exists
+  console.log(result);
   if (result.data.order.metafield) {
     result.data.order.metafield.parsedValue = JSON.parse(
       result.data.order.metafield.value,
     );
+    if (result.data.order.metafield.parsedValue[0].vendorId) {
+      const res2 = await fetch("shopify:admin/api/graphql.json", {
+        method: "POST",
+        body: JSON.stringify({
+          query: `
+        query getMetaObject($id: ID!) {
+            metaobject(id: $id) {
+              id
+              type
+              slug: field(key: "slug") {
+                value
+              }
+              capabilities {
+                publishable {
+                  status
+                }
+              }
+              payment_details: field(key: "payment_details") {
+                value
+              }
+              commission: field(key: "commission") {
+                value
+              }
+              title: field(key: "title") {
+                value
+              }
+              bio: field(key: "description") {
+                value
+              }
+              enabled: field(key: "enabled") {
+                value
+              }
+              url: field(key: "social") {
+                value
+              }
+              status: field(key: "status") {
+                value
+              }
+              image: field(key: "image") {
+                reference {
+                ... on MediaImage {
+                    image {
+                      originalSrc
+                    }
+                  }
+                }
+              }
+            }
+          }
+      `,
+          variables: {
+            id: result.data.order.metafield.parsedValue[0].vendorId,
+          },
+        }),
+      });
+      const result2 = await res2.json();
+      console.log(result2);
+      result.data.order.vendor = result2.data.metaobject;
+    }
   }
 
   return result.data.order;
@@ -52,6 +112,7 @@ function App() {
     data,
   } = useApi(TARGET);
   const [order, setOrder] = useState();
+  const [showPayout, setShowPayout] = useState(false);
 
   useEffect(() => {
     const orderId = data.selected?.[0]?.id;
@@ -75,12 +136,18 @@ function App() {
           <Text fontStyle={"italic"}>Shipped</Text>
           <Button
             onPress={() => {
-              console.log("onPress event");
+              setShowPayout(!showPayout);
             }}
           >
-            Pay now
+            Mark as paid
           </Button>
         </InlineStack>
+        {/*show payout information when button is pressed */}
+        {showPayout && order?.vendor?.payment_details?.value && (
+          <InlineStack gap inlineAlignment={"space-between"}>
+            <Text>{order?.vendor?.payment_details?.value}</Text>
+          </InlineStack>
+        )}
       </BlockStack>
     </AdminBlock>
   );

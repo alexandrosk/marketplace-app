@@ -1,9 +1,9 @@
 import {
   Card,
-  CardTitle,
-  CardHeader,
   CardContent,
   CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { SalesOverview } from "~/components/SalesOverview";
 import { RecentSales } from "~/components/RecentSales";
@@ -31,9 +31,6 @@ const DashboardPage = () => (
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">$1,000.00</div>
-          <p className="text-xs text-muted-foreground">
-            +20.1% from last month
-          </p>
         </CardContent>
       </Card>
       <Card>
@@ -56,9 +53,6 @@ const DashboardPage = () => (
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">+10</div>
-          <p className="text-xs text-muted-foreground">
-            +180.1% from last month
-          </p>
         </CardContent>
       </Card>
       <Card>
@@ -80,7 +74,6 @@ const DashboardPage = () => (
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">+20</div>
-          <p className="text-xs text-muted-foreground">+19% from last month</p>
         </CardContent>
       </Card>
       <Card>
@@ -101,7 +94,6 @@ const DashboardPage = () => (
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">+30</div>
-          <p className="text-xs text-muted-foreground">+10 since last month</p>
         </CardContent>
       </Card>
     </div>

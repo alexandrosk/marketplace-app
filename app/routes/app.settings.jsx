@@ -403,9 +403,12 @@ export default function SettingsPage() {
                   value={newVariant}
                   onChange={handleVariantChange}
                 />
-                <Button onClick={handleAddVariant} size={"slim"}>
-                  Add Variant
-                </Button>
+                {newVariant ? (
+                  <Button onClick={handleAddVariant} size={"slim"}>
+                    Add Variant
+                  </Button>
+                ) : null}
+
                 <InlineStack gap={"100"}>
                   {variants.map((variant) => (
                     <Tag key={variant.title} onRemove={removeTag(variant)}>
@@ -415,6 +418,11 @@ export default function SettingsPage() {
                     </Tag>
                   ))}
                 </InlineStack>
+                {variants.length > 0 ? (
+                  <Text as="p" variant="bodyMd" tone={"subdued"}>
+                    Click on the variant above to add options.
+                  </Text>
+                ) : null}
               </BlockStack>
             </Card>
           </InlineGrid>
@@ -467,13 +475,14 @@ export default function SettingsPage() {
             >
               <BlockStack gap="400">
                 <Text as="h3" variant="headingMd">
-                  Approval of Vendor and Products
+                  Publishing of Vendor and Products
                 </Text>
                 <Text as="p" variant="bodyMd" tone={"subdued"}>
-                  Enable Auto product approval and vendor approval. <br />
                   Select at{" "}
-                  <strong>least one publish channel for auto approval</strong>,
-                  else you will have to manually approve vendors and products.{" "}
+                  <strong>
+                    least one publishing channel for auto approval
+                  </strong>
+                  , else you will have to manually publish vendors and products.{" "}
                   <br />
                   You will get an email when a vendor or product is submitted
                   for approval.
@@ -523,8 +532,9 @@ export default function SettingsPage() {
                   }
                 />
                 <Text as={"p"} variant={"bodySm"} tone={"subdued"}>
-                  <strong>NOTE:</strong> You can manually publish vendors and
-                  products from the collections and products page.
+                  <strong>NOTE:</strong> Not selecting anything means that you
+                  need to publish vendors and products from the collections and
+                  products page manually.
                 </Text>
               </BlockStack>
             </Card>

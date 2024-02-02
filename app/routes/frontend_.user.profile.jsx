@@ -29,10 +29,10 @@ export let action = async ({ request }) => {
 
     //existing user so update vendor
     if (profileData.vendorId) {
-      const imageUploads = await uploadFile(
-        [profileData.image],
-        admin?.graphql,
-      );
+      let imageUploads = { files: [] };
+      if (profileData.image) {
+        imageUploads = await uploadFile([profileData.image], admin?.graphql);
+      }
       const response = await admin?.graphql(UPDATE_METAOBJECT, {
         variables: {
           metaobject: {
@@ -44,6 +44,10 @@ export let action = async ({ request }) => {
               profileData.title && {
                 key: "title",
                 value: profileData.title,
+              },
+              profileData.payment_details && {
+                key: "payment_details",
+                value: profileData.payment_details,
               },
               profileData.bio && {
                 key: "description",

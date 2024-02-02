@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-name = "multivendor-shop"
-client_id = "134aee47e256fdd2f4857a79372287f5"
+name = "Multivendor Shop"
+client_id = "36721b0a5b6c24a485ba96e52adc57b7"
 application_url = "https://impala-top-visually.ngrok-free.app"
 embedded = true
 
@@ -20,6 +20,16 @@ redirect_urls = [
 
 [webhooks]
 api_version = "2024-01"
+
+  [webhooks.privacy_compliance]
+  customer_deletion_url = "https://impala-top-visually.ngrok-free.app/gdpr/data/erasure"
+  customer_data_request_url = "https://impala-top-visually.ngrok-free.app/gdpr/data/request"
+  shop_deletion_url = "https://impala-top-visually.ngrok-free.app/gdpr/shop/erasure"
+
+[app_proxy]
+url = "https://impala-top-visually.ngrok-free.app/frontend"
+subpath = "frontend"
+prefix = "apps"
 
 [pos]
 embedded = false

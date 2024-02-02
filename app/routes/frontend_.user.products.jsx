@@ -3,6 +3,8 @@ import { authenticate } from "~/shopify.server"; // Adjust this import path as n
 import { PRODUCT_LIST_BY_METAFIELD_QUERY } from "~/graphql/queries/productListByMetafield";
 import { CREATE_PRODUCT_MUTATION } from "~/graphql/mutations/createProduct";
 import { uploadFile } from "~/models/files.server";
+import { getSetting } from "~/models/settings.server";
+import { PUBLISH_MUTATION } from "~/graphql/mutations/publishablePublish";
 
 const fetchProductsByMetafield = async (storefront, vendorSlug) => {
   const response = await storefront.graphql(PRODUCT_LIST_BY_METAFIELD_QUERY, {
@@ -30,9 +32,7 @@ const fetchProductsByMetafield = async (storefront, vendorSlug) => {
  * @param files
  * @returns {Promise<*>}
  */
-const createProductInShopify = async (admin, productData, files) => {
-  const imageUploads = await uploadFile(files, admin.graphql);
-
+const createProductInShopify = async (admin, productData, files, shop) => {
   const shopifyProductData = {
     title: productData.title,
     options: productData.variantOptions,
@@ -58,11 +58,16 @@ const createProductInShopify = async (admin, productData, files) => {
 
     collectionsToJoin: [productData.category],
   };
-  const shopifyProductImages = imageUploads.stagedTargets?.map((file) => ({
-    originalSource: file.resourceUrl,
-    mediaContentType: "IMAGE",
-  }));
-  console.log(JSON.stringify(shopifyProductData));
+
+  let shopifyProductImages = [];
+  if (files) {
+    const imageUploads = await uploadFile(files, admin.graphql);
+    shopifyProductImages = imageUploads.stagedTargets?.map((file) => ({
+      originalSource: file.resourceUrl,
+      mediaContentType: "IMAGE",
+    }));
+  }
+
   const response = await admin.graphql(CREATE_PRODUCT_MUTATION, {
     variables: {
       input: shopifyProductData,
@@ -70,6 +75,27 @@ const createProductInShopify = async (admin, productData, files) => {
     },
   });
   const responseJson = await response.json();
+  responseJson.needsApproval = false;
+  if (responseJson.data.productCreate?.product?.id) {
+    const productId = responseJson.data.productCreate?.product?.id;
+    const setting = await getSetting(shop, "auto_publish_products");
+
+    if (setting && setting.auto_publish_products) {
+      const responseJsonPublication = await admin.graphql(PUBLISH_MUTATION, {
+        variables: {
+          id: productId,
+          input: JSON.parse(setting.auto_publish_products).map(
+            (publicationId) => ({
+              publicationId: publicationId,
+            }),
+          ),
+        },
+      });
+      responseJson.needsApproval = false;
+      /*const publicationData = await responseJsonPublication.json();
+      console.log(publicationData);*/
+    }
+  }
   return responseJson;
 };
 
@@ -131,7 +157,12 @@ export let action = async ({ request }) => {
 
   const { admin } = await authenticate.public.appProxy(request);
   try {
-    const response = await createProductInShopify(admin, productData, files);
+    const response = await createProductInShopify(
+      admin,
+      productData,
+      files,
+      shop,
+    );
     console.log(JSON.stringify(response));
     if (response.data.productCreate?.userErrors.length > 1) {
       return json(
@@ -141,7 +172,9 @@ export let action = async ({ request }) => {
     }
 
     return json({
-      message: "Product created successfully",
+      message: response.needsApproval
+        ? "Product created and sent for approval"
+        : "Product created",
       productId: response.data.productCreate.product.id,
     });
   } catch (error) {

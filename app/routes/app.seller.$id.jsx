@@ -1,27 +1,15 @@
-import { useState } from "react";
 import {
-  Page,
-  Button,
-  Card,
-  Text,
+  Banner,
   Box,
+  Card,
   InlineGrid,
   Link,
-  SkeletonDisplayText,
-  Bleed,
-  Divider,
-  SkeletonBodyText,
-  Thumbnail,
-  Banner,
+  Page,
+  Text,
   TextField,
+  Thumbnail,
 } from "@shopify/polaris";
-import {
-  ArchiveMinor,
-  DeleteMinor,
-  DuplicateMinor,
-} from "@shopify/polaris-icons";
-import { useRouteLoaderData } from "@remix-run/react";
-import { json } from "@remix-run/node";
+
 import { useLoaderData } from "@remix-run/react";
 import { authenticate } from "~/shopify.server";
 

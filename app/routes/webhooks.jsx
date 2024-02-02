@@ -16,9 +16,9 @@ export const action = async ({ request }) => {
       console.log("METAOBJECTS_UPDATE");
       metaobject_update(admin, topic, shop, session, payload);
       return new Response("metaobject_update", { status: 200 });
-    case "PRODUCTS_UPDATE":
+    /*    case "PRODUCTS_UPDATE":
       console.log("PRODUCTS_UPDATE", payload);
-      return new Response("product_update", { status: 200 });
+      return new Response("product_update", { status: 200 });*/
     case "ORDERS_UPDATED":
       orders_update(admin, shop, payload, session);
       return new Response("orders_update", { status: 200 });

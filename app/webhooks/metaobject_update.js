@@ -6,6 +6,8 @@
 
 import { CREATE_COLLECTION } from "~/graphql/mutations/createCollection";
 import { UPDATE_METAOBJECT } from "~/graphql/mutations/createMetaobject";
+import { getSetting } from "~/models/settings.server";
+import { PUBLISH_MUTATION } from "~/graphql/mutations/publishablePublish";
 
 /**
  *
@@ -54,7 +56,7 @@ const createCollection = async (admin, shop, session, vendor) => {
     }
     return responseJson.data.collectionCreate.collection;
   } catch (error) {
-    console.error("Error in updateOrderMetafields:", error);
+    console.error("Error in updateOrderMetafields:", JSON.stringify(error));
     return false;
   }
 };
@@ -76,6 +78,7 @@ export const metaobject_update = async (
     ) {
       const collection = await createCollection(admin, shop, session, payload);
       if (collection) {
+        //save info of collection to metaobject
         const response = await admin.graphql(UPDATE_METAOBJECT, {
           variables: {
             metaobject: {
@@ -97,6 +100,26 @@ export const metaobject_update = async (
             id: payload.id,
           },
         });
+
+        //auto approve vendors collection if enabled from settings, maybe async update these ids if changed, else it will fail
+        const setting = await getSetting(shop, "auto_publish_vendors");
+        if (setting && JSON.parse(setting.auto_publish_vendors).length > 0) {
+          const responsePublish = await admin.graphql(PUBLISH_MUTATION, {
+            variables: {
+              id: collection.id,
+              input: JSON.parse(setting.auto_publish_vendors).map(
+                (publicationId) => ({
+                  publicationId: publicationId,
+                }),
+              ),
+            },
+          });
+
+          const responsePublishJson = await responsePublish.json();
+          console.log(JSON.stringify(responsePublishJson));
+        }
+
+        //send email to vendor and admin
       }
     }
   } catch (error) {

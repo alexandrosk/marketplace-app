@@ -11,6 +11,9 @@ query getMetaObject($id: ID!) {
         status
       }
     }
+    payment_details: field(key: "payment_details") {
+      value
+    }
     commission: field(key: "commission") {
       value
     }

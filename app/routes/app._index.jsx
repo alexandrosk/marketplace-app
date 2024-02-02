@@ -111,7 +111,13 @@ export async function action({ request }) {
           { name: "social", key: "social", type: "json" },
           { name: "image", key: "image", type: "file_reference" },
           { name: "color", key: "background", type: "color" },
+          { name: "address", key: "country", type: "single_line_text_field" },
           { name: "country", key: "country", type: "single_line_text_field" },
+          {
+            name: "payment_details",
+            key: "country",
+            type: "multi_line_text_field",
+          },
           {
             name: "paypal_email",
             key: "paypal_email",

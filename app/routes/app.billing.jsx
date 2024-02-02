@@ -38,13 +38,13 @@ export async function action({ request }) {
         returnUrl:
           "https://newathens.myshopify.com/admin/apps/marketplace-p2p/app/billing",
         test: true,
-        trialDays: 7,
+        trialDays: 14,
         lineItems: [
           {
             plan: {
               appRecurringPricingDetails: {
                 price: {
-                  amount: 10.0,
+                  amount: 49.0,
                   currencyCode: "USD",
                 },
                 interval: "EVERY_30_DAYS",
@@ -162,10 +162,10 @@ export default function BillingPage() {
             price="$99"
             frequency="month"
             button={{
-              content: "Select Plan",
+              content: "Disabled",
               props: {
-                variant: "primary",
-                onClick: () => createSubscription("premium"),
+                variant: "disabled",
+                onClick: () => alert("Work in progress"),
               },
             }}
           />

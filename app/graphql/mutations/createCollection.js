@@ -12,7 +12,6 @@ mutation collectionCreate($input: CollectionInput!) {
           column
         }
       }
-      publishedOnCurrentPublication
     }
     userErrors {
       field

@@ -51,12 +51,6 @@ const processVendorInformation = async (
     vendorInfoWithLineItems.map((vendor) =>
       getVendorInformation(admin, shop, vendor.vendorId, session).then(
         async (vendorInfo) => {
-          console.log(
-            "vendorInfo",
-            (parseFloat(vendorInfo.commission.value) / 100) *
-              parseFloat(vendor.finalPrice) *
-              parseFloat(vendor.quantity),
-          );
           const metafield = new admin.rest.resources.Metafield({
             session: session,
           });
@@ -69,9 +63,10 @@ const processVendorInformation = async (
               vendorId: vendorInfo.id,
               commission: vendorInfo.commission,
               commissionAmount: (
+                vendor.finalPrice -
                 (parseFloat(vendorInfo.commission.value) / 100) *
-                parseFloat(vendor.finalPrice) *
-                parseFloat(vendor.quantity)
+                  parseFloat(vendor.finalPrice) *
+                  parseFloat(vendor.quantity)
               ).toFixed(2),
             },
           ]);

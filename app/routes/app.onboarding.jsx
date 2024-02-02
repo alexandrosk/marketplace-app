@@ -1,42 +1,23 @@
 import {
+  AccountConnection,
   Box,
-  Button,
-  CalloutCard,
   Card,
-  ProgressBar,
-  Layout,
-  Link,
-  List,
-  Page,
-  Text,
-  Thumbnail,
-  InlineGrid,
-  Collapsible,
-  Icon,
-  PageActions,
-  SettingToggle,
+  Checkbox,
   ChoiceList,
   FormLayout,
+  Layout,
+  Page,
+  PageActions,
+  SettingToggle,
   TextField,
-  Checkbox,
-  AccountConnection,
 } from "@shopify/polaris";
-import {
-  ChevronDownMinor,
-  ChevronUpMinor,
-  CircleDotsMajor,
-} from "@shopify/polaris-icons";
-import React, { useEffect, useState } from "react";
-import OnboardingModal from "../components/OnboardingModal";
-import {
-  useActionData,
-  useLoaderData,
-  useNavigation,
-  useSubmit,
-} from "@remix-run/react";
-import { authenticate, login } from "~/shopify.server";
+
+import React, { useEffect } from "react";
+import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
+import { authenticate } from "~/shopify.server";
 import { json } from "@remix-run/node";
 import { useSettings } from "~/context/AppSettings";
+
 export async function action({ request }) {
   const { admin, session, sessionToken } = await authenticate.admin(request);
 
