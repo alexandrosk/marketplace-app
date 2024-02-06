@@ -73,7 +73,7 @@ export async function action({ request }) {
           // }
         },
         name: "Vendor",
-        type: "vendor",
+        type: "vendors",
         displayNameKey: "title",
         fieldDefinitions: [
           {
