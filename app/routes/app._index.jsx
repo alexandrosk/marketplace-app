@@ -301,11 +301,11 @@ export default function Index() {
       );
     } else if (actionData?.metaobjectDefinitionCreate?.userErrors.length < 1) {
       shopify.toast.show("Metaobject created!");
-      updateSetting("onboarding_step", 1);
+      updateSetting("onboarding_step", "1");
       dispatch({
         type: "SET_SETTING",
         resourceId: "onboarding_step",
-        value: 1,
+        value: "1",
       });
     }
   }, [actionData]);
@@ -313,8 +313,12 @@ export default function Index() {
   const generateProduct = () => submit({}, { replace: true, method: "POST" });
 
   function setupAppExtension() {
-    updateSetting(state.settings.shop, "onboarding_step", 2);
-    dispatch({ type: "SET_SETTING", resourceId: "onboarding_step", value: 2 });
+    updateSetting(state.settings.shop, "onboarding_step", "2");
+    dispatch({
+      type: "SET_SETTING",
+      resourceId: "onboarding_step",
+      value: "2",
+    });
     window.open(
       "https://" +
         state.settings.shop +
@@ -326,7 +330,7 @@ export default function Index() {
       dispatch({
         type: "SET_SETTING",
         resourceId: "onboarding_step",
-        value: 3,
+        value: "3",
       });
       window.open(
         "https://" +
@@ -570,6 +574,28 @@ export default function Index() {
                               <p>
                                 Add our app extension in your customers account
                                 page or on any other page you'd like to.
+                              </p>
+                              <p>
+                                <strong>Important:</strong>
+                                <ul>
+                                  <li>
+                                    1. From your Store go to: Settings -
+                                    Customer Accounts
+                                  </li>
+                                  <li>
+                                    2. Enable `Show login link in the header of
+                                    online store and at checkout`{" "}
+                                  </li>
+                                  <li>3. Select `Classic customer accounts`</li>
+                                  <li>
+                                    4. Go to Online Store - Themes - Customize -
+                                    Add section
+                                  </li>
+                                </ul>
+                                <br />
+                                <br />
+                                Customer must be logged in to use the vendor
+                                dashboard - application.
                               </p>
                               <Link
                                 url="https://www.multivendorshop.com/docs/admin/theme"
