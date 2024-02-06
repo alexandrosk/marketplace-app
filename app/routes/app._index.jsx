@@ -86,6 +86,28 @@ export async function action({ request }) {
             key: "description",
             type: "multi_line_text_field",
           },
+          {
+            name: "status",
+            key: "status",
+            type: "list.single_line_text_field",
+            description: "Vendors Status - Approved or not",
+            required: false,
+            validations: [
+              {
+                name: "choices",
+                type: "list.single_line_text_field",
+                value: '["Approved","Pending","Declined"]',
+              },
+            ],
+          },
+          {
+            name: "general",
+            key: "general",
+            type: "json",
+            description: "General JSON information",
+            required: false,
+            validations: [],
+          },
           { name: "slug", key: "slug", type: "single_line_text_field" },
           { name: "enabled", key: "enabled", type: "boolean" },
           {
