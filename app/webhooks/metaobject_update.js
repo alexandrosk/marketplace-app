@@ -28,9 +28,9 @@ const createCollection = async (admin, shop, session, vendor) => {
           title: "Shop - " + vendor.fields.title,
           metafields: [
             {
-              key: "vendors",
+              key: "vendor_id",
               //@todo replace this with vendor.vendor_id
-              namespace: "custom",
+              namespace: "vendor",
               value: vendor.id,
             },
           ],

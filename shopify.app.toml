@@ -2,7 +2,7 @@
 
 name = "Multivendor Shop"
 client_id = "36721b0a5b6c24a485ba96e52adc57b7"
-application_url = "https://impala-top-visually.ngrok-free.app"
+application_url = "https://marketplace-app-account-page.vercel.app"
 embedded = true
 
 [access_scopes]
@@ -12,10 +12,10 @@ use_legacy_install_flow = true
 
 [auth]
 redirect_urls = [
-  "https://impala-top-visually.ngrok-free.app/auth/callback",
-  "https://impala-top-visually.ngrok-free.app/auth/shopify/callback",
-  "https://impala-top-visually.ngrok-free.app/api/auth/callback",
-  "https://impala-top-visually.ngrok-free.app/.shopify/graphiql/auth/callback"
+  "https://marketplace-app-account-page.vercel.app/auth/callback",
+  "https://marketplace-app-account-page.vercel.app/auth/shopify/callback",
+  "https://marketplace-app-account-page.vercel.app/api/auth/callback",
+  "https://marketplace-app-account-page.vercel.app/.shopify/graphiql/auth/callback"
 ]
 
 [webhooks]
@@ -27,7 +27,7 @@ api_version = "2024-01"
   shop_deletion_url = "https://impala-top-visually.ngrok-free.app/gdpr/shop/erasure"
 
 [app_proxy]
-url = "https://impala-top-visually.ngrok-free.app/frontend"
+url = "https://marketplace-app-account-page.vercel.app/frontend"
 subpath = "frontend"
 prefix = "apps"
 
