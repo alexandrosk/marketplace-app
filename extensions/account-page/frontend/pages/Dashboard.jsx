@@ -30,7 +30,7 @@ const DashboardPage = () => (
           </svg>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold"></div>
+          <div className="text-2xl font-bold">0</div>
         </CardContent>
       </Card>
       <Card>

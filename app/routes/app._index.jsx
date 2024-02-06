@@ -95,7 +95,6 @@ export async function action({ request }) {
             validations: [
               {
                 name: "choices",
-                type: "list.single_line_text_field",
                 value: '["Approved","Pending","Declined"]',
               },
             ],
@@ -251,18 +250,18 @@ export async function action({ request }) {
     },
   );
 
-  const LocationVendorRerefence = await admin.graphql(
+  const CustomerVendorRerefence = await admin.graphql(
     CREATE_METAFIELD_DEFINITION,
     {
       variables: {
         definition: {
           name: "Vendor",
-          namespace: "vendor",
+          namespace: "custom",
           key: "vendor_id",
-          description: "Connected vendors",
-          type: "list.metaobject_reference",
+          description: "Connected vendor",
+          type: "metaobject_reference",
           pin: true,
-          ownerType: "LOCATION",
+          ownerType: "CUSTOMER",
           validations: [
             {
               name: "metaobject_definition_id",
@@ -281,21 +280,14 @@ export async function action({ request }) {
     CustomerVendorReference.json(),
     OrderVendorReference.json(),
     CollectionVendorReference.json(),
-    LocationVendorRerefence.json(),
+    CustomerVendorRerefence.json(),
   ]);
 
   console.log(...otherResponses);
-  /*
+
   //**Debug*
 
-  console.log(
-    JSON.stringify(responseJson.data),
-    JSON.stringify(productReferenceJson.data),
-    JSON.stringify(customerReferenceJson.data),
-    JSON.stringify(orderReferenceJson.data),
-    JSON.stringify(collectionReferenceJson.data),
-    JSON.stringify(locationReferenceJson.data),
-  );*/
+  // console.log(JSON.stringify(CustomerVendorRerefence.json()));
 
   return json(responseJson.data);
 }
@@ -319,15 +311,15 @@ export default function Index() {
   useEffect(() => {
     if (actionData?.metaobjectDefinitionCreate?.userErrors.length > 0) {
       shopify.toast.show(
-        "Error creating metaobject definition, make sure there's no SHOP metaobject definition already",
+        "Error creating metaobjects" +
+          JSON.stringify(actionData?.metaobjectDefinitionCreate?.userErrors),
       );
     } else if (actionData?.metaobjectDefinitionCreate?.userErrors.length < 1) {
       shopify.toast.show("Metaobject created!");
-      updateSetting("onboarding_step", "1");
       dispatch({
         type: "SET_SETTING",
         resourceId: "onboarding_step",
-        value: "1",
+        value: 1,
       });
     }
   }, [actionData]);
@@ -335,16 +327,15 @@ export default function Index() {
   const generateProduct = () => submit({}, { replace: true, method: "POST" });
 
   function setupAppExtension() {
-    updateSetting(state.settings.shop, "onboarding_step", "2");
     dispatch({
       type: "SET_SETTING",
       resourceId: "onboarding_step",
-      value: "2",
+      value: 2,
     });
     window.open(
       "https://" +
         state.settings.shop +
-        "/admin/themes/current/editor?template=customers/account&addAppBlockId=e2849e9d-e593-4eb7-8c9a-291d314f681c/customer-page&target=mainSection",
+        "/admin/themes/current/editor?template=customers/account&addAppBlockId=26d894f7-5584-457a-8a1a-3e08d03fcbd7/account-page&target=mainSection",
     );
   }
   const openSettings = () => {
@@ -449,8 +440,7 @@ export default function Index() {
                 </InlineGrid>
                 <br />
                 <InlineGrid gap={"400"}>
-                  {(!state.settings.onboarding_step ||
-                    state.settings.onboarding_step === 0) && (
+                  {state.settings.onboarding_step === 0 && (
                     <div>
                       <Card>
                         <InlineStack>
