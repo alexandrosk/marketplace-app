@@ -323,6 +323,25 @@ export function DataTable({ vendorId }) {
                                             <Button
                                               onClick={() => {
                                                 // post to backend courier and voucher
+                                                //validate courier_tracking is url
+                                                if (
+                                                  !document.getElementById(
+                                                    "courier_tracking",
+                                                  )?.value ||
+                                                  !document
+                                                    .getElementById(
+                                                      "courier_tracking",
+                                                    )
+                                                    ?.value.match(
+                                                      /^(http|https):\/\/[^ "]+$/,
+                                                    )
+                                                ) {
+                                                  alert(
+                                                    "Please enter a valid courier tracking url",
+                                                  );
+                                                  return;
+                                                }
+
                                                 postOrder({
                                                   order_id: row.original.id,
                                                   line_item_id: lineItem.id,
