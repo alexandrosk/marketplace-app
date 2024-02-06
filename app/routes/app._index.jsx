@@ -233,8 +233,8 @@ export async function action({ request }) {
           name: "Vendor",
           namespace: "vendor",
           key: "vendor_id",
-          description: "Connected vendors",
-          type: "list.metaobject_reference",
+          description: "Connected Vendor",
+          type: "metaobject_reference",
           pin: true,
           ownerType: "COLLECTION",
           validations: [

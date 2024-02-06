@@ -20,6 +20,20 @@ import { PUBLISH_MUTATION } from "~/graphql/mutations/publishablePublish";
 const createCollection = async (admin, shop, session, vendor) => {
   const generalInfo = JSON.parse(vendor.fields.general);
   try {
+    //get metafield ID
+    const metafieldID = await admin.graphql(`
+    #graphql
+    query {
+      metafieldDefinitions (key:"customer_id",namespace:"vendor", ownerType:PRODUCT, first: 10) {
+        nodes {
+          id
+        }
+      }
+    }`);
+
+    const metafieldIDJson = await metafieldID.json();
+    console.log("metafieldIDJson", JSON.stringify(metafieldIDJson));
+
     const response = await admin.graphql(CREATE_COLLECTION, {
       variables: {
         input: {
@@ -41,7 +55,7 @@ const createCollection = async (admin, shop, session, vendor) => {
               relation: "EQUALS",
               condition: generalInfo.customerId,
               conditionObjectId:
-                "gid://shopify/MetafieldDefinition/16362274967",
+                metafieldIDJson?.data?.metafieldDefinitions?.nodes[0]?.id,
             },
           },
         },
@@ -49,14 +63,17 @@ const createCollection = async (admin, shop, session, vendor) => {
     });
 
     const responseJson = await response.json();
-
-    if (responseJson.userErrors) {
-      console.error("Error in createCollection:", JSON.stringify(responseJson));
-      return;
+    console.log(JSON.stringify(responseJson));
+    if (responseJson.data.collectionCreate.userErrors.length > 0) {
+      console.error(
+        "Error in createCollection:",
+        JSON.stringify(responseJson.data.collectionCreate.userErrors),
+      );
+      return false;
     }
     return responseJson.data.collectionCreate.collection;
   } catch (error) {
-    console.error("Error in updateOrderMetafields:", JSON.stringify(error));
+    console.error("Error in createCollection:", JSON.stringify(error));
     return false;
   }
 };
@@ -77,6 +94,7 @@ export const metaobject_update = async (
       !payload.product_list
     ) {
       const collection = await createCollection(admin, shop, session, payload);
+
       if (collection) {
         //save info of collection to metaobject
         const response = await admin.graphql(UPDATE_METAOBJECT, {
