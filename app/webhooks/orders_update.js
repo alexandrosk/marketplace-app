@@ -2,6 +2,7 @@
 //ORDERS_CREATE
 import { UPDATE_METAFIELD } from "~/graphql/mutations/updateMetafield";
 import { GET_METAOBJECT } from "~/graphql/queries/getMetaobject";
+import db from "~/db.server";
 
 const getVendorInformation = async (admin, shop, vendorId, session) => {
   const response = await admin.graphql(GET_METAOBJECT, {
@@ -47,6 +48,11 @@ const processVendorInformation = async (
   /** @type {any[]} */ vendorInfoWithLineItems,
   /** @type {string} */ payloadId,
 ) => {
+  //load default commission in case we dont have the vendor one
+  const settings = await db.settings.findFirst({
+    where: { shop: session.shop },
+  });
+
   return Promise.all(
     vendorInfoWithLineItems.map((vendor) =>
       getVendorInformation(admin, shop, vendor.vendorId, session).then(
@@ -61,10 +67,14 @@ const processVendorInformation = async (
           metafield.value = JSON.stringify([
             {
               vendorId: vendorInfo.id,
-              commission: vendorInfo.commission,
+              commission:
+                vendorInfo.commission?.value ?? settings?.default_commision,
               commissionAmount: (
                 vendor.finalPrice -
-                (parseFloat(vendorInfo.commission.value) / 100) *
+                (parseFloat(
+                  vendorInfo.commission?.value ?? settings?.default_commision,
+                ) /
+                  100) *
                   parseFloat(vendor.finalPrice) *
                   parseFloat(vendor.quantity)
               ).toFixed(2),
@@ -80,9 +90,9 @@ const processVendorInformation = async (
 // Main function
 export const orders_update = async (admin, shop, payload, session) => {
   try {
-    /*if (payload.note_attributes.length > 0) {
+    if (payload.vendor_info.length > 0) {
       return new Response("already updated", { status: 200 });
-    }*/
+    }
 
     const order = new admin.rest.resources.Order({ session: session });
     order.id = payload.id;

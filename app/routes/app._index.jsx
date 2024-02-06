@@ -332,13 +332,13 @@ export default function Index() {
     });
   };
   return (
-    <Page divider title={"Multivendor Shop"}>
-      <InlineGrid gap="5">
+    <Page title={"Multivendor Shop"}>
+      <InlineGrid gap="300">
         <Layout>
           <Layout.Section>
             <Card>
-              <InlineGrid gap="5">
-                <InlineGrid gap="2">
+              <InlineGrid gap="200">
+                <InlineGrid gap="200">
                   <Text as="h1" variant="headingLg">
                     Welcome to Multivendor Shop 🎉
                   </Text>
@@ -387,7 +387,7 @@ export default function Index() {
                     </Text>
                   </div>
                   <div
-                    className={"mt-10"}
+                    className={"my-2"}
                     style={{
                       width: "100%",
                     }}
@@ -408,10 +408,10 @@ export default function Index() {
                   </div>
                 </InlineGrid>
                 <br />
-                <InlineGrid gap="2">
+                <InlineGrid gap={"400"}>
                   {state.settings.onboarding_step === 0 && (
-                    <div style={{ height: "200px" }}>
-                      <Card background={"bg-subdued"}>
+                    <div>
+                      <Card>
                         <InlineStack>
                           <div style={{ width: "2rem" }}>
                             <svg
@@ -456,8 +456,7 @@ export default function Index() {
                           </div>
                           <div style={{ maxWidth: "40rem" }}>
                             <Text as="h2" variant="headingMd">
-                              1. Setup Your Metaobjects{" "}
-                              <Badge status="critical">Required</Badge>
+                              1. Setup Your Metaobjects <Badge>Required</Badge>
                             </Text>
                             <br />
                             <Text as="h2" variant="headingMd">
@@ -498,14 +497,13 @@ export default function Index() {
                   )}
                   {state.settings.onboarding_step < 2 && (
                     <div
-                      style={{ height: "200px" }}
                       className={
                         state.settings.onboarding_step !== 1
                           ? "disabled-div"
                           : ""
                       }
                     >
-                      <Card background={"bg-subdued"}>
+                      <Card>
                         <InlineStack>
                           <div style={{ width: "2rem" }}>
                             <svg
@@ -580,7 +578,6 @@ export default function Index() {
                               <Button
                                 onClick={setupAppExtension}
                                 ariaExpanded={open}
-                                primary
                                 ariaControls="basic-collapsible"
                               >
                                 Add App extension
@@ -608,7 +605,6 @@ export default function Index() {
                   )}
                   {state.settings.onboarding_step < 3 && (
                     <div
-                      style={{ height: "200px" }}
                       className={
                         state.settings.onboarding_step !== 1
                           ? "disabled-div"

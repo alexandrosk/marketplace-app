@@ -2495,7 +2495,7 @@
           var HostPortal = 4;
           var HostComponent = 5;
           var HostText = 6;
-          var Fragment = 7;
+          var Fragment2 = 7;
           var Mode = 8;
           var ContextConsumer = 9;
           var ContextProvider = 10;
@@ -2635,7 +2635,7 @@
                 return "DehydratedFragment";
               case ForwardRef:
                 return getWrappedName$1(type, type.render, "ForwardRef");
-              case Fragment:
+              case Fragment2:
                 return "Fragment";
               case HostComponent:
                 return type;
@@ -7053,7 +7053,7 @@
               }
             }
             function updateFragment2(returnFiber, current2, fragment, lanes, key) {
-              if (current2 === null || current2.tag !== Fragment) {
+              if (current2 === null || current2.tag !== Fragment2) {
                 var created = createFiberFromFragment(fragment, returnFiber.mode, lanes, key);
                 created.return = returnFiber;
                 return created;
@@ -7456,7 +7456,7 @@
                 if (child.key === key) {
                   var elementType = element.type;
                   if (elementType === REACT_FRAGMENT_TYPE) {
-                    if (child.tag === Fragment) {
+                    if (child.tag === Fragment2) {
                       deleteRemainingChildren(returnFiber, child.sibling);
                       var existing = useFiber(child, element.props.children);
                       existing.return = returnFiber;
@@ -11633,7 +11633,7 @@
                 var _resolvedProps2 = workInProgress2.elementType === type ? _unresolvedProps2 : resolveDefaultProps(type, _unresolvedProps2);
                 return updateForwardRef(current2, workInProgress2, type, _resolvedProps2, renderLanes2);
               }
-              case Fragment:
+              case Fragment2:
                 return updateFragment(current2, workInProgress2, renderLanes2);
               case Mode:
                 return updateMode(current2, workInProgress2, renderLanes2);
@@ -12074,7 +12074,7 @@
               case SimpleMemoComponent:
               case FunctionComponent:
               case ForwardRef:
-              case Fragment:
+              case Fragment2:
               case Mode:
               case Profiler:
               case ContextConsumer:
@@ -16840,7 +16840,7 @@
             return fiber;
           }
           function createFiberFromFragment(elements, mode, lanes, key) {
-            var fiber = createFiber(Fragment, elements, key, mode);
+            var fiber = createFiber(Fragment2, elements, key, mode);
             fiber.lanes = lanes;
             return fiber;
           }
@@ -19087,7 +19087,7 @@
     return [hasChanged ? normalizedNewValue : IGNORE, hotSwaps];
   }
 
-  // node_modules/.pnpm/@shopify+ui-extensions@2023.10.0/node_modules/@shopify/ui-extensions/build/esm/utilities/registration.mjs
+  // node_modules/.pnpm/@shopify+ui-extensions@2024.1.1/node_modules/@shopify/ui-extensions/build/esm/utilities/registration.mjs
   function createExtensionRegistrationFunction() {
     const extensionWrapper = (target, implementation) => {
       var _shopify;
@@ -19118,22 +19118,25 @@
     return extensionWrapper;
   }
 
-  // node_modules/.pnpm/@shopify+ui-extensions@2023.10.0/node_modules/@shopify/ui-extensions/build/esm/surfaces/admin/extension.mjs
+  // node_modules/.pnpm/@shopify+ui-extensions@2024.1.1/node_modules/@shopify/ui-extensions/build/esm/surfaces/admin/extension.mjs
   var extension = createExtensionRegistrationFunction();
 
-  // node_modules/.pnpm/@shopify+ui-extensions@2023.10.0/node_modules/@shopify/ui-extensions/build/esm/surfaces/admin/components/AdminBlock/AdminBlock.mjs
+  // node_modules/.pnpm/@shopify+ui-extensions@2024.1.1/node_modules/@shopify/ui-extensions/build/esm/surfaces/admin/components/AdminBlock/AdminBlock.mjs
   var AdminBlock = createRemoteComponent("AdminBlock");
 
-  // node_modules/.pnpm/@shopify+ui-extensions@2023.10.0/node_modules/@shopify/ui-extensions/build/esm/surfaces/admin/components/BlockStack/BlockStack.mjs
+  // node_modules/.pnpm/@shopify+ui-extensions@2024.1.1/node_modules/@shopify/ui-extensions/build/esm/surfaces/admin/components/Badge/Badge.mjs
+  var Badge = createRemoteComponent("Badge");
+
+  // node_modules/.pnpm/@shopify+ui-extensions@2024.1.1/node_modules/@shopify/ui-extensions/build/esm/surfaces/admin/components/BlockStack/BlockStack.mjs
   var BlockStack = createRemoteComponent("BlockStack");
 
-  // node_modules/.pnpm/@shopify+ui-extensions@2023.10.0/node_modules/@shopify/ui-extensions/build/esm/surfaces/admin/components/Button/Button.mjs
+  // node_modules/.pnpm/@shopify+ui-extensions@2024.1.1/node_modules/@shopify/ui-extensions/build/esm/surfaces/admin/components/Button/Button.mjs
   var Button = createRemoteComponent("Button");
 
-  // node_modules/.pnpm/@shopify+ui-extensions@2023.10.0/node_modules/@shopify/ui-extensions/build/esm/surfaces/admin/components/InlineStack/InlineStack.mjs
+  // node_modules/.pnpm/@shopify+ui-extensions@2024.1.1/node_modules/@shopify/ui-extensions/build/esm/surfaces/admin/components/InlineStack/InlineStack.mjs
   var InlineStack = createRemoteComponent("InlineStack");
 
-  // node_modules/.pnpm/@shopify+ui-extensions@2023.10.0/node_modules/@shopify/ui-extensions/build/esm/surfaces/admin/components/Text/Text.mjs
+  // node_modules/.pnpm/@shopify+ui-extensions@2024.1.1/node_modules/@shopify/ui-extensions/build/esm/surfaces/admin/components/Text/Text.mjs
   var Text = createRemoteComponent("Text");
 
   // node_modules/.pnpm/@remote-ui+react@5.0.2_react-reconciler@0.29.0_react@18.2.0/node_modules/@remote-ui/react/build/esm/render.mjs
@@ -19408,11 +19411,11 @@
     });
   }
 
-  // node_modules/.pnpm/@shopify+ui-extensions-react@2023.10.0_@shopify+ui-extensions@2023.10.0_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/context.mjs
+  // node_modules/.pnpm/@shopify+ui-extensions-react@2024.1.1_@shopify+ui-extensions@2024.1.1_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/context.mjs
   var import_react5 = __toESM(require_react(), 1);
   var ExtensionApiContext = /* @__PURE__ */ (0, import_react5.createContext)(null);
 
-  // node_modules/.pnpm/@shopify+ui-extensions-react@2023.10.0_@shopify+ui-extensions@2023.10.0_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/render.mjs
+  // node_modules/.pnpm/@shopify+ui-extensions-react@2024.1.1_@shopify+ui-extensions@2024.1.1_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/render.mjs
   var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
   function reactExtension(target, render$1) {
     return extension(target, (root, api) => {
@@ -19432,25 +19435,28 @@
     });
   }
 
-  // node_modules/.pnpm/@shopify+ui-extensions-react@2023.10.0_@shopify+ui-extensions@2023.10.0_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/components/AdminBlock/AdminBlock.mjs
+  // node_modules/.pnpm/@shopify+ui-extensions-react@2024.1.1_@shopify+ui-extensions@2024.1.1_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/components/AdminBlock/AdminBlock.mjs
   var AdminBlock2 = createRemoteReactComponent(AdminBlock);
 
-  // node_modules/.pnpm/@shopify+ui-extensions-react@2023.10.0_@shopify+ui-extensions@2023.10.0_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/components/BlockStack/BlockStack.mjs
+  // node_modules/.pnpm/@shopify+ui-extensions-react@2024.1.1_@shopify+ui-extensions@2024.1.1_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/components/Badge/Badge.mjs
+  var Badge2 = createRemoteReactComponent(Badge);
+
+  // node_modules/.pnpm/@shopify+ui-extensions-react@2024.1.1_@shopify+ui-extensions@2024.1.1_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/components/BlockStack/BlockStack.mjs
   var BlockStack2 = createRemoteReactComponent(BlockStack);
 
-  // node_modules/.pnpm/@shopify+ui-extensions-react@2023.10.0_@shopify+ui-extensions@2023.10.0_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/components/Button/Button.mjs
+  // node_modules/.pnpm/@shopify+ui-extensions-react@2024.1.1_@shopify+ui-extensions@2024.1.1_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/components/Button/Button.mjs
   var Button2 = createRemoteReactComponent(Button);
 
-  // node_modules/.pnpm/@shopify+ui-extensions-react@2023.10.0_@shopify+ui-extensions@2023.10.0_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/components/InlineStack/InlineStack.mjs
+  // node_modules/.pnpm/@shopify+ui-extensions-react@2024.1.1_@shopify+ui-extensions@2024.1.1_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/components/InlineStack/InlineStack.mjs
   var InlineStack2 = createRemoteReactComponent(InlineStack);
 
-  // node_modules/.pnpm/@shopify+ui-extensions-react@2023.10.0_@shopify+ui-extensions@2023.10.0_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/components/Text/Text.mjs
+  // node_modules/.pnpm/@shopify+ui-extensions-react@2024.1.1_@shopify+ui-extensions@2024.1.1_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/components/Text/Text.mjs
   var Text2 = createRemoteReactComponent(Text);
 
-  // node_modules/.pnpm/@shopify+ui-extensions-react@2023.10.0_@shopify+ui-extensions@2023.10.0_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/hooks/api.mjs
-  var import_react12 = __toESM(require_react(), 1);
+  // node_modules/.pnpm/@shopify+ui-extensions-react@2024.1.1_@shopify+ui-extensions@2024.1.1_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/hooks/api.mjs
+  var import_react13 = __toESM(require_react(), 1);
 
-  // node_modules/.pnpm/@shopify+ui-extensions-react@2023.10.0_@shopify+ui-extensions@2023.10.0_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/errors.mjs
+  // node_modules/.pnpm/@shopify+ui-extensions-react@2024.1.1_@shopify+ui-extensions@2024.1.1_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/errors.mjs
   var AdminUIExtensionError = class extends Error {
     constructor(...args) {
       super(...args);
@@ -19458,9 +19464,9 @@
     }
   };
 
-  // node_modules/.pnpm/@shopify+ui-extensions-react@2023.10.0_@shopify+ui-extensions@2023.10.0_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/hooks/api.mjs
+  // node_modules/.pnpm/@shopify+ui-extensions-react@2024.1.1_@shopify+ui-extensions@2024.1.1_react-reconciler@0.29.0_react@18.2.0/node_modules/@shopify/ui-extensions-react/build/esm/surfaces/admin/hooks/api.mjs
   function useApi(_target) {
-    const api = (0, import_react12.useContext)(ExtensionApiContext);
+    const api = (0, import_react13.useContext)(ExtensionApiContext);
     if (api == null) {
       throw new AdminUIExtensionError("No extension api found.");
     }
@@ -19468,7 +19474,7 @@
   }
 
   // extensions/order-admin-block/src/BlockExtension.jsx
-  var import_react13 = __toESM(require_react());
+  var import_react14 = __toESM(require_react());
   var import_jsx_runtime4 = __toESM(require_jsx_runtime());
   var TARGET = "admin.order-details.block.render";
   function getOrder(id) {
@@ -19492,15 +19498,24 @@
       });
       const result = yield res.json();
       console.log(result);
-      if (result.data.order.metafield) {
-        result.data.order.metafield.parsedValue = JSON.parse(
-          result.data.order.metafield.value
-        );
-        if (result.data.order.metafield.parsedValue[0].vendorId) {
-          const res2 = yield fetch("shopify:admin/api/graphql.json", {
-            method: "POST",
-            body: JSON.stringify({
-              query: `
+      if (!result.data || !result.data.order || !result.data.order.metafield) {
+        console.error("Order not found, or it lacks the expected metafield.");
+        return null;
+      }
+      let parsedValue = JSON.parse(result.data.order.metafield.value);
+      if (!Array.isArray(parsedValue)) {
+        parsedValue = [parsedValue];
+      }
+      const vendors = yield Promise.all(
+        parsedValue.map((vendorInfo) => __async(this, null, function* () {
+          if (vendorInfo.vendorId) {
+            const res2 = yield fetch("shopify:admin/api/graphql.json", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                query: `
         query getMetaObject($id: ID!) {
             metaobject(id: $id) {
               id
@@ -19546,62 +19561,146 @@
             }
           }
       `,
-              variables: {
-                id: result.data.order.metafield.parsedValue[0].vendorId
-              }
-            })
-          });
-          const result2 = yield res2.json();
-          console.log(result2);
-          result.data.order.vendor = result2.data.metaobject;
-        }
-      }
-      return result.data.order;
+                variables: { id: vendorInfo.vendorId }
+              })
+            });
+            const result2 = yield res2.json();
+            if (!result2.data || !result2.data.metaobject) {
+              console.error(
+                "Metaobject not found for vendorId:",
+                vendorInfo.vendorId
+              );
+              return null;
+            }
+            return __spreadValues(__spreadValues({}, vendorInfo), result2.data.metaobject);
+          }
+          return null;
+        }))
+      );
+      const filteredVendors = vendors.filter((vendor) => vendor !== null);
+      const orderWithVendors = __spreadProps(__spreadValues({}, result.data.order), {
+        vendors: filteredVendors
+      });
+      return orderWithVendors;
     });
   }
   var BlockExtension_default = reactExtension(TARGET, () => /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(App, {}));
   function App() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
+    var _a, _b;
     const {
       extension: { target },
-      i18n,
       data
     } = useApi(TARGET);
-    const [order, setOrder] = (0, import_react13.useState)();
-    const [showPayout, setShowPayout] = (0, import_react13.useState)(false);
-    (0, import_react13.useEffect)(() => {
+    const [order, setOrder] = (0, import_react14.useState)();
+    const [showPayout, setShowPayout] = (0, import_react14.useState)(false);
+    (0, import_react14.useEffect)(() => {
       var _a2, _b2;
       const orderId = (_b2 = (_a2 = data.selected) == null ? void 0 : _a2[0]) == null ? void 0 : _b2.id;
-      getOrder(orderId).then((order2) => setOrder(order2));
+      if (orderId) {
+        getOrder(orderId).then(setOrder);
+      }
     }, [data]);
-    const vendorId = (_c = (_b = (_a = order == null ? void 0 : order.metafield) == null ? void 0 : _a.parsedValue) == null ? void 0 : _b[0]) == null ? void 0 : _c.vendorId;
-    const commissionAmount = (_f = (_e = (_d = order == null ? void 0 : order.metafield) == null ? void 0 : _d.parsedValue) == null ? void 0 : _e[0]) == null ? void 0 : _f.commissionAmount;
-    return (
-      // The AdminBlock component provides an API for setting the title of the Block extension wrapper.
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(AdminBlock2, { title: "Vendor Payouts", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(BlockStack2, { children: [
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(InlineStack2, { gap: true, inlineAlignment: "space-between", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(Text2, { fontStyle: "italic", children: [
-            "Vendor ID: ",
-            vendorId
-          ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(Text2, { fontWeight: "bold", children: [
-            "You have to pay ",
-            commissionAmount
-          ] }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Text2, { fontStyle: "italic", children: "Shipped" }),
-          /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-            Button2,
-            {
-              onPress: () => {
-                setShowPayout(!showPayout);
-              },
-              children: "Mark as paid"
-            }
-          )
-        ] }),
-        showPayout && ((_h = (_g = order == null ? void 0 : order.vendor) == null ? void 0 : _g.payment_details) == null ? void 0 : _h.value) && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(InlineStack2, { gap: true, inlineAlignment: "space-between", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Text2, { children: (_j = (_i = order == null ? void 0 : order.vendor) == null ? void 0 : _i.payment_details) == null ? void 0 : _j.value }) })
-      ] }) })
-    );
+    const markAsPaid = (order2, vendorId) => __async(this, null, function* () {
+      let metafieldValue = JSON.parse(order2.metafield.value);
+      metafieldValue = metafieldValue.map((payout) => {
+        if (payout.vendorId === vendorId) {
+          return __spreadProps(__spreadValues({}, payout), { paid: true });
+        }
+        return payout;
+      });
+      const res = yield fetch("shopify:admin/api/graphql.json", {
+        method: "POST",
+        body: JSON.stringify({
+          query: `
+       mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
+        metafieldsSet(metafields: $metafields) {
+          metafields {
+             key
+        namespace
+        value
+        createdAt
+        updatedAt
+          }
+          userErrors {
+            field
+            message
+          }
+        }
+      }
+      `,
+          variables: {
+            metafields: [
+              {
+                key: "payouts",
+                namespace: "vendor",
+                ownerId: order2.id,
+                value: JSON.stringify(metafieldValue)
+              }
+            ]
+          }
+        })
+      });
+      const result = yield res.json();
+      console.log(result);
+      console.log("Mark as paid", order2, vendorId);
+    });
+    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(AdminBlock2, { title: "Vendor Payouts", children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(BlockStack2, { gap: true, children: [
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(BlockStack2, { gap: true, children: (_a = order == null ? void 0 : order.vendors) == null ? void 0 : _a.map((vendor, index) => /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
+        InlineStack2,
+        {
+          gap: true,
+          inlineAlignment: "space-between",
+          paddingBlock: true,
+          children: [
+            vendor.paid && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Badge2, { tone: "success", children: "Paid" }) || /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Badge2, { tone: "critical", children: "Unpaid" }),
+            /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(Text2, { fontStyle: "italic", children: [
+              "Vendor: ",
+              vendor.title.value
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(Text2, { fontWeight: "bold", children: [
+              "You have to pay ",
+              vendor.commissionAmount
+            ] }),
+            /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Button2, { onPress: () => setShowPayout(!showPayout), children: showPayout ? "Hide Details" : "Show Details" })
+          ]
+        },
+        index
+      )) }),
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(BlockStack2, { gap: true, children: showPayout && ((_b = order == null ? void 0 : order.vendors) == null ? void 0 : _b.map((vendor, index) => {
+        var _a2;
+        return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(
+          InlineStack2,
+          {
+            gap: true,
+            blockGap: "small",
+            blockAlignment: "center",
+            inlineAlignment: "space-between",
+            children: [
+              /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(InlineStack2, { inlineSize: "75%", children: ((_a2 = vendor.payment_details) == null ? void 0 : _a2.value) && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Text2, { children: vendor.payment_details.value }) }),
+              !vendor.paid && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+                InlineStack2,
+                {
+                  inlineSize: "25%",
+                  blockAlignment: "end",
+                  inlineAlignment: "end",
+                  children: /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+                    Button2,
+                    {
+                      variant: "primary",
+                      onClick: (
+                        // Add logic to mark the vendor as paid
+                        () => markAsPaid(order, vendor.id)
+                      ),
+                      children: "Mark as paid"
+                    }
+                  )
+                }
+              )
+            ]
+          },
+          index
+        ) });
+      })) })
+    ] }) });
   }
 })();
-//# sourceMappingURL=order-admin-block.js.map

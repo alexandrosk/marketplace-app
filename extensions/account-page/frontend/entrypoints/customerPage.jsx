@@ -9,6 +9,7 @@ import ListingsPage from "../pages/Listings.jsx";
 import ProfilePage from "../pages/ProfilePage";
 import CreateProfilePage from "../pages/CreateProfilePage";
 import DashboardPage from "../pages/Dashboard";
+import OrdersPage from "../pages/OrdersPage";
 import { fetchProductsFromProxy, getProfile } from "~/utils/api";
 import { useEffect, useState } from "react"; // Import ListingsPage
 import CreateListingPage from "../pages/CreateListing.jsx";
@@ -74,6 +75,7 @@ const CustomerPage = ({ customerid = "", settings = "" }) => {
 
   const menuItems = [
     { label: "Dashboard", path: "/" },
+    { label: "Orders", path: "/orders" },
     { label: "Profile", path: "/profile" },
     { label: "Listings", path: "/listings" },
     /*{ label: "Settings", path: "/create-listing" },*/
@@ -134,6 +136,7 @@ const CustomerPage = ({ customerid = "", settings = "" }) => {
                 <div className="flex-1 lg:max-w-4xl">
                   <Router history={createHashHistory()}>
                     <DashboardPage path="/" count={count} />
+                    <OrdersPage path="/orders" vendorId={customerId} />
                     <ProfilePage
                       path="/profile"
                       isVendor={isVendor}
