@@ -30,7 +30,7 @@ const DashboardPage = () => (
           </svg>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">$1,000.00</div>
+          <div className="text-2xl font-bold"></div>
         </CardContent>
       </Card>
       <Card>
@@ -52,7 +52,7 @@ const DashboardPage = () => (
           </svg>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">+10</div>
+          <div className="text-2xl font-bold">0</div>
         </CardContent>
       </Card>
       <Card>
@@ -73,7 +73,7 @@ const DashboardPage = () => (
           </svg>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">+20</div>
+          <div className="text-2xl font-bold">0</div>
         </CardContent>
       </Card>
       <Card>
@@ -93,7 +93,7 @@ const DashboardPage = () => (
           </svg>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">+30</div>
+          <div className="text-2xl font-bold">3</div>
         </CardContent>
       </Card>
     </div>
@@ -109,7 +109,7 @@ const DashboardPage = () => (
       <Card className="col-span-3">
         <CardHeader>
           <CardTitle>Recent Sales</CardTitle>
-          <CardDescription>You made 265 sales this month.</CardDescription>
+          <CardDescription>You made 0 sales this month.</CardDescription>
         </CardHeader>
         <CardContent>
           <RecentSales />

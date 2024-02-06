@@ -111,11 +111,11 @@ export async function action({ request }) {
           { name: "social", key: "social", type: "json" },
           { name: "image", key: "image", type: "file_reference" },
           { name: "color", key: "background", type: "color" },
-          { name: "address", key: "country", type: "single_line_text_field" },
+          { name: "address", key: "address", type: "single_line_text_field" },
           { name: "country", key: "country", type: "single_line_text_field" },
           {
             name: "payment_details",
-            key: "country",
+            key: "payment_details",
             type: "multi_line_text_field",
           },
           {
@@ -301,8 +301,12 @@ export default function Index() {
       );
     } else if (actionData?.metaobjectDefinitionCreate?.userErrors.length < 1) {
       shopify.toast.show("Metaobject created!");
-      /*updateSetting('onboarding_step', 1);
-      dispatch({type: 'SET_SETTING', resourceId: 'onboarding_step', value: 1});*/
+      updateSetting("onboarding_step", 1);
+      dispatch({
+        type: "SET_SETTING",
+        resourceId: "onboarding_step",
+        value: 1,
+      });
     }
   }, [actionData]);
 
@@ -357,9 +361,19 @@ export default function Index() {
                     borderRadius="2"
                     overflowX="scroll"
                   >
-                    <pre style={{ margin: 0 }}>
-                      <code>{JSON.stringify(actionData, null, 2)}</code>
-                    </pre>
+                    {(actionData.metaobjectDefinitionCreate.userErrors.length <
+                      1 && (
+                      <Text variant="bodyMd" as="p">
+                        Metaobjects created successfully
+                      </Text>
+                    )) || (
+                      <Text variant="bodyMd" as="p">
+                        Error creating metaobjects
+                        {JSON.stringify(
+                          actionData.metaobjectDefinitionCreate.userErrors,
+                        )}
+                      </Text>
+                    )}
                   </Box>
                 )}
               </InlineGrid>
@@ -383,7 +397,7 @@ export default function Index() {
                     }}
                   >
                     <Text as="p" color="subdued">
-                      {state.settings.onboarding_step} of 3 tasks completed
+                      {state.settings.onboarding_step ?? 0} of 3 tasks completed
                     </Text>
                   </div>
                   <div
@@ -409,7 +423,8 @@ export default function Index() {
                 </InlineGrid>
                 <br />
                 <InlineGrid gap={"400"}>
-                  {state.settings.onboarding_step === 0 && (
+                  {(!state.settings.onboarding_step ||
+                    state.settings.onboarding_step === 0) && (
                     <div>
                       <Card>
                         <InlineStack>
