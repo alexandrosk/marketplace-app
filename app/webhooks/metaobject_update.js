@@ -33,6 +33,8 @@ const createCollection = async (admin, shop, session, vendor) => {
 
     const metafieldIDJson = await metafieldID.json();
     console.log("metafieldIDJson", JSON.stringify(metafieldIDJson));
+    //sleep
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const response = await admin.graphql(CREATE_COLLECTION, {
       variables: {
