@@ -66,7 +66,7 @@ const createCollection = async (admin, shop, session, vendor) => {
     console.log(JSON.stringify(responseJson));
     if (responseJson.data.collectionCreate.userErrors.length > 0) {
       console.error(
-        "Error in createCollection:",
+        "Error in createCollection2:",
         JSON.stringify(responseJson.data.collectionCreate.userErrors),
       );
       return false;
