@@ -21,6 +21,8 @@ const createCollection = async (admin, shop, session, vendor) => {
   const generalInfo = JSON.parse(vendor.fields.general);
   try {
     //get metafield ID
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     const metafieldID = await admin.graphql(`
     #graphql
     query {
