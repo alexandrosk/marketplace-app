@@ -20,8 +20,10 @@ Also, it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exte
 
 1. `pnpm i`
 2. `pnpm run dev`
-3. `cd extensions/account-page && pnpm i && pnpm run dev`
-4. Important for theme app extension: change the proxy url in the shopify app settings to your updated cloudflare url
+3. Open a new terminal and go to  
+4. `cd extensions/account-page && pnpm i && pnpm vite:dev`
+5. To deploy the extension changes, `pnpm vite:build` in the extension folder and then `shopify deploy in the root`
+6. Important for theme app extension: change the proxy url in the shopify app settings to your updated cloudflare url
 
 
 ## To Do 📝
