@@ -30,11 +30,11 @@ Also, it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exte
 
 ### Frontend Seller
 - [ ] Create new product - huge
-  - [X] New product **[WIP]** 
+  - [X] New product 
   - [X] Use staged upload to upload images
-  - [ ] Product variants
+  - [x] Product variants
     - [X] Add variants
-    - [ ] GraphQL Variants
+    - [x] GraphQL Variants
   - [ ] Edit product
   - [ ] Google feed XML update products ? _[future]_
   - [x] Add product images
@@ -55,7 +55,7 @@ Also, it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exte
   - [x] Profile Request
   - [x] Profile Image
   - [x] Theme app extension for profile
-  - [ ] Setup handle + SEO description for vendor - collection pages
+  - [x] Setup handle + SEO description for vendor - collection pages
   - [x] Bio, socials, titles etc & info
 
 ### Frontend Theme app extensions
@@ -65,11 +65,11 @@ Also, it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exte
 - [x] Extension for account page/or related page
 
 ### Admin
-- [ ] Orders Page
+- [x] Orders Page
   - [x] Add vendor to order
   - [x] Show payouts block and tags on admin order
 - [ ] Setup Payouts page 
-  - [ ] Connect orders with vendors and calculate payouts
+  - [x] Connect orders with vendors and calculate payouts
   - [ ] Automatic payouts stripe (later)
 - [ ] Send email for new vendor setup + approved 
   - [X] Email ResendAPi 
@@ -78,19 +78,19 @@ Also, it uses shopify [react vite](https://github.com/montalvomiguelo/theme-exte
   - [x] Mass update settings from state
   - [x] Variants setup
   - [x] Options for Variants setup modal 
-  - [ ] Commission
+  - [x] Commission
 - [ ] Approve Products manually
-  - [ ] Page to Approve products (?)
+  - [x] Page to Approve products (?)
   - [x] Add settings for selecting auto approval
   - [ ] Specific Vendor auto approve their products
-- [ ] Approve vendors
+- [x] Approve vendors
   - [x] Add approval status
   - [x] collection template + app block with dynamic info ?
-  - [ ] Webhook -> after approve create auto collection for products with vendorID?
+  - [x] Webhook -> after approve create auto collection for products with vendorID?
 - [x] Show vendor data and redirect to meta object 
 
 ### Webhooks 
-- [ ] New vendor - create collection
+- [x] New vendor - create collection
 - [ ] Edit vendor - update collection 
 - [ ] Disable vendor - disable collection & products
 - [ ] Admin disables product - notify vendor
